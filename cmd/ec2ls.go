@@ -1,59 +1,56 @@
-// Copyright © 2016 Masayuki Morita
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
 package cmd
 
 import (
 	"fmt"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/spf13/cobra"
 )
 
 // ec2lsCmd represents the ec2ls command
 var ec2lsCmd = &cobra.Command{
-	// Use:   "ec2ls",
 	Use:   "ls",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		// TODO: Work your own magic here
-		fmt.Println("ec2ls called")
-	},
+	Short: "List EC2 instances",
+	Long:  `List EC2 instances`,
+	Run:   ec2ls,
 }
 
 func init() {
 	ec2Cmd.AddCommand(ec2lsCmd)
+}
 
-	// Here you will define your flags and configuration settings.
+func ec2ls(cmd *cobra.Command, args []string) {
+	svc := ec2.New(session.New(), &aws.Config{Region: aws.String("ap-northeast-1")})
 
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// ec2lsCmd.PersistentFlags().String("foo", "", "A help for foo")
+	resp, err := svc.DescribeInstances(nil)
+	if err != nil {
+		panic(err)
+	}
 
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// ec2lsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	for _, res := range resp.Reservations {
+		for _, inst := range res.Instances {
 
+			if *inst.State.Name != "running" {
+				continue
+			}
+
+			var tag_name string
+			for _, t := range inst.Tags {
+				if *t.Key == "Name" {
+					tag_name = *t.Value
+					break
+				}
+			}
+
+			fmt.Println(
+				*inst.PublicIpAddress,
+				*inst.InstanceId,
+				*inst.State.Name,
+				*inst.LaunchTime,
+				tag_name,
+			)
+		}
+	}
 }
