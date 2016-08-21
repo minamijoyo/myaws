@@ -9,7 +9,6 @@ import (
 var ec2lsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List EC2 instances",
-	Long:  `List EC2 instances`,
 	Run:   ec2.Ls,
 }
 
