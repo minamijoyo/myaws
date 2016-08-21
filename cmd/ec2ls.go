@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/minamijoyo/myaws/lib/myaws/ec2"
+	"github.com/minamijoyo/myaws/myaws/ec2"
 	"github.com/spf13/cobra"
 )
 
