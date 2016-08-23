@@ -7,10 +7,13 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
-	"github.com/spf13/cobra"
 )
 
-func Ls(*cobra.Command, []string) {
+type LsFlag struct {
+	All bool
+}
+
+func Ls(flag *LsFlag) {
 	svc := ec2.New(
 		session.New(),
 		&aws.Config{
@@ -18,14 +21,21 @@ func Ls(*cobra.Command, []string) {
 		},
 	)
 
+	var stateFilter *ec2.Filter
+	if flag.All {
+		stateFilter = &ec2.Filter{}
+	} else {
+		stateFilter = &ec2.Filter{
+			Name: aws.String("instance-state-name"),
+			Values: []*string{
+				aws.String("running"),
+			},
+		}
+	}
+
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
-			{
-				Name: aws.String("instance-state-name"),
-				Values: []*string{
-					aws.String("running"),
-				},
-			},
+			stateFilter,
 		},
 	}
 
@@ -43,13 +53,21 @@ func Ls(*cobra.Command, []string) {
 
 func formatInstance(inst *ec2.Instance) string {
 	output := []string{
-		*inst.PublicIpAddress,
+		publicIpAddress(inst),
 		*inst.InstanceId,
 		*inst.State.Name,
 		(*inst.LaunchTime).Format("2006-01-02 15:04:05"),
 		lookupTag(inst, "Name"),
 	}
 	return strings.Join(output[:], "\t")
+}
+
+func publicIpAddress(inst *ec2.Instance) string {
+	ip := "___.___.___.___"
+	if *inst.State.Name == "running" {
+		ip = *inst.PublicIpAddress
+	}
+	return ip
 }
 
 func lookupTag(inst *ec2.Instance, key string) string {
