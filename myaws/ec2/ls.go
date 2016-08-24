@@ -53,8 +53,10 @@ func Ls(flag *LsFlag) {
 
 func formatInstance(inst *ec2.Instance) string {
 	output := []string{
-		publicIpAddress(inst),
 		*inst.InstanceId,
+		*inst.InstanceType,
+		publicIpAddress(inst),
+		*inst.PrivateIpAddress,
 		*inst.State.Name,
 		(*inst.LaunchTime).Format("2006-01-02 15:04:05"),
 		lookupTag(inst, "Name"),
