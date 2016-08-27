@@ -14,10 +14,9 @@ mkdir ./pkg
 
 for PLATFORM in $(find ./out -mindepth 1 -maxdepth 1 -type d); do
     PLATFORM_NAME=$(basename ${PLATFORM})
-    ARCHIVE_NAME=${REPO}_${VERSION}_${PLATFORM_NAME}
 
     pushd ${PLATFORM}
-    zip ../../pkg/${ARCHIVE_NAME}.zip ./*
+    zip ../../pkg/${PLATFORM_NAME}.zip ./*
     popd
 done
 
