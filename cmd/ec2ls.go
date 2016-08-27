@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-// ec2lsCmd represents the ec2ls command
 var ec2lsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List EC2 instances",
