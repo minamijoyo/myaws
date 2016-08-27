@@ -7,12 +7,10 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
-	"github.com/minamijoyo/myaws/myaws"
+	"github.com/spf13/viper"
 )
 
 type LsFlag struct {
-	myaws.MyawsFlag
-
 	All bool
 }
 
@@ -20,7 +18,7 @@ func Ls(flag *LsFlag) {
 	svc := ec2.New(
 		session.New(),
 		&aws.Config{
-			Region: aws.String(flag.Region),
+			Region: aws.String(viper.GetString("region")),
 		},
 	)
 

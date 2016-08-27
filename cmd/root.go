@@ -4,13 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/minamijoyo/myaws/myaws"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
-var myawsFlag myaws.MyawsFlag
 
 // RootCmd represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
@@ -31,7 +29,8 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.myaws.yaml)")
-	RootCmd.PersistentFlags().StringVar(&myawsFlag.Region, "region", "", "AWS region")
+	RootCmd.PersistentFlags().StringP("region", "", "", "AWS region")
+	viper.BindPFlag("region", RootCmd.PersistentFlags().Lookup("region"))
 }
 
 // initConfig reads in config file and ENV variables if set.

@@ -12,7 +12,6 @@ var ec2lsCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List EC2 instances",
 	Run: func(*cobra.Command, []string) {
-		ec2LsFlag.MyawsFlag = myawsFlag
 		ec2.Ls(&ec2LsFlag)
 	},
 }
