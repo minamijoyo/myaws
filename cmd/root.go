@@ -12,7 +12,7 @@ var cfgFile string
 
 var RootCmd = &cobra.Command{
 	Use:   "myaws",
-	Short: "myaws is a simple command line tool for operating my aws resources",
+	Short: "myaws is a simple command line tool for managing my aws resources",
 }
 
 func Execute() {
