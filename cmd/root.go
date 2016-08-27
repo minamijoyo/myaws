@@ -30,6 +30,7 @@ func init() {
 
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.myaws.yaml)")
 	RootCmd.PersistentFlags().StringP("region", "", "", "AWS region")
+
 	viper.BindPFlag("region", RootCmd.PersistentFlags().Lookup("region"))
 }
 
@@ -45,6 +46,6 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		// fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
 }

@@ -7,14 +7,11 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-type LsFlag struct {
-	All bool
-}
-
-func Ls(flag *LsFlag) {
+func Ls(*cobra.Command, []string) {
 	svc := ec2.New(
 		session.New(),
 		&aws.Config{
@@ -23,7 +20,7 @@ func Ls(flag *LsFlag) {
 	)
 
 	var stateFilter *ec2.Filter
-	if flag.All {
+	if viper.GetBool("ec2.ls.all") {
 		stateFilter = &ec2.Filter{}
 	} else {
 		stateFilter = &ec2.Filter{
