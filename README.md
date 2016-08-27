@@ -6,7 +6,6 @@ The aws-cli is useful but too generic.
 It has many arguments and options and generates huge JSON output.
 
 But, in most cases, my interesting resources is the same.
-to manage aws resources by setting your favorite default value.
 
 By setting my favorite default values,
 myaws provides a simple command line interface for managing my aws resources.
