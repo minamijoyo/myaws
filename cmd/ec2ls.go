@@ -15,7 +15,7 @@ var ec2lsCmd = &cobra.Command{
 func init() {
 	ec2Cmd.AddCommand(ec2lsCmd)
 
-	ec2lsCmd.Flags().BoolP("all", "a", false, "List all instances")
+	ec2lsCmd.Flags().BoolP("all", "a", false, "List all instances (default: false)")
 
 	viper.BindPFlag("ec2.ls.all", ec2lsCmd.Flags().Lookup("all"))
 }
