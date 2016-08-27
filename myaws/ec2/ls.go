@@ -7,9 +7,12 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/minamijoyo/myaws/myaws"
 )
 
 type LsFlag struct {
+	myaws.MyawsFlag
+
 	All bool
 }
 
@@ -17,7 +20,7 @@ func Ls(flag *LsFlag) {
 	svc := ec2.New(
 		session.New(),
 		&aws.Config{
-			Region: aws.String("ap-northeast-1"),
+			Region: aws.String(flag.Region),
 		},
 	)
 
