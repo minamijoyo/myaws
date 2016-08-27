@@ -3,7 +3,7 @@
 set -e
 set -x
 
-VERSION="0.0.1"
+VERSION=$(grep "const version " cmd/version.go | sed -E 's/.*"(.+)"$/\1/')
 REPO="myaws"
 
 rm -rf ./out/
