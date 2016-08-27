@@ -39,4 +39,6 @@ func initConfig() {
 	viper.SetConfigName(".myaws")
 	viper.AddConfigPath("$HOME")
 	viper.AutomaticEnv()
+
+	viper.ReadInConfig()
 }
