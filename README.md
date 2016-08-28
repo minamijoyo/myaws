@@ -5,7 +5,7 @@ myaws is a simple command line tool for managing my aws resources.
 The aws-cli is useful but too generic.
 It has many arguments and options and generates huge JSON output.
 
-But, in most cases, my interesting resources is the same.
+But, in most cases, my interesting resource is the same.
 
 By setting my favorite default values,
 myaws provides a simple command line interface for managing my aws resources.
@@ -18,7 +18,7 @@ $ go get github.com/minamijoyo/myaws
 
 or
 
-Download latest release, unzip and chmod
+Download latest release binary, unzip and chmod.
 
 https://github.com/minamijoyo/myaws/releases
 
@@ -29,8 +29,26 @@ $ ./myaws
 ```
 
 # Configuration
+## Required
+myaws invokes AWS API call via aws-sdk-go.
+Export environment variables for your AWS credentials:
 
-Configuration is not required.
+```
+$ export AWS_ACCESS_KEY_ID=XXXXXX
+$ export AWS_SECRET_ACCESS_KEY=XXXXXX
+```
+
+or set your credentials in `$HOME/.aws/credentials` :
+
+```
+[default]
+aws_access_key_id = XXXXXX
+aws_secret_access_key = XXXXXX
+```
+
+## Optional
+
+Configuration file is optional.
 
 myaws read default configuration from `$HOME/.myaws.yaml`
 
