@@ -57,8 +57,9 @@ func formatInstance(inst *ec2.Instance) string {
 		*inst.PrivateIpAddress,
 		*inst.State.Name,
 		(*inst.LaunchTime).Format("2006-01-02 15:04:05"),
-		lookupTag(inst, "Name"),
 	}
+	tags := lookupTags(inst, viper.GetString("ec2.ls.output-tags"))
+	output = append(output, tags...)
 	return strings.Join(output[:], "\t")
 }
 
@@ -68,6 +69,16 @@ func publicIpAddress(inst *ec2.Instance) string {
 		ip = *inst.PublicIpAddress
 	}
 	return ip
+}
+
+func lookupTags(inst *ec2.Instance, keys string) []string {
+	tags := strings.Split(keys, ",")
+	var values []string
+
+	for _, tag := range tags {
+		values = append(values, lookupTag(inst, tag))
+	}
+	return values
 }
 
 func lookupTag(inst *ec2.Instance, key string) string {

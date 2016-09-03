@@ -16,6 +16,8 @@ func init() {
 	ec2Cmd.AddCommand(ec2lsCmd)
 
 	ec2lsCmd.Flags().BoolP("all", "a", false, "List all instances (default: false)")
+	ec2lsCmd.Flags().StringP("output-tags", "T", "Name", "Output tags list separated by commas, such as \"Name,attached_asg\"")
 
 	viper.BindPFlag("ec2.ls.all", ec2lsCmd.Flags().Lookup("all"))
+	viper.BindPFlag("ec2.ls.output-tags", ec2lsCmd.Flags().Lookup("output-tags"))
 }
