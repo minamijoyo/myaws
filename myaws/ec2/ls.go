@@ -31,9 +31,23 @@ func Ls(*cobra.Command, []string) {
 		}
 	}
 
+	var tagFilter *ec2.Filter
+	filterTag := viper.GetString("ec2.ls.filter-tag")
+	if filterTag == "" {
+	} else {
+		tagParts := strings.Split(filterTag, ":")
+		tagFilter = &ec2.Filter{
+			Name: aws.String("tag:" + tagParts[0]),
+			Values: []*string{
+				aws.String("*" + tagParts[1] + "*"),
+			},
+		}
+	}
+
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
 			stateFilter,
+			tagFilter,
 		},
 	}
 
