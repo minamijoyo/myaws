@@ -15,7 +15,7 @@ var ec2lsCmd = &cobra.Command{
 func init() {
 	ec2Cmd.AddCommand(ec2lsCmd)
 
-	ec2lsCmd.Flags().BoolP("all", "a", false, "List all instances (default: false)")
+	ec2lsCmd.Flags().BoolP("all", "a", false, "List all instances (default false)")
 	ec2lsCmd.Flags().StringP("filter-tag", "t", "Name:",
 		"Filter instances by tag, such as \"Name:app-production\". The value of tag is assumed to be a partial match",
 	)

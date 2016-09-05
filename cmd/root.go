@@ -25,8 +25,8 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default: $HOME/.myaws.yaml)")
-	RootCmd.PersistentFlags().StringP("profile", "", "", "AWS profile (default: \"\")")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default $HOME/.myaws.yaml)")
+	RootCmd.PersistentFlags().StringP("profile", "", "", "AWS profile (default \"\")")
 	RootCmd.PersistentFlags().StringP("region", "", "us-east-1", "AWS region")
 
 	viper.BindPFlag("profile", RootCmd.PersistentFlags().Lookup("profile"))
