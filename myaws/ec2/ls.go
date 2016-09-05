@@ -21,18 +21,6 @@ func Ls(*cobra.Command, []string) {
 		},
 	)
 
-	var stateFilter *ec2.Filter
-	if viper.GetBool("ec2.ls.all") {
-		stateFilter = &ec2.Filter{}
-	} else {
-		stateFilter = &ec2.Filter{
-			Name: aws.String("instance-state-name"),
-			Values: []*string{
-				aws.String("running"),
-			},
-		}
-	}
-
 	var tagFilter *ec2.Filter
 	filterTag := viper.GetString("ec2.ls.filter-tag")
 	if filterTag == "" {
@@ -48,7 +36,7 @@ func Ls(*cobra.Command, []string) {
 
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
-			stateFilter,
+			buildStateFilter(viper.GetBool("ec2.ls.all")),
 			tagFilter,
 		},
 	}
@@ -71,6 +59,21 @@ func getCredentials(profile string) *credentials.Credentials {
 		cred = credentials.NewSharedCredentials("", profile)
 	}
 	return cred
+}
+
+func buildStateFilter(all bool) *ec2.Filter {
+	var stateFilter *ec2.Filter
+	if all {
+		stateFilter = &ec2.Filter{}
+	} else {
+		stateFilter = &ec2.Filter{
+			Name: aws.String("instance-state-name"),
+			Values: []*string{
+				aws.String("running"),
+			},
+		}
+	}
+	return stateFilter
 }
 
 func formatInstance(inst *ec2.Instance, outputTags string) string {
