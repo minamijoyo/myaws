@@ -60,7 +60,7 @@ func Ls(*cobra.Command, []string) {
 
 	for _, res := range resp.Reservations {
 		for _, inst := range res.Instances {
-			fmt.Println(formatInstance(inst))
+			fmt.Println(formatInstance(inst, viper.GetString("ec2.ls.output-tags")))
 		}
 	}
 }
@@ -73,7 +73,7 @@ func getCredentials(profile string) *credentials.Credentials {
 	return cred
 }
 
-func formatInstance(inst *ec2.Instance) string {
+func formatInstance(inst *ec2.Instance, outputTags string) string {
 	output := []string{
 		*inst.InstanceId,
 		*inst.InstanceType,
@@ -82,7 +82,7 @@ func formatInstance(inst *ec2.Instance) string {
 		*inst.State.Name,
 		(*inst.LaunchTime).Format("2006-01-02 15:04:05"),
 	}
-	tags := lookupTags(inst, viper.GetString("ec2.ls.output-tags"))
+	tags := lookupTags(inst, outputTags)
 	output = append(output, tags...)
 	return strings.Join(output[:], "\t")
 }
