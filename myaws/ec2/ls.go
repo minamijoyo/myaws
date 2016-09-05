@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/spf13/cobra"
@@ -15,7 +16,8 @@ func Ls(*cobra.Command, []string) {
 	svc := ec2.New(
 		session.New(),
 		&aws.Config{
-			Region: aws.String(viper.GetString("region")),
+			Credentials: getCredentials(viper.GetString("profile")),
+			Region:      aws.String(viper.GetString("region")),
 		},
 	)
 
@@ -61,6 +63,14 @@ func Ls(*cobra.Command, []string) {
 			fmt.Println(formatInstance(inst))
 		}
 	}
+}
+
+func getCredentials(profile string) *credentials.Credentials {
+	var cred *credentials.Credentials
+	if profile != "" {
+		cred = credentials.NewSharedCredentials("", profile)
+	}
+	return cred
 }
 
 func formatInstance(inst *ec2.Instance) string {
