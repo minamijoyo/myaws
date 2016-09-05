@@ -21,23 +21,10 @@ func Ls(*cobra.Command, []string) {
 		},
 	)
 
-	var tagFilter *ec2.Filter
-	filterTag := viper.GetString("ec2.ls.filter-tag")
-	if filterTag == "" {
-	} else {
-		tagParts := strings.Split(filterTag, ":")
-		tagFilter = &ec2.Filter{
-			Name: aws.String("tag:" + tagParts[0]),
-			Values: []*string{
-				aws.String("*" + tagParts[1] + "*"),
-			},
-		}
-	}
-
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
 			buildStateFilter(viper.GetBool("ec2.ls.all")),
-			tagFilter,
+			buildTagFilter(viper.GetString("ec2.ls.filter-tag")),
 		},
 	}
 
@@ -74,6 +61,20 @@ func buildStateFilter(all bool) *ec2.Filter {
 		}
 	}
 	return stateFilter
+}
+
+func buildTagFilter(filterTag string) *ec2.Filter {
+	var tagFilter *ec2.Filter
+	if filterTag != "" {
+		tagParts := strings.Split(filterTag, ":")
+		tagFilter = &ec2.Filter{
+			Name: aws.String("tag:" + tagParts[0]),
+			Values: []*string{
+				aws.String("*" + tagParts[1] + "*"),
+			},
+		}
+	}
+	return tagFilter
 }
 
 func formatInstance(inst *ec2.Instance, outputTags string) string {
