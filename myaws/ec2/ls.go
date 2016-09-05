@@ -50,9 +50,7 @@ func getCredentials(profile string) *credentials.Credentials {
 
 func buildStateFilter(all bool) *ec2.Filter {
 	var stateFilter *ec2.Filter
-	if all {
-		stateFilter = &ec2.Filter{}
-	} else {
+	if !all {
 		stateFilter = &ec2.Filter{
 			Name: aws.String("instance-state-name"),
 			Values: []*string{
