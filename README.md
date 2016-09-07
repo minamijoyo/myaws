@@ -2,13 +2,9 @@
 
 myaws is a simple command line tool for managing my aws resources.
 
-The aws-cli is useful but too generic.
-It has many arguments and options and generates huge JSON output.
+The aws-cli is useful but too generic. It has many arguments and options and generates huge JSON outputs. But, in most cases, my interesting resources are the same. By setting my favorite default values, myaws provides a simple command line interface.
 
-But, in most cases, my interesting resource is the same.
-
-By setting my favorite default values,
-myaws provides a simple command line interface for managing my aws resources.
+Note that this project is under development and the interface is unstable.
 
 # Installation
 
@@ -63,6 +59,7 @@ region: ap-northeast-1
 ec2:
   ls:
     all: false
+    output-tags: "Name,attached_asg"
 ```
 
 # Example
@@ -73,3 +70,8 @@ i-0f48fxxxxxxxxxxxx     t2.micro        52.197.xxx.xxx  10.193.xxx.xxx    runnin
 i-0e267xxxxxxxxxxxx     t2.medium       52.198.xxx.xxx  10.193.xxx.xxx    running 2016-08-26 10:57:00     app
 i-0fdaaxxxxxxxxxxxx     t2.large        52.197.xxx.xxx  10.193.xxx.xxx    running 2016-08-23 01:42:59     batch
 ```
+
+# LICENCE
+
+MIT
+
