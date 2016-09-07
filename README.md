@@ -4,7 +4,7 @@ myaws is a simple command line tool for managing my aws resources.
 
 The aws-cli is useful but too generic. It has many arguments and options and generates huge JSON outputs. But, in most cases, my interesting resources are the same. By setting my favorite default values, myaws provides a simple command line interface.
 
-Note that this project is under development and the interface is unstable.
+Note that this project is under development and its interface is unstable.
 
 # Installation
 
@@ -63,6 +63,24 @@ ec2:
 ```
 
 # Example
+
+```
+$ myaws ec2 ls --help
+List EC2 instances
+
+Usage:
+  myaws ec2 ls [flags]
+
+Flags:
+  -a, --all                  List all instances (by default, list running instances only)
+  -t, --filter-tag string    Filter instances by tag, such as "Name:app-production". The value of tag is assumed to be a partial match (default "Name:")
+  -T, --output-tags string   Output tags list separated by commas, such as "Name,attached_asg" (default "Name")
+
+Global Flags:
+      --config string    config file (default $HOME/.myaws.yml)
+      --profile string   AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
+      --region string    AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+```
 
 ```
 $ myaws ec2 ls
