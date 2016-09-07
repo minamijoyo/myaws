@@ -62,7 +62,47 @@ ec2:
     output-tags: "Name,attached_asg"
 ```
 
-# Example
+# Usage
+
+```
+$ myaws --help
+myaws is a simple command line tool for managing my aws resources
+
+Usage:
+  myaws [command]
+
+Available Commands:
+  ec2         Manage EC2 resources
+  version     Print version
+
+Flags:
+      --config string    config file (default $HOME/.myaws.yml)
+      --profile string   AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
+      --region string    AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+
+Use "myaws [command] --help" for more information about a command.
+```
+
+```
+$ myaws ec2 --help
+Manage EC2 resources
+
+Usage:
+  myaws ec2 [flags]
+  myaws ec2 [command]
+
+Available Commands:
+  ls          List EC2 instances
+  start       Start EC2 instances
+  stop        Stop EC2 instances
+
+Global Flags:
+      --config string    config file (default $HOME/.myaws.yml)
+      --profile string   AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
+      --region string    AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+
+Use "myaws ec2 [command] --help" for more information about a command.
+```
 
 ```
 $ myaws ec2 ls --help
@@ -81,6 +121,8 @@ Global Flags:
       --profile string   AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
       --region string    AWS region (default none and used AWS_DEFAULT_REGION environment variable.
 ```
+
+# Example
 
 ```
 $ myaws ec2 ls
