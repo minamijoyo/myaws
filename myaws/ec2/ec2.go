@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/dustin/go-humanize"
 	"github.com/spf13/viper"
 )
 
@@ -42,5 +43,10 @@ func formatTime(t *time.Time) string {
 	if err != nil {
 		panic(err)
 	}
-	return t.In(location).Format("2006-01-02 15:04:05")
+
+	if viper.GetBool("humanize") {
+		return humanize.Time(t.In(location))
+	} else {
+		return t.In(location).Format("2006-01-02 15:04:05")
+	}
 }
