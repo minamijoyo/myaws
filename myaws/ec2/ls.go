@@ -5,22 +5,13 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 func Ls(*cobra.Command, []string) {
-	svc := ec2.New(
-		session.New(),
-		&aws.Config{
-			Credentials: getCredentials(viper.GetString("profile")),
-			Region:      aws.String(viper.GetString("region")),
-		},
-	)
-
+	client := newEC2Client()
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
 			buildStateFilter(viper.GetBool("ec2.ls.all")),
@@ -28,7 +19,7 @@ func Ls(*cobra.Command, []string) {
 		},
 	}
 
-	resp, err := svc.DescribeInstances(params)
+	resp, err := client.DescribeInstances(params)
 	if err != nil {
 		panic(err)
 	}
@@ -38,14 +29,6 @@ func Ls(*cobra.Command, []string) {
 			fmt.Println(formatInstance(inst, viper.GetString("ec2.ls.output-tags")))
 		}
 	}
-}
-
-func getCredentials(profile string) *credentials.Credentials {
-	var cred *credentials.Credentials
-	if profile != "" {
-		cred = credentials.NewSharedCredentials("", profile)
-	}
-	return cred
 }
 
 func buildStateFilter(all bool) *ec2.Filter {
