@@ -53,7 +53,7 @@ AWS region can be set in Environment variable ( `AWS_DEFAULT_REGION` ), configur
 
 Configuration file is optional.
 
-myaws read default configuration from `$HOME/.myaws.yaml`
+myaws read default configuration from `$HOME/.myaws.yml`
 
 A sample configuration looks like the following:
 
