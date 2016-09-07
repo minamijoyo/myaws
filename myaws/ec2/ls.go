@@ -65,7 +65,7 @@ func formatInstance(instance *ec2.Instance, outputTags string) string {
 		publicIpAddress(instance),
 		*instance.PrivateIpAddress,
 		*instance.State.Name,
-		(*instance.LaunchTime).Format("2006-01-02 15:04:05"),
+		formatTime(instance.LaunchTime),
 	}
 	tags := lookupTags(instance, outputTags)
 	output = append(output, tags...)

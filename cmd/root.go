@@ -28,9 +28,11 @@ func init() {
 	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default $HOME/.myaws.yml)")
 	RootCmd.PersistentFlags().StringP("profile", "", "", "AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)")
 	RootCmd.PersistentFlags().StringP("region", "", "", "AWS region (default none and used AWS_DEFAULT_REGION environment variable.")
+	RootCmd.PersistentFlags().StringP("timezone", "", "Local", "Time zone, such as UTC, Asia/Tokyo")
 
 	viper.BindPFlag("profile", RootCmd.PersistentFlags().Lookup("profile"))
 	viper.BindPFlag("region", RootCmd.PersistentFlags().Lookup("region"))
+	viper.BindPFlag("timezone", RootCmd.PersistentFlags().Lookup("timezone"))
 }
 
 func initConfig() {

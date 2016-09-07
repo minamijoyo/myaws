@@ -2,6 +2,7 @@ package ec2
 
 import (
 	"os"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -34,4 +35,12 @@ func getRegion(region string) *string {
 	} else {
 		return aws.String(os.Getenv("AWS_DEFAULT_REGION"))
 	}
+}
+
+func formatTime(t *time.Time) string {
+	location, err := time.LoadLocation(viper.GetString("timezone"))
+	if err != nil {
+		panic(err)
+	}
+	return t.In(location).Format("2006-01-02 15:04:05")
 }
