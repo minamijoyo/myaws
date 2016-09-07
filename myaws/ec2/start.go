@@ -11,7 +11,6 @@ import (
 func Start(cmd *cobra.Command, args []string) {
 	client := newEC2Client()
 
-	fmt.Println(args)
 	params := &ec2.StartInstancesInput{
 		InstanceIds: aws.StringSlice(args),
 	}
