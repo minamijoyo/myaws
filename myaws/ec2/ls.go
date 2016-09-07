@@ -61,7 +61,7 @@ func buildTagFilter(filterTag string) *ec2.Filter {
 func formatInstance(instance *ec2.Instance, outputTags string) string {
 	output := []string{
 		*instance.InstanceId,
-		*instance.InstanceType,
+		formatInstanceType(instance),
 		formatPublicIpAddress(instance),
 		*instance.PrivateIpAddress,
 		*instance.State.Name,
@@ -70,6 +70,10 @@ func formatInstance(instance *ec2.Instance, outputTags string) string {
 	tags := lookupTags(instance, outputTags)
 	output = append(output, tags...)
 	return strings.Join(output[:], "\t")
+}
+
+func formatInstanceType(instance *ec2.Instance) string {
+	return fmt.Sprintf("%-11s", *instance.InstanceType)
 }
 
 func formatPublicIpAddress(instance *ec2.Instance) string {
