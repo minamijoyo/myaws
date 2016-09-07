@@ -6,7 +6,7 @@ import (
 )
 
 var ec2StopCmd = &cobra.Command{
-	Use:   "stop",
+	Use:   "stop INSTANCE_ID [...]",
 	Short: "Stop EC2 instances",
 	Run:   ec2.Stop,
 }

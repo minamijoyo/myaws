@@ -6,7 +6,7 @@ import (
 )
 
 var ec2StartCmd = &cobra.Command{
-	Use:   "start",
+	Use:   "start INSTANCE_ID [...]",
 	Short: "Start EC2 instances",
 	Run:   ec2.Start,
 }
