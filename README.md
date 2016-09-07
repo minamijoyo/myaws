@@ -36,6 +36,7 @@ Export environment variables for your AWS credentials:
 ```
 $ export AWS_ACCESS_KEY_ID=XXXXXX
 $ export AWS_SECRET_ACCESS_KEY=XXXXXX
+$ export AWS_DEFAULT_REGION=XXXXXX
 ```
 
 or set your credentials in `$HOME/.aws/credentials` :
@@ -46,6 +47,8 @@ aws_access_key_id = XXXXXX
 aws_secret_access_key = XXXXXX
 ```
 
+AWS region can be set in Environment variable ( `AWS_DEFAULT_REGION` ), configuration file ( `$HOME/.myaws.yaml` ) , or command argument ( `--region` ).
+
 ## Optional
 
 Configuration file is optional.
@@ -55,6 +58,7 @@ myaws read default configuration from `$HOME/.myaws.yaml`
 A sample configuration looks like the following:
 
 ```
+profile: default
 region: ap-northeast-1
 ec2:
   ls:

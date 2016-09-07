@@ -1,6 +1,8 @@
 package ec2
 
 import (
+	"os"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -13,15 +15,23 @@ func newEC2Client() *ec2.EC2 {
 		session.New(),
 		&aws.Config{
 			Credentials: newCredentials(viper.GetString("profile")),
-			Region:      aws.String(viper.GetString("region")),
+			Region:      getRegion(viper.GetString("region")),
 		},
 	)
 }
 
 func newCredentials(profile string) *credentials.Credentials {
-	var cred *credentials.Credentials
 	if profile != "" {
-		cred = credentials.NewSharedCredentials("", profile)
+		return credentials.NewSharedCredentials("", profile)
+	} else {
+		return credentials.NewEnvCredentials()
 	}
-	return cred
+}
+
+func getRegion(region string) *string {
+	if region != "" {
+		return aws.String(region)
+	} else {
+		return aws.String(os.Getenv("AWS_DEFAULT_REGION"))
+	}
 }
