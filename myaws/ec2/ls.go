@@ -62,7 +62,7 @@ func formatInstance(instance *ec2.Instance, outputTags string) string {
 	output := []string{
 		*instance.InstanceId,
 		*instance.InstanceType,
-		publicIpAddress(instance),
+		formatPublicIpAddress(instance),
 		*instance.PrivateIpAddress,
 		*instance.State.Name,
 		formatTime(instance.LaunchTime),
@@ -72,7 +72,7 @@ func formatInstance(instance *ec2.Instance, outputTags string) string {
 	return strings.Join(output[:], "\t")
 }
 
-func publicIpAddress(instance *ec2.Instance) string {
+func formatPublicIpAddress(instance *ec2.Instance) string {
 	ip := "___.___.___.___"
 	if *instance.State.Name == "running" {
 		ip = *instance.PublicIpAddress
