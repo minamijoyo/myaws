@@ -6,6 +6,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/minamijoyo/myaws/myaws"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -65,7 +66,7 @@ func formatInstance(instance *ec2.Instance, outputTags string) string {
 		formatPublicIpAddress(instance),
 		*instance.PrivateIpAddress,
 		*instance.State.Name,
-		formatTime(instance.LaunchTime),
+		myaws.FormatTime(instance.LaunchTime),
 	}
 	tags := lookupTags(instance, outputTags)
 	output = append(output, tags...)
