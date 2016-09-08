@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func Ls(*cobra.Command, []string) {
@@ -20,7 +21,9 @@ func Ls(*cobra.Command, []string) {
 	}
 
 	for _, asg := range response.AutoScalingGroups {
-		fmt.Println(formatAutoScalingGroup(asg))
+		if viper.GetBool("autoscaling.ls.all") || len(asg.Instances) > 0 {
+			fmt.Println(formatAutoScalingGroup(asg))
+		}
 	}
 }
 
