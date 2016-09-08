@@ -19,35 +19,35 @@ func Ls(*cobra.Command, []string) {
 		panic(err)
 	}
 
-	fmt.Println(response)
 	for _, asg := range response.AutoScalingGroups {
 		fmt.Println(formatAutoScalingGroup(asg))
 	}
 }
 
 func formatAutoScalingGroup(asg *autoscaling.Group) string {
-	var instanceLength int
-	if asg.Instances != nil {
-		instanceLength = len(asg.Instances)
-	}
 	output := []string{
-		strconv.Itoa(instanceLength),
+		formatInstacesLen(asg.Instances),
 		*asg.AutoScalingGroupName,
+		formatInstanceIds(asg.Instances),
+		formatLoadBalancerNames(asg.LoadBalancerNames),
 	}
 
-	if asg.LoadBalancerNames != nil {
-		loadBalancerNames := aws.StringValueSlice(asg.LoadBalancerNames)
-		output = append(output, loadBalancerNames...)
-	} else {
-		output = append(output, "")
-	}
-
-	var instanceIds []string
-	if instanceLength > 0 {
-		instanceIds = lookupInstanceIds(asg.Instances)
-		output = append(output, instanceIds...)
-	}
 	return strings.Join(output[:], "\t")
+}
+
+func formatInstacesLen(instances []*autoscaling.Instance) string {
+	if instances == nil {
+		return "0"
+	}
+	return strconv.Itoa(len(instances))
+}
+
+func formatInstanceIds(instances []*autoscaling.Instance) string {
+	if instances == nil {
+		return ""
+	}
+	instanceIds := lookupInstanceIds(instances)
+	return strings.Join(instanceIds[:], " ")
 }
 
 func lookupInstanceIds(instances []*autoscaling.Instance) []string {
@@ -56,4 +56,11 @@ func lookupInstanceIds(instances []*autoscaling.Instance) []string {
 		instanceIds = append(instanceIds, *instance.InstanceId)
 	}
 	return instanceIds
+}
+
+func formatLoadBalancerNames(lbNames []*string) string {
+	if lbNames == nil {
+		return ""
+	}
+	return strings.Join(aws.StringValueSlice(lbNames)[:], " ")
 }
