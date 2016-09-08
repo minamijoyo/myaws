@@ -1,10 +1,10 @@
-# myaws
+# MyAWS
 
-myaws is a simple command line tool for managing my aws resources.
+MyAWS is a simple command line tool for managing my aws resources.
 
 The aws-cli is useful but too generic. It has many arguments and options and generates huge JSON outputs. But, in most cases, my interesting resources are the same. By setting my favorite default values, myaws provides a simple command line interface.
 
-Note that this project is under development and its interface is unstable.
+Note that MyAWS is under development and its interface is unstable.
 
 # Installation
 
@@ -26,7 +26,7 @@ $ ./myaws
 
 # Configuration
 ## Required
-myaws invokes AWS API call via aws-sdk-go.
+MyAWS invokes AWS API call via aws-sdk-go.
 Export environment variables for your AWS credentials:
 
 ```
@@ -49,7 +49,7 @@ AWS region can be set in Environment variable ( `AWS_DEFAULT_REGION` ), configur
 
 Configuration file is optional.
 
-myaws read default configuration from `$HOME/.myaws.yml`
+MyAWS read default configuration from `$HOME/.myaws.yml`
 
 A sample configuration looks like the following:
 
@@ -66,7 +66,7 @@ ec2:
 
 ```
 $ myaws --help
-myaws is a simple command line tool for managing my aws resources
+MyAWS is a simple command line tool for managing my aws resources
 
 Usage:
   myaws [command]
@@ -126,9 +126,9 @@ Global Flags:
 
 ```
 $ myaws ec2 ls
-i-0f48fxxxxxxxxxxxx     t2.micro        52.197.xxx.xxx  10.193.xxx.xxx    running 2016-07-20 02:38:05     proxy
-i-0e267xxxxxxxxxxxx     t2.medium       52.198.xxx.xxx  10.193.xxx.xxx    running 2016-08-26 10:57:00     app
-i-0fdaaxxxxxxxxxxxx     t2.large        52.197.xxx.xxx  10.193.xxx.xxx    running 2016-08-23 01:42:59     batch
+i-0f48fxxxxxxxxxxxx     t2.micro        52.197.xxx.xxx  10.193.xxx.xxx    running 1 minute ago    proxy
+i-0e267xxxxxxxxxxxx     t2.medium       52.198.xxx.xxx  10.193.xxx.xxx    running 2 days ago      app
+i-0fdaaxxxxxxxxxxxx     t2.large        52.197.xxx.xxx  10.193.xxx.xxx    running 1 month ago     batch
 ```
 
 # LICENCE
