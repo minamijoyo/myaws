@@ -64,7 +64,7 @@ func formatInstance(instance *ec2.Instance, outputTags string) string {
 		*instance.InstanceId,
 		formatInstanceType(instance),
 		formatPublicIpAddress(instance),
-		*instance.PrivateIpAddress,
+		formatPrivateIpAddress(instance),
 		*instance.State.Name,
 		myaws.FormatTime(instance.LaunchTime),
 	}
@@ -81,6 +81,14 @@ func formatPublicIpAddress(instance *ec2.Instance) string {
 	ip := "___.___.___.___"
 	if *instance.State.Name == "running" {
 		ip = *instance.PublicIpAddress
+	}
+	return ip
+}
+
+func formatPrivateIpAddress(instance *ec2.Instance) string {
+	ip := "___.___.___.___"
+	if instance.PrivateIpAddress != nil {
+		ip = *instance.PrivateIpAddress
 	}
 	return ip
 }
