@@ -69,7 +69,13 @@ func formatInstance(instance *ec2.Instance) string {
 		"LaunchTime":       formatLaunchTime,
 	}
 
-	fields := viper.GetStringSlice("ec2.ls.fields")
+	var fields []string
+	if viper.GetBool("ec2.ls.quiet") {
+		fields = []string{"InstanceId"}
+	} else {
+		fields = viper.GetStringSlice("ec2.ls.fields")
+	}
+
 	output := []string{}
 
 	for _, field := range fields {
