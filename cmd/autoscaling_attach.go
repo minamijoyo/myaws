@@ -15,7 +15,9 @@ var autoscalingAttachCmd = &cobra.Command{
 func init() {
 	autoscalingCmd.AddCommand(autoscalingAttachCmd)
 
-	autoscalingAttachCmd.Flags().StringP("instance-ids", "i", "", "List of Instance IDs to attach")
+	autoscalingAttachCmd.Flags().StringP("instance-ids", "i", "", "One or more instance IDs")
+	autoscalingAttachCmd.Flags().StringP("load-balancer-names", "l", "", "One or more load balancer names")
 
 	viper.BindPFlag("autoscaling.attach.instance-ids", autoscalingAttachCmd.Flags().Lookup("instance-ids"))
+	viper.BindPFlag("autoscaling.attach.load-balancer-names", autoscalingAttachCmd.Flags().Lookup("load-balancer-names"))
 }

@@ -8,18 +8,48 @@ import (
 )
 
 func Detach(cmd *cobra.Command, args []string) {
+	if len(args) == 0 {
+		cmd.Usage()
+		return
+	}
+	asgName := args[0]
+
+	if viper.GetString("autoscaling.detach.instance-ids") != "" {
+		detachInstances(asgName)
+	}
+
+	if viper.GetString("autoscaling.detach.load-balancer-names") != "" {
+		detachLoadBalancers(asgName)
+	}
+}
+
+func detachInstances(asgName string) {
 	client := newAutoScalingClient()
 
-	asgName := aws.String(args[0])
 	instanceIds := aws.StringSlice(viper.GetStringSlice("autoscaling.detach.instance-ids"))
 	decrementCapacity := true
 	params := &autoscaling.DetachInstancesInput{
-		AutoScalingGroupName:           asgName,
+		AutoScalingGroupName:           &asgName,
 		InstanceIds:                    instanceIds,
 		ShouldDecrementDesiredCapacity: &decrementCapacity,
 	}
 
 	_, err := client.DetachInstances(params)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func detachLoadBalancers(asgName string) {
+	client := newAutoScalingClient()
+
+	loadBalancerNames := aws.StringSlice(viper.GetStringSlice("autoscaling.detach.load-balancer-names"))
+	params := &autoscaling.DetachLoadBalancersInput{
+		AutoScalingGroupName: &asgName,
+		LoadBalancerNames:    loadBalancerNames,
+	}
+
+	_, err := client.DetachLoadBalancers(params)
 	if err != nil {
 		panic(err)
 	}

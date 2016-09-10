@@ -1,6 +1,8 @@
 package autoscaling
 
 import (
+	"fmt"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/spf13/cobra"
@@ -8,16 +10,47 @@ import (
 )
 
 func Attach(cmd *cobra.Command, args []string) {
+	if len(args) == 0 {
+		cmd.Usage()
+		return
+	}
+	asgName := args[0]
+
+	if viper.GetString("autoscaling.attach.instance-ids") != "" {
+		attachInstances(asgName)
+	}
+
+	fmt.Println(viper.GetString("autoscaling.attach.load-balancer-names"))
+	if viper.GetString("autoscaling.attach.load-balancer-names") != "" {
+		attachLoadBalancers(asgName)
+	}
+}
+
+func attachInstances(asgName string) {
 	client := newAutoScalingClient()
 
-	asgName := aws.String(args[0])
 	instanceIds := aws.StringSlice(viper.GetStringSlice("autoscaling.attach.instance-ids"))
 	params := &autoscaling.AttachInstancesInput{
-		AutoScalingGroupName: asgName,
+		AutoScalingGroupName: &asgName,
 		InstanceIds:          instanceIds,
 	}
 
 	_, err := client.AttachInstances(params)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func attachLoadBalancers(asgName string) {
+	client := newAutoScalingClient()
+
+	loadBalancerNames := aws.StringSlice(viper.GetStringSlice("autoscaling.attach.load-balancer-names"))
+	params := &autoscaling.AttachLoadBalancersInput{
+		AutoScalingGroupName: &asgName,
+		LoadBalancerNames:    loadBalancerNames,
+	}
+
+	_, err := client.AttachLoadBalancers(params)
 	if err != nil {
 		panic(err)
 	}
