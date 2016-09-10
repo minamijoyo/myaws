@@ -59,7 +59,9 @@ region: ap-northeast-1
 ec2:
   ls:
     all: false
-    output-tags: "Name,attached_asg"
+    output-tags:
+      - Name
+      - attached_asg
 ```
 
 # Usage

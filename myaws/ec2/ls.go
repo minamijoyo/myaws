@@ -27,7 +27,7 @@ func Ls(*cobra.Command, []string) {
 
 	for _, reservation := range response.Reservations {
 		for _, instance := range reservation.Instances {
-			fmt.Println(formatInstance(instance, viper.GetString("ec2.ls.output-tags")))
+			fmt.Println(formatInstance(instance, viper.GetStringSlice("ec2.ls.output-tags")))
 		}
 	}
 }
@@ -59,7 +59,7 @@ func buildTagFilter(filterTag string) *ec2.Filter {
 	return tagFilter
 }
 
-func formatInstance(instance *ec2.Instance, outputTags string) string {
+func formatInstance(instance *ec2.Instance, outputTags []string) string {
 	output := []string{
 		*instance.InstanceId,
 		formatInstanceType(instance),
@@ -91,10 +91,8 @@ func formatPrivateIpAddress(instance *ec2.Instance) string {
 	return *instance.PrivateIpAddress
 }
 
-func lookupTags(instance *ec2.Instance, keys string) []string {
-	tags := strings.Split(keys, ",")
+func lookupTags(instance *ec2.Instance, tags []string) []string {
 	var values []string
-
 	for _, tag := range tags {
 		values = append(values, lookupTag(instance, tag))
 	}
