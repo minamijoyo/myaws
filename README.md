@@ -8,7 +8,7 @@ Note that MyAWS is under development and its interface is unstable.
 
 # Installation
 
-```
+```bash
 $ go get github.com/minamijoyo/myaws
 ```
 
@@ -18,7 +18,7 @@ Download latest release binary, unzip and chmod.
 
 https://github.com/minamijoyo/myaws/releases
 
-```
+```bash
 $ unzip myaws_v0.0.1_darwin_amd64.zip
 $ chmod +x myaws
 $ ./myaws
@@ -29,7 +29,7 @@ $ ./myaws
 MyAWS invokes AWS API call via aws-sdk-go.
 Export environment variables for your AWS credentials:
 
-```
+```bash
 $ export AWS_ACCESS_KEY_ID=XXXXXX
 $ export AWS_SECRET_ACCESS_KEY=XXXXXX
 $ export AWS_DEFAULT_REGION=XXXXXX
@@ -53,7 +53,7 @@ MyAWS read default configuration from `$HOME/.myaws.yml`
 
 A sample configuration looks like the following:
 
-```
+```yaml
 profile: default
 region: ap-northeast-1
 ec2:
@@ -68,10 +68,11 @@ ec2:
       - LaunchTime
       - Tag:Name
       - Tag:attached_asg
+```
 
 # Usage
 
-```
+```bash
 $ myaws --help
 MyAWS is a simple command line tool for managing my aws resources
 
@@ -93,7 +94,7 @@ Flags:
 Use "myaws [command] --help" for more information about a command.
 ```
 
-```
+```bash
 $ myaws ec2 --help
 Manage EC2 resources
 
@@ -116,7 +117,7 @@ Global Flags:
 Use "myaws ec2 [command] --help" for more information about a command.
 ```
 
-```
+```bash
 $ myaws ec2 ls --help
 List EC2 instances
 
@@ -137,7 +138,7 @@ Global Flags:
       --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
 ```
 
-```
+```bash
 $ myaws autoscaling --help
 Manage autoscaling resources
 
@@ -163,7 +164,7 @@ Use "myaws autoscaling [command] --help" for more information about a command.
 
 # Example
 
-```
+```bash
 $ myaws ec2 ls
 i-0f48fxxxxxxxxxxxx     t2.micro        52.197.xxx.xxx  10.193.xxx.xxx    running 1 minute ago    proxy
 i-0e267xxxxxxxxxxxx     t2.medium       52.198.xxx.xxx  10.193.xxx.xxx    running 2 days ago      app
