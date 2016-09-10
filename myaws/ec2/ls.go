@@ -27,7 +27,7 @@ func Ls(*cobra.Command, []string) {
 
 	for _, reservation := range response.Reservations {
 		for _, instance := range reservation.Instances {
-			fmt.Println(formatInstance(instance, viper.GetStringSlice("ec2.ls.output-tags")))
+			fmt.Println(formatInstance(instance))
 		}
 	}
 }
@@ -59,15 +59,22 @@ func buildTagFilter(filterTag string) *ec2.Filter {
 	return tagFilter
 }
 
-func formatInstance(instance *ec2.Instance, outputTags []string) string {
-	output := []string{
-		formatInstanceId(instance),
-		formatInstanceType(instance),
-		formatPublicIpAddress(instance),
-		formatPrivateIpAddress(instance),
-		formatStateName(instance),
-		formatLaunchTime(instance),
-		formatTags(instance, outputTags),
+func formatInstance(instance *ec2.Instance) string {
+	formatFuncs := map[string]func(instance *ec2.Instance) string{
+		"InstanceId":       formatInstanceId,
+		"InstanceType":     formatInstanceType,
+		"PublicIpAddress":  formatPublicIpAddress,
+		"PrivateIpAddress": formatPrivateIpAddress,
+		"StateName":        formatStateName,
+		"LaunchTime":       formatLaunchTime,
+		"Tags":             formatTags,
+	}
+
+	fields := viper.GetStringSlice("ec2.ls.fields")
+	output := []string{}
+
+	for _, field := range fields {
+		output = append(output, formatFuncs[field](instance))
 	}
 	return strings.Join(output[:], "\t")
 }
@@ -102,7 +109,8 @@ func formatLaunchTime(instance *ec2.Instance) string {
 	return myaws.FormatTime(instance.LaunchTime)
 }
 
-func formatTags(instance *ec2.Instance, outputTags []string) string {
+func formatTags(instance *ec2.Instance) string {
+	outputTags := viper.GetStringSlice("ec2.ls.output-tags")
 	tags := lookupTags(instance, outputTags)
 	return strings.Join(tags[:], "\t")
 }

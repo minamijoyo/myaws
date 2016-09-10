@@ -59,6 +59,14 @@ region: ap-northeast-1
 ec2:
   ls:
     all: false
+    fields:
+      - InstanceId
+      - InstanceType
+      - PublicIpAddress
+      - PrivateIpAddress
+      - StateName
+      - LaunchTime
+      - Tags
     output-tags:
       - Name
       - attached_asg
