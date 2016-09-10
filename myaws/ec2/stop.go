@@ -5,14 +5,19 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/minamijoyo/myaws/myaws"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 func Stop(cmd *cobra.Command, args []string) {
+	if len(args) == 0 {
+		myaws.UsageError(cmd, "INSTANCE_ID is required.")
+	}
+	instanceIds := aws.StringSlice(args)
+
 	client := newEC2Client()
 
-	instanceIds := aws.StringSlice(args)
 	params := &ec2.StopInstancesInput{
 		InstanceIds: instanceIds,
 	}

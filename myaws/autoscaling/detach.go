@@ -3,14 +3,14 @@ package autoscaling
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
+	"github.com/minamijoyo/myaws/myaws"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 func Detach(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
-		cmd.Usage()
-		return
+		myaws.UsageError(cmd, "AUTO_SCALING_GROUP_NAME is required.")
 	}
 	asgName := args[0]
 
