@@ -78,19 +78,17 @@ func formatInstanceType(instance *ec2.Instance) string {
 }
 
 func formatPublicIpAddress(instance *ec2.Instance) string {
-	ip := "___.___.___.___"
-	if *instance.State.Name == "running" {
-		ip = *instance.PublicIpAddress
+	if instance.PublicIpAddress == nil {
+		return "___.___.___.___"
 	}
-	return ip
+	return *instance.PublicIpAddress
 }
 
 func formatPrivateIpAddress(instance *ec2.Instance) string {
-	ip := "___.___.___.___"
-	if instance.PrivateIpAddress != nil {
-		ip = *instance.PrivateIpAddress
+	if instance.PrivateIpAddress == nil {
+		return "___.___.___.___"
 	}
-	return ip
+	return *instance.PrivateIpAddress
 }
 
 func lookupTags(instance *ec2.Instance, keys string) []string {
