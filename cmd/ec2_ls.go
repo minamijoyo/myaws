@@ -19,11 +19,9 @@ func init() {
 	ec2LsCmd.Flags().StringP("filter-tag", "t", "Name:",
 		"Filter instances by tag, such as \"Name:app-production\". The value of tag is assumed to be a partial match",
 	)
-	ec2LsCmd.Flags().StringP("fields", "F", "InstanceId InstanceType PublicIpAddress PrivateIpAddress StateName LaunchTime Tags", "Output fields list separated by space")
-	ec2LsCmd.Flags().StringP("output-tags", "T", "Name", "Output tags list separated by space, such as \"Name attached_asg\"")
+	ec2LsCmd.Flags().StringP("fields", "F", "InstanceId InstanceType PublicIpAddress PrivateIpAddress StateName LaunchTime Tag:Name", "Output fields list separated by space")
 
 	viper.BindPFlag("ec2.ls.all", ec2LsCmd.Flags().Lookup("all"))
 	viper.BindPFlag("ec2.ls.filter-tag", ec2LsCmd.Flags().Lookup("filter-tag"))
 	viper.BindPFlag("ec2.ls.fields", ec2LsCmd.Flags().Lookup("fields"))
-	viper.BindPFlag("ec2.ls.output-tags", ec2LsCmd.Flags().Lookup("output-tags"))
 }

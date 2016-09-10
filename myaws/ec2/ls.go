@@ -67,14 +67,20 @@ func formatInstance(instance *ec2.Instance) string {
 		"PrivateIpAddress": formatPrivateIpAddress,
 		"StateName":        formatStateName,
 		"LaunchTime":       formatLaunchTime,
-		"Tags":             formatTags,
 	}
 
 	fields := viper.GetStringSlice("ec2.ls.fields")
 	output := []string{}
 
 	for _, field := range fields {
-		output = append(output, formatFuncs[field](instance))
+		value := ""
+		if strings.Index(field, "Tag:") != -1 {
+			key := strings.Split(field, ":")[1]
+			value = formatTag(instance, key)
+		} else {
+			value = formatFuncs[field](instance)
+		}
+		output = append(output, value)
 	}
 	return strings.Join(output[:], "\t")
 }
@@ -109,21 +115,7 @@ func formatLaunchTime(instance *ec2.Instance) string {
 	return myaws.FormatTime(instance.LaunchTime)
 }
 
-func formatTags(instance *ec2.Instance) string {
-	outputTags := viper.GetStringSlice("ec2.ls.output-tags")
-	tags := lookupTags(instance, outputTags)
-	return strings.Join(tags[:], "\t")
-}
-
-func lookupTags(instance *ec2.Instance, tags []string) []string {
-	var values []string
-	for _, tag := range tags {
-		values = append(values, lookupTag(instance, tag))
-	}
-	return values
-}
-
-func lookupTag(instance *ec2.Instance, key string) string {
+func formatTag(instance *ec2.Instance, key string) string {
 	var value string
 	for _, t := range instance.Tags {
 		if *t.Key == key {

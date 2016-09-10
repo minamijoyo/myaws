@@ -66,11 +66,8 @@ ec2:
       - PrivateIpAddress
       - StateName
       - LaunchTime
-      - Tags
-    output-tags:
-      - Name
-      - attached_asg
-```
+      - Tag:Name
+      - Tag:attached_asg
 
 # Usage
 
