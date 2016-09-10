@@ -79,13 +79,16 @@ Usage:
   myaws [command]
 
 Available Commands:
+  autoscaling Manage autoscaling resources
   ec2         Manage EC2 resources
   version     Print version
 
 Flags:
-      --config string    config file (default $HOME/.myaws.yml)
-      --profile string   AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
-      --region string    AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+      --config string     config file (default $HOME/.myaws.yml)
+      --humanize          Use Human friendly format for time (default true)
+      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
+      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
 
 Use "myaws [command] --help" for more information about a command.
 ```
@@ -104,9 +107,11 @@ Available Commands:
   stop        Stop EC2 instances
 
 Global Flags:
-      --config string    config file (default $HOME/.myaws.yml)
-      --profile string   AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
-      --region string    AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+      --config string     config file (default $HOME/.myaws.yml)
+      --humanize          Use Human friendly format for time (default true)
+      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
+      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
 
 Use "myaws ec2 [command] --help" for more information about a command.
 ```
@@ -119,14 +124,41 @@ Usage:
   myaws ec2 ls [flags]
 
 Flags:
-  -a, --all                  List all instances (by default, list running instances only)
-  -t, --filter-tag string    Filter instances by tag, such as "Name:app-production". The value of tag is assumed to be a partial match (default "Name:")
-  -T, --output-tags string   Output tags list separated by commas, such as "Name,attached_asg" (default "Name")
+  -a, --all                 List all instances (by default, list running instances only)
+  -F, --fields string       Output fields list separated by space (default "InstanceId InstanceType PublicIpAddress PrivateIpAddress StateName LaunchTime Tag:Name")
+  -t, --filter-tag string   Filter instances by tag, such as "Name:app-production". The value of tag is assumed to be a partial match (default "Name:")
+  -q, --quiet               Only display InstanceIDs
 
 Global Flags:
-      --config string    config file (default $HOME/.myaws.yml)
-      --profile string   AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
-      --region string    AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+      --config string     config file (default $HOME/.myaws.yml)
+      --humanize          Use Human friendly format for time (default true)
+      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
+      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
+```
+
+```
+$ myaws autoscaling --help
+Manage autoscaling resources
+
+Usage:
+  myaws autoscaling [flags]
+  myaws autoscaling [command]
+
+Available Commands:
+  attach      Attach instances/loadbalancers to autoscaling group
+  detach      Detach instances/loadbalancers from autoscaling group
+  ls          List autoscaling groups
+  update      Update autoscaling group
+
+Global Flags:
+      --config string     config file (default $HOME/.myaws.yml)
+      --humanize          Use Human friendly format for time (default true)
+      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
+      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
+
+Use "myaws autoscaling [command] --help" for more information about a command.
 ```
 
 # Example
