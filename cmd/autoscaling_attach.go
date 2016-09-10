@@ -8,7 +8,7 @@ import (
 
 var autoscalingAttachCmd = &cobra.Command{
 	Use:   "attach AUTO_SCALING_GROUP_NAME",
-	Short: "Attach instances to autoscaling group",
+	Short: "Attach instances/loadbalancers to autoscaling group",
 	Run:   autoscaling.Attach,
 }
 

@@ -8,7 +8,7 @@ import (
 
 var autoscalingDetachCmd = &cobra.Command{
 	Use:   "detach AUTO_SCALING_GROUP_NAME",
-	Short: "Detach instances from autoscaling group",
+	Short: "Detach instances/loadbalancers from autoscaling group",
 	Run:   autoscaling.Detach,
 }
 
