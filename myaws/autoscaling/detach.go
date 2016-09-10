@@ -1,8 +1,6 @@
 package autoscaling
 
 import (
-	"fmt"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/spf13/cobra"
@@ -21,10 +19,8 @@ func Detach(cmd *cobra.Command, args []string) {
 		ShouldDecrementDesiredCapacity: &decrementCapacity,
 	}
 
-	response, err := client.DetachInstances(params)
+	_, err := client.DetachInstances(params)
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println(response)
 }

@@ -1,8 +1,6 @@
 package autoscaling
 
 import (
-	"fmt"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/spf13/cobra"
@@ -19,10 +17,8 @@ func Attach(cmd *cobra.Command, args []string) {
 		InstanceIds:          instanceIds,
 	}
 
-	response, err := client.AttachInstances(params)
+	_, err := client.AttachInstances(params)
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println(response)
 }

@@ -1,8 +1,6 @@
 package autoscaling
 
 import (
-	"fmt"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/spf13/cobra"
@@ -23,10 +21,8 @@ func Update(cmd *cobra.Command, args []string) {
 		DesiredCapacity:      &desiredCapacity,
 	}
 
-	response, err := client.SetDesiredCapacity(params)
+	_, err := client.SetDesiredCapacity(params)
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Println(response)
 }
