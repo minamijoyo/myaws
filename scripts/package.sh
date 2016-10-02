@@ -4,10 +4,13 @@ set -e
 set -x
 
 VERSION=$(grep "const version " cmd/version.go | sed -E 's/.*"(.+)"$/\1/')
+REVISION=$(git describe --always)
 REPO="myaws"
 
 rm -rf ./out/
-gox --osarch "darwin/amd64 linux/amd64" -output="./out/${REPO}_${VERSION}_{{.OS}}_{{.Arch}}/{{.Dir}}"
+gox -ldflags "-X github.com/minamijoyo/myaws/cmd.Revision=${REVISION}" \
+    --osarch "darwin/amd64 linux/amd64" \
+    -output="./out/${REPO}_${VERSION}_{{.OS}}_{{.Arch}}/{{.Dir}}"
 
 rm -rf ./pkg/
 mkdir ./pkg

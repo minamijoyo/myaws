@@ -8,11 +8,14 @@ import (
 
 const version string = "v0.0.3"
 
+// Revision is git commit hash which automatically set `git describe --always` on build
+var Revision string
+
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print version",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("myaws version: %s\n", version)
+		fmt.Printf("myaws version: %s, revision: %s\n", version, Revision)
 	},
 }
 
