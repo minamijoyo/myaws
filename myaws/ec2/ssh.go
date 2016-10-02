@@ -1,9 +1,11 @@
 package ec2
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/minamijoyo/myaws/myaws"
@@ -19,8 +21,8 @@ func Ssh(cmd *cobra.Command, args []string) {
 	hostname := resolveIpAddress(args[0])
 
 	loginName := viper.GetString("ec2.ssh.login-name")
-	identityFile := viper.GetString("ec2.ssh.identity-file")
-
+	identityFile := strings.Replace(viper.GetString("ec2.ssh.identity-file"), "~", os.Getenv("HOME"), 1)
+	fmt.Println(identityFile)
 	key, err := ioutil.ReadFile(identityFile)
 	if err != nil {
 		log.Fatalf("unable to read private key: %v", err)
