@@ -2,6 +2,7 @@ package ec2
 
 import (
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -12,6 +13,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 func Ssh(cmd *cobra.Command, args []string) {
@@ -25,12 +27,12 @@ func Ssh(cmd *cobra.Command, args []string) {
 	fmt.Println(identityFile)
 	key, err := ioutil.ReadFile(identityFile)
 	if err != nil {
-		log.Fatalf("unable to read private key: %v", err)
+		log.Fatalf("Unable to read private key: %v", err)
 	}
 
 	signer, err := ssh.ParsePrivateKey(key)
 	if err != nil {
-		log.Fatalf("unable to parse private key: %v", err)
+		log.Fatalf("Unable to parse private key: %v", err)
 	}
 
 	config := &ssh.ClientConfig{
@@ -42,7 +44,7 @@ func Ssh(cmd *cobra.Command, args []string) {
 
 	client, err := ssh.Dial("tcp", hostname+":22", config)
 	if err != nil {
-		log.Fatalf("unable to connect: %v", err)
+		log.Fatalf("Unable to connect: %v", err)
 	}
 	defer client.Close()
 
@@ -52,22 +54,45 @@ func Ssh(cmd *cobra.Command, args []string) {
 	}
 	defer session.Close()
 
-	session.Stdout = os.Stdout
-	session.Stderr = os.Stderr
-	session.Stdin = os.Stdin
-
 	modes := ssh.TerminalModes{
-		ssh.ECHO:          0,     // disable echoing
+		ssh.ECHO:          1,     // enable echoing
 		ssh.TTY_OP_ISPEED: 14400, // input speed = 14.4kbaud
 		ssh.TTY_OP_OSPEED: 14400, // output speed = 14.4kbaud
 	}
 
-	if err := session.RequestPty("xterm", 80, 40, modes); err != nil {
-		log.Fatalf("request for pseudo terminal failed: %s", err)
+	fd := int(os.Stdin.Fd())
+	oldState, err := terminal.MakeRaw(fd)
+	if err != nil {
+		log.Fatal("Unable to put terminal in Raw Mode", err)
+	}
+	defer terminal.Restore(fd, oldState)
+
+	width, height, _ := terminal.GetSize(fd)
+
+	if err := session.RequestPty("xterm", width, height, modes); err != nil {
+		log.Fatalf("Request for pseudo terminal failed: %s", err)
 	}
 
+	stdin, err := session.StdinPipe()
+	if err != nil {
+		log.Fatal("Unable to setup stdin for session", err)
+	}
+	go io.Copy(stdin, os.Stdin)
+
+	stdout, err := session.StdoutPipe()
+	if err != nil {
+		log.Fatal("Unable to setup stdout for session", err)
+	}
+	go io.Copy(os.Stdout, stdout)
+
+	stderr, err := session.StderrPipe()
+	if err != nil {
+		log.Fatal("Unable to setup stderr for session", err)
+	}
+	go io.Copy(os.Stderr, stderr)
+
 	if err := session.Shell(); err != nil {
-		log.Fatalf("failed to start shell: %s", err)
+		log.Fatalf("Failed to start shell: %s", err)
 	}
 	session.Wait()
 }
