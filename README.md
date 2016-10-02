@@ -8,20 +8,30 @@ Note that MyAWS is under development and its interface is unstable.
 
 # Installation
 
+If you have Go development environment:
+
 ```bash
 $ go get github.com/minamijoyo/myaws
 ```
 
 or
 
-Download latest release binary, unzip and chmod.
+Download the latest compiled binaries and put it anywhere in your executable path.
 
 https://github.com/minamijoyo/myaws/releases
 
+## OSX (64bit)
+
 ```bash
-$ unzip myaws_v0.0.1_darwin_amd64.zip
-$ chmod +x myaws
-$ ./myaws
+$ curl -fsSL http://localhost:8000/pkg/myaws_v0.0.4_darwin_amd64.tar.gz | tar -xzC /usr/local/bin && chmod +x /usr/local/bin/myaws
+$ myaws --help
+```
+
+## Linux (64bit)
+
+```bash
+$ curl -fsSL http://localhost:8000/pkg/myaws_v0.0.4_linux_amd64.tar.gz | tar -xzC /usr/local/bin && chmod +x /usr/local/bin/myaws
+$ myaws --help
 ```
 
 # Configuration
