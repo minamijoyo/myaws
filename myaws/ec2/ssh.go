@@ -69,7 +69,7 @@ func Ssh(cmd *cobra.Command, args []string) {
 
 	width, height, _ := terminal.GetSize(fd)
 
-	if err := session.RequestPty("xterm", width, height, modes); err != nil {
+	if err := session.RequestPty("xterm", height, width, modes); err != nil {
 		log.Fatalf("Request for pseudo terminal failed: %s", err)
 	}
 
