@@ -94,6 +94,7 @@ Usage:
 Available Commands:
   autoscaling Manage autoscaling resources
   ec2         Manage EC2 resources
+  elb         Manage ELB resources
   version     Print version
 
 Flags:
@@ -172,6 +173,28 @@ Global Flags:
       --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
 
 Use "myaws autoscaling [command] --help" for more information about a command.
+```
+
+```bash
+$ myaws elb --help
+Manage ELB resources
+
+Usage:
+  myaws elb [flags]
+  myaws elb [command]
+
+Available Commands:
+  ls          List ELB instances
+  ps          Show ELB instances
+
+Global Flags:
+      --config string     config file (default $HOME/.myaws.yml)
+      --humanize          Use Human friendly format for time (default true)
+      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
+      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
+
+Use "myaws elb [command] --help" for more information about a command.
 ```
 
 # Example
