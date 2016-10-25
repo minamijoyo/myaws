@@ -55,6 +55,8 @@ aws_access_key_id = XXXXXX
 aws_secret_access_key = XXXXXX
 ```
 
+or IAM Role is also avaiable.
+
 AWS region can be set in Environment variable ( `AWS_DEFAULT_REGION` ), configuration file ( `$HOME/.myaws.yaml` ) , or command argument ( `--region` ).
 
 ## Optional
