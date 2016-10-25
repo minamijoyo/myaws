@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const version string = "v0.0.5"
+const version string = "v0.0.6"
 
 // Revision is git commit hash which automatically set `git describe --always` on build
 var Revision string
