@@ -30,7 +30,7 @@ func formatAuthorizationData(authDataList []*ecr.AuthorizationData) string {
 
 func formatDockerLoginCommand(authData *ecr.AuthorizationData) string {
 	return fmt.Sprintf(
-		"docker login -u AWS -p %s -e none %s",
+		"docker login -u AWS -p %s %s",
 		decodePassword(*authData.AuthorizationToken),
 		*authData.ProxyEndpoint,
 	)
