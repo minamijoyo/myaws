@@ -94,6 +94,7 @@ Usage:
 Available Commands:
   autoscaling Manage autoscaling resources
   ec2         Manage EC2 resources
+  ecr         Manage ECR resources
   elb         Manage ELB resources
   version     Print version
 
@@ -195,6 +196,27 @@ Global Flags:
       --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
 
 Use "myaws elb [command] --help" for more information about a command.
+```
+
+```bash
+$ myaws ecr --help
+Manage ECR resources
+
+Usage:
+  myaws ecr [flags]
+  myaws ecr [command]
+
+Available Commands:
+  get-login   Get docker login command for ECR
+
+Global Flags:
+      --config string     config file (default $HOME/.myaws.yml)
+      --humanize          Use Human friendly format for time (default true)
+      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
+      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
+
+Use "myaws ecr [command] --help" for more information about a command.
 ```
 
 # Example
