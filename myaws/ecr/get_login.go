@@ -1,6 +1,7 @@
 package ecr
 
 import (
+	"encoding/base64"
 	"fmt"
 	"strings"
 
@@ -28,5 +29,15 @@ func formatAuthorizationData(authDataList []*ecr.AuthorizationData) string {
 }
 
 func formatDockerLoginCommand(authData *ecr.AuthorizationData) string {
-	return fmt.Sprintf("docker login -u AWS -p %s -e none %s", *authData.AuthorizationToken, *authData.ProxyEndpoint)
+	return fmt.Sprintf(
+		"docker login -u AWS -p %s -e none %s",
+		decodePassword(*authData.AuthorizationToken),
+		*authData.ProxyEndpoint,
+	)
+}
+
+func decodePassword(authToken string) string {
+	user_and_password, _ := base64.StdEncoding.DecodeString(authToken)
+	s := strings.Split(string(user_and_password), ":")
+	return s[1]
 }
