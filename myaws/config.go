@@ -13,6 +13,9 @@ import (
 	"github.com/spf13/viper"
 )
 
+// NewConfig creates *aws.config from profile and region options.
+// AWS credentials are checked in the order of
+// the profile, environment variables, IAM Role.
 func NewConfig() *aws.Config {
 	return &aws.Config{
 		Credentials: newCredentials(viper.GetString("profile")),
@@ -38,8 +41,10 @@ func newCredentials(profile string) *credentials.Credentials {
 
 func getRegion(region string) *string {
 	if region != "" {
+		// get region from the arg
 		return aws.String(region)
-	} else {
-		return aws.String(os.Getenv("AWS_DEFAULT_REGION"))
 	}
+
+	// get region from the environement variable
+	return aws.String(os.Getenv("AWS_DEFAULT_REGION"))
 }
