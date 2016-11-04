@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Ps describes ELB's instance health status.
 func Ps(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
 		myaws.UsageError(cmd, "ELB_NAME is required.")
