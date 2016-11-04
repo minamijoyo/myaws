@@ -1,6 +1,6 @@
 # MyAWS
 
-MyAWS is a simple command line tool for managing my aws resources.
+A human friendly aws cli written in Go.
 
 The aws-cli is useful but too generic. It has many arguments and options and generates huge JSON outputs. But, in most cases, my interesting resources are the same. By setting my favorite default values, myaws provides a simple command line interface.
 
