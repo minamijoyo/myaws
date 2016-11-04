@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Ls describes ELBs.
 func Ls(*cobra.Command, []string) {
 	client := newELBClient()
 	params := &elb.DescribeLoadBalancersInput{}
