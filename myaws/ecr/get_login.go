@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// GetLogin gets docker login command with authorization token for ECR.
 func GetLogin(*cobra.Command, []string) {
 	client := newECRClient()
 	params := &ecr.GetAuthorizationTokenInput{}
@@ -37,7 +38,7 @@ func formatDockerLoginCommand(authData *ecr.AuthorizationData) string {
 }
 
 func decodePassword(authToken string) string {
-	user_and_password, _ := base64.StdEncoding.DecodeString(authToken)
-	s := strings.Split(string(user_and_password), ":")
+	userAndPassword, _ := base64.StdEncoding.DecodeString(authToken)
+	s := strings.Split(string(userAndPassword), ":")
 	return s[1]
 }
