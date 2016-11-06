@@ -88,7 +88,7 @@ ec2:
 
 ```bash
 $ myaws --help
-MyAWS is a simple command line tool for managing my aws resources
+A human friendly aws cli written in Go.
 
 Usage:
   myaws [command]
@@ -98,6 +98,7 @@ Available Commands:
   ec2         Manage EC2 resources
   ecr         Manage ECR resources
   elb         Manage ELB resources
+  rds         Manage RDS resources
   version     Print version
 
 Flags:
@@ -219,6 +220,27 @@ Global Flags:
       --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
 
 Use "myaws ecr [command] --help" for more information about a command.
+```
+
+```bash
+$ myaws rds --help
+Manage RDS resources
+
+Usage:
+  myaws rds [flags]
+  myaws rds [command]
+
+Available Commands:
+  ls          List RDS instances
+
+Global Flags:
+      --config string     config file (default $HOME/.myaws.yml)
+      --humanize          Use Human friendly format for time (default true)
+      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
+      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
+
+Use "myaws rds [command] --help" for more information about a command.
 ```
 
 # Example
