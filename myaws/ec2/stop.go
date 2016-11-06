@@ -10,6 +10,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Stop stops EC2 instances.
+// If wait flag is true, wait until instance is in stopped state.
 func Stop(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
 		myaws.UsageError(cmd, "INSTANCE_ID is required.")

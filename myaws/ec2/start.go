@@ -10,6 +10,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Start starts EC2 instances.
+// If wait flag is true, wait until instance is in running state.
 func Start(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
 		myaws.UsageError(cmd, "INSTANCE_ID is required.")
