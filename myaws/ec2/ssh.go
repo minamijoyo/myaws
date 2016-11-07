@@ -1,7 +1,6 @@
 package ec2
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -25,7 +24,6 @@ func SSH(cmd *cobra.Command, args []string) {
 
 	loginName := viper.GetString("ec2.ssh.login-name")
 	identityFile := strings.Replace(viper.GetString("ec2.ssh.identity-file"), "~", os.Getenv("HOME"), 1)
-	fmt.Println(identityFile)
 	key, err := ioutil.ReadFile(identityFile)
 	if err != nil {
 		log.Fatalf("Unable to read private key: %v", err)
