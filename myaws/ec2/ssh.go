@@ -16,11 +16,12 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-func Ssh(cmd *cobra.Command, args []string) {
+// SSH resolves IP address of EC2 instance and connects to it by SSH.
+func SSH(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
 		myaws.UsageError(cmd, "INSTANCE_ID is required.")
 	}
-	hostname := resolveIpAddress(args[0])
+	hostname := resolveIPAddress(args[0])
 
 	loginName := viper.GetString("ec2.ssh.login-name")
 	identityFile := strings.Replace(viper.GetString("ec2.ssh.identity-file"), "~", os.Getenv("HOME"), 1)
@@ -97,11 +98,11 @@ func Ssh(cmd *cobra.Command, args []string) {
 	session.Wait()
 }
 
-func resolveIpAddress(instanceId string) string {
+func resolveIPAddress(instanceID string) string {
 	client := newEC2Client()
 
 	params := &ec2.DescribeInstancesInput{
-		InstanceIds: []*string{&instanceId},
+		InstanceIds: []*string{&instanceID},
 	}
 
 	response, err := client.DescribeInstances(params)

@@ -9,7 +9,7 @@ import (
 var ec2SshCmd = &cobra.Command{
 	Use:   "ssh INSTANCE_ID",
 	Short: "SSH to EC2 instance",
-	Run:   ec2.Ssh,
+	Run:   ec2.SSH,
 }
 
 func init() {
