@@ -2,11 +2,12 @@ package rds
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/minamijoyo/myaws/myaws"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"strings"
 )
 
 // Ls describes RDSs.
