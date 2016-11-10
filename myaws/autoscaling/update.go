@@ -8,6 +8,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Update updates autoscaling group setting.
+// Available param is currently desired-capacity only.
 func Update(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
 		myaws.UsageError(cmd, "AUTO_SCALING_GROUP_NAME is required.")
