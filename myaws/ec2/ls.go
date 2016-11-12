@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Ls describes EC2 instances.
 func Ls(*cobra.Command, []string) {
 	client := newEC2Client()
 	params := &ec2.DescribeInstancesInput{
@@ -61,10 +62,10 @@ func buildTagFilter(filterTag string) *ec2.Filter {
 
 func formatInstance(instance *ec2.Instance) string {
 	formatFuncs := map[string]func(instance *ec2.Instance) string{
-		"InstanceId":       formatInstanceId,
+		"InstanceId":       formatInstanceID,
 		"InstanceType":     formatInstanceType,
-		"PublicIpAddress":  formatPublicIpAddress,
-		"PrivateIpAddress": formatPrivateIpAddress,
+		"PublicIpAddress":  formatPublicIPAddress,
+		"PrivateIpAddress": formatPrivateIPAddress,
 		"StateName":        formatStateName,
 		"LaunchTime":       formatLaunchTime,
 	}
@@ -91,7 +92,7 @@ func formatInstance(instance *ec2.Instance) string {
 	return strings.Join(output[:], "\t")
 }
 
-func formatInstanceId(instance *ec2.Instance) string {
+func formatInstanceID(instance *ec2.Instance) string {
 	return *instance.InstanceId
 }
 
@@ -99,14 +100,14 @@ func formatInstanceType(instance *ec2.Instance) string {
 	return fmt.Sprintf("%-11s", *instance.InstanceType)
 }
 
-func formatPublicIpAddress(instance *ec2.Instance) string {
+func formatPublicIPAddress(instance *ec2.Instance) string {
 	if instance.PublicIpAddress == nil {
 		return "___.___.___.___"
 	}
 	return *instance.PublicIpAddress
 }
 
-func formatPrivateIpAddress(instance *ec2.Instance) string {
+func formatPrivateIPAddress(instance *ec2.Instance) string {
 	if instance.PrivateIpAddress == nil {
 		return "___.___.___.___"
 	}
