@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Detach detaches instances or load balancers from autoscaling group.
 func Detach(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
 		myaws.UsageError(cmd, "AUTO_SCALING_GROUP_NAME is required.")
