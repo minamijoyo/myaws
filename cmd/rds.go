@@ -1,15 +1,41 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
-var rdsCmd = &cobra.Command{
-	Use:   "rds",
-	Short: "Manage RDS resources",
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
-	},
+	"github.com/minamijoyo/myaws/myaws/rds"
+)
+
+func newRDSCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "rds",
+		Short: "Manage RDS resources",
+		Run: func(cmd *cobra.Command, args []string) {
+			cmd.Help()
+		},
+	}
+
+	cmd.AddCommand(
+		newRDSLsCmd(),
+	)
+
+	return cmd
 }
 
-func init() {
-	RootCmd.AddCommand(rdsCmd)
+func newRDSLsCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "ls",
+		Short: "List RDS instances",
+		Run:   rds.Ls,
+	}
+
+	flags := cmd.Flags()
+	flags.BoolP("quiet", "q", false, "Only display DBInstanceIdentifier")
+	flags.StringP("fields", "F", "DBInstanceClass Engine AllocatedStorage StorageTypeIops InstanceCreateTime DBInstanceIdentifier ReadReplicaSource", "Output fields list separated by space")
+
+	viper.BindPFlag("rds.ls.quiet", flags.Lookup("quiet"))
+	viper.BindPFlag("rds.ls.fields", flags.Lookup("fields"))
+
+	return cmd
 }

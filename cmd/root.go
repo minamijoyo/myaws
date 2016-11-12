@@ -43,6 +43,7 @@ func init() {
 		newEC2Cmd(),
 		newECRCmd(),
 		newELBCmd(),
+		newRDSCmd(),
 	)
 }
 
