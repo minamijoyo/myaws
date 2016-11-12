@@ -39,9 +39,10 @@ func init() {
 	viper.BindPFlag("humanize", RootCmd.PersistentFlags().Lookup("humanize"))
 
 	RootCmd.AddCommand(
-		newEC2Cmd(),
 		newAutoscalingCmd(),
+		newEC2Cmd(),
 		newECRCmd(),
+		newELBCmd(),
 	)
 }
 

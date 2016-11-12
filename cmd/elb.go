@@ -2,16 +2,43 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+
+	"github.com/minamijoyo/myaws/myaws/elb"
 )
 
-var elbCmd = &cobra.Command{
-	Use:   "elb",
-	Short: "Manage ELB resources",
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
-	},
+func newELBCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "elb",
+		Short: "Manage ELB resources",
+		Run: func(cmd *cobra.Command, args []string) {
+			cmd.Help()
+		},
+	}
+
+	cmd.AddCommand(
+		newELBLsCmd(),
+		newELBPsCmd(),
+	)
+
+	return cmd
 }
 
-func init() {
-	RootCmd.AddCommand(elbCmd)
+func newELBLsCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "ls",
+		Short: "List ELB instances",
+		Run:   elb.Ls,
+	}
+
+	return cmd
+}
+
+func newELBPsCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "ps ELB_NAME",
+		Short: "Show ELB instances",
+		Run:   elb.Ps,
+	}
+
+	return cmd
 }
