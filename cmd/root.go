@@ -37,6 +37,8 @@ func init() {
 	viper.BindPFlag("region", RootCmd.PersistentFlags().Lookup("region"))
 	viper.BindPFlag("timezone", RootCmd.PersistentFlags().Lookup("timezone"))
 	viper.BindPFlag("humanize", RootCmd.PersistentFlags().Lookup("humanize"))
+
+	RootCmd.AddCommand(newEC2Cmd())
 }
 
 func initConfig() {
