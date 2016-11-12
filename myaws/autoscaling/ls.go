@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Ls describes autoscaling groups.
 func Ls(*cobra.Command, []string) {
 	client := newAutoScalingClient()
 	params := &autoscaling.DescribeAutoScalingGroupsInput{}
