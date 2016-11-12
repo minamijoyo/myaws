@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Attach attaches instances or load balancers from autoscaling group.
 func Attach(cmd *cobra.Command, args []string) {
 	if len(args) == 0 {
 		myaws.UsageError(cmd, "AUTO_SCALING_GROUP_NAME is required.")
