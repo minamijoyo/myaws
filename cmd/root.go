@@ -41,6 +41,7 @@ func init() {
 	RootCmd.AddCommand(
 		newEC2Cmd(),
 		newAutoscalingCmd(),
+		newECRCmd(),
 	)
 }
 
