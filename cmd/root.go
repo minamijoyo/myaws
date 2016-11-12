@@ -44,6 +44,7 @@ func init() {
 		newECRCmd(),
 		newELBCmd(),
 		newRDSCmd(),
+		newVersionCmd(),
 	)
 }
 
