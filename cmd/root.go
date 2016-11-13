@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -12,16 +9,10 @@ var cfgFile string
 
 // RootCmd is a top level command instance
 var RootCmd = &cobra.Command{
-	Use:   "myaws",
-	Short: "A human friendly aws cli written in Go.",
-}
-
-// Execute is a entrypoint of cli
-func Execute() {
-	if err := RootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(-1)
-	}
+	Use:           "myaws",
+	Short:         "A human friendly aws cli written in Go.",
+	SilenceErrors: true,
+	SilenceUsage:  true,
 }
 
 func init() {

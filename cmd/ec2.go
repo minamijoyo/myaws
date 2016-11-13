@@ -30,7 +30,7 @@ func newEC2LsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ls",
 		Short: "List EC2 instances",
-		Run:   ec2.Ls,
+		RunE:  ec2.Ls,
 	}
 
 	flags := cmd.Flags()

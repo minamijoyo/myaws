@@ -7,12 +7,13 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/minamijoyo/myaws/myaws"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 // Ls describes EC2 instances.
-func Ls(*cobra.Command, []string) {
+func Ls(*cobra.Command, []string) error {
 	client := newEC2Client()
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
@@ -23,7 +24,7 @@ func Ls(*cobra.Command, []string) {
 
 	response, err := client.DescribeInstances(params)
 	if err != nil {
-		panic(err)
+		return errors.Wrap(err, "DescribeInstances failed")
 	}
 
 	for _, reservation := range response.Reservations {
@@ -31,6 +32,8 @@ func Ls(*cobra.Command, []string) {
 			fmt.Println(formatInstance(instance))
 		}
 	}
+
+	return nil
 }
 
 func buildStateFilter(all bool) *ec2.Filter {
