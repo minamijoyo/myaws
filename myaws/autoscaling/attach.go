@@ -11,7 +11,7 @@ import (
 // Attach attaches instances or load balancers from autoscaling group.
 func Attach(cmd *cobra.Command, args []string) error {
 	if len(args) == 0 {
-		return errors.New("AUTO_SCALING_GROUP_NAME is required.")
+		return errors.New("AUTO_SCALING_GROUP_NAME is required")
 	}
 	asgName := args[0]
 
