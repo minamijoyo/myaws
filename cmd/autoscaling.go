@@ -62,7 +62,7 @@ func newAutoscalingDetachCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "detach AUTO_SCALING_GROUP_NAME",
 		Short: "Detach instances/loadbalancers from autoscaling group",
-		Run:   autoscaling.Detach,
+		RunE:  autoscaling.Detach,
 	}
 
 	flags := cmd.Flags()
