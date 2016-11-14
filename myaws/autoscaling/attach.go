@@ -1,33 +1,36 @@
 package autoscaling
 
 import (
-	"fmt"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
-	"github.com/minamijoyo/myaws/myaws"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 // Attach attaches instances or load balancers from autoscaling group.
-func Attach(cmd *cobra.Command, args []string) {
+func Attach(cmd *cobra.Command, args []string) error {
 	if len(args) == 0 {
-		myaws.UsageError(cmd, "AUTO_SCALING_GROUP_NAME is required.")
+		return errors.New("AUTO_SCALING_GROUP_NAME is required.")
 	}
 	asgName := args[0]
 
 	if viper.GetString("autoscaling.attach.instance-ids") != "" {
-		attachInstances(asgName)
+		if err := attachInstances(asgName); err != nil {
+			return err
+		}
 	}
 
-	fmt.Println(viper.GetString("autoscaling.attach.load-balancer-names"))
 	if viper.GetString("autoscaling.attach.load-balancer-names") != "" {
-		attachLoadBalancers(asgName)
+		if err := attachLoadBalancers(asgName); err != nil {
+			return err
+		}
 	}
+
+	return nil
 }
 
-func attachInstances(asgName string) {
+func attachInstances(asgName string) error {
 	client := newAutoScalingClient()
 
 	instanceIds := aws.StringSlice(viper.GetStringSlice("autoscaling.attach.instance-ids"))
@@ -36,13 +39,14 @@ func attachInstances(asgName string) {
 		InstanceIds:          instanceIds,
 	}
 
-	_, err := client.AttachInstances(params)
-	if err != nil {
-		panic(err)
+	if _, err := client.AttachInstances(params); err != nil {
+		return errors.Wrap(err, "AttachInstances failed:")
 	}
+
+	return nil
 }
 
-func attachLoadBalancers(asgName string) {
+func attachLoadBalancers(asgName string) error {
 	client := newAutoScalingClient()
 
 	loadBalancerNames := aws.StringSlice(viper.GetStringSlice("autoscaling.attach.load-balancer-names"))
@@ -51,8 +55,9 @@ func attachLoadBalancers(asgName string) {
 		LoadBalancerNames:    loadBalancerNames,
 	}
 
-	_, err := client.AttachLoadBalancers(params)
-	if err != nil {
-		panic(err)
+	if _, err := client.AttachLoadBalancers(params); err != nil {
+		return errors.Wrap(err, "AttachLoadBalancers failed:")
 	}
+
+	return nil
 }

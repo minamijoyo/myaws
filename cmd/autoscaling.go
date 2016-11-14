@@ -45,7 +45,7 @@ func newAutoscalingAttachCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "attach AUTO_SCALING_GROUP_NAME",
 		Short: "Attach instances/loadbalancers to autoscaling group",
-		Run:   autoscaling.Attach,
+		RunE:  autoscaling.Attach,
 	}
 
 	flags := cmd.Flags()
