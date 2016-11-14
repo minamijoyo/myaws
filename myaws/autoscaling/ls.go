@@ -7,18 +7,19 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 // Ls describes autoscaling groups.
-func Ls(*cobra.Command, []string) {
+func Ls(*cobra.Command, []string) error {
 	client := newAutoScalingClient()
 	params := &autoscaling.DescribeAutoScalingGroupsInput{}
 
 	response, err := client.DescribeAutoScalingGroups(params)
 	if err != nil {
-		panic(err)
+		return errors.Wrap(err, "DescribeAutoScalingGroups failed:")
 	}
 
 	for _, asg := range response.AutoScalingGroups {
@@ -26,6 +27,8 @@ func Ls(*cobra.Command, []string) {
 			fmt.Println(formatAutoScalingGroup(asg))
 		}
 	}
+
+	return nil
 }
 
 func formatAutoScalingGroup(asg *autoscaling.Group) string {

@@ -30,7 +30,7 @@ func newAutoscalingLsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ls",
 		Short: "List autoscaling groups",
-		Run:   autoscaling.Ls,
+		RunE:  autoscaling.Ls,
 	}
 
 	flags := cmd.Flags()
