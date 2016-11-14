@@ -6,8 +6,9 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/elb"
-	"github.com/minamijoyo/myaws/myaws"
 	"github.com/spf13/cobra"
+
+	"github.com/minamijoyo/myaws/myaws"
 )
 
 // Ps describes ELB's instance health status.

@@ -3,9 +3,10 @@ package autoscaling
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
-	"github.com/minamijoyo/myaws/myaws"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/minamijoyo/myaws/myaws"
 )
 
 // Detach detaches instances or load balancers from autoscaling group.

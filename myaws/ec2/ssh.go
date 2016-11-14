@@ -8,11 +8,12 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go/service/ec2"
-	"github.com/minamijoyo/myaws/myaws"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/terminal"
+
+	"github.com/minamijoyo/myaws/myaws"
 )
 
 // SSH resolves IP address of EC2 instance and connects to it by SSH.
