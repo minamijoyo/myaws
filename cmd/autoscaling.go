@@ -79,7 +79,7 @@ func newAutoscalingUpdateCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update AUTO_SCALING_GROUP_NAME",
 		Short: "Update autoscaling group",
-		Run:   autoscaling.Update,
+		RunE:  autoscaling.Update,
 	}
 
 	flags := cmd.Flags()
