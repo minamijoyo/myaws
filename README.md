@@ -1,8 +1,8 @@
 # MyAWS
 
-A human friendly aws cli written in Go.
+A human friendly AWS CLI written in Go.
 
-The aws-cli is useful but too generic. It has many arguments and options and generates huge JSON outputs. But, in most cases, my interesting resources are the same. By setting my favorite default values, myaws provides a simple command line interface.
+The official aws-cli is useful but too generic. It has many arguments and options and generates huge JSON outputs. But, in most cases, my interesting resources are the same. By setting my favorite default values, MyAWS provides a simple command line interface.
 
 Note that MyAWS is under development and its interface is unstable.
 
@@ -88,7 +88,7 @@ ec2:
 
 ```bash
 $ myaws --help
-A human friendly aws cli written in Go.
+A human friendly AWS CLI written in Go.
 
 Usage:
   myaws [command]

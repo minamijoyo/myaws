@@ -10,7 +10,7 @@ var cfgFile string
 // RootCmd is a top level command instance
 var RootCmd = &cobra.Command{
 	Use:           "myaws",
-	Short:         "A human friendly aws cli written in Go.",
+	Short:         "A human friendly AWS CLI written in Go.",
 	SilenceErrors: true,
 	SilenceUsage:  true,
 }
