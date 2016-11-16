@@ -5,17 +5,16 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-
-	"github.com/minamijoyo/myaws/myaws"
 )
 
 // Stop stops EC2 instances.
 // If wait flag is true, wait until instance is in stopped state.
-func Stop(cmd *cobra.Command, args []string) {
+func Stop(cmd *cobra.Command, args []string) error {
 	if len(args) == 0 {
-		myaws.UsageError(cmd, "INSTANCE_ID is required.")
+		return errors.New("INSTANCE_ID is required")
 	}
 	instanceIds := aws.StringSlice(args)
 
@@ -27,7 +26,7 @@ func Stop(cmd *cobra.Command, args []string) {
 
 	response, err := client.StopInstances(params)
 	if err != nil {
-		panic(err)
+		return errors.Wrap(err, "StopInstances failed:")
 	}
 
 	fmt.Println(response)
@@ -39,7 +38,9 @@ func Stop(cmd *cobra.Command, args []string) {
 			},
 		)
 		if err != nil {
-			panic(err)
+			return errors.Wrap(err, "WaitUntilInstanceStopped failed:")
 		}
 	}
+
+	return nil
 }

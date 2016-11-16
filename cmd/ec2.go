@@ -53,7 +53,7 @@ func newEC2StartCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "start INSTANCE_ID [...]",
 		Short: "Start EC2 instances",
-		Run:   ec2.Start,
+		RunE:  ec2.Start,
 	}
 
 	flags := cmd.Flags()
@@ -68,7 +68,7 @@ func newEC2StopCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "stop INSTANCE_ID [...]",
 		Short: "Stop EC2 instances",
-		Run:   ec2.Stop,
+		RunE:  ec2.Stop,
 	}
 
 	flags := cmd.Flags()

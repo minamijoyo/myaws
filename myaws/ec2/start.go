@@ -5,17 +5,16 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-
-	"github.com/minamijoyo/myaws/myaws"
 )
 
 // Start starts EC2 instances.
 // If wait flag is true, wait until instance is in running state.
-func Start(cmd *cobra.Command, args []string) {
+func Start(cmd *cobra.Command, args []string) error {
 	if len(args) == 0 {
-		myaws.UsageError(cmd, "INSTANCE_ID is required.")
+		return errors.New("INSTANCE_ID is required")
 	}
 	instanceIds := aws.StringSlice(args)
 
@@ -27,7 +26,7 @@ func Start(cmd *cobra.Command, args []string) {
 
 	response, err := client.StartInstances(params)
 	if err != nil {
-		panic(err)
+		return errors.Wrap(err, "StartInstances failed:")
 	}
 
 	fmt.Println(response)
@@ -40,7 +39,9 @@ func Start(cmd *cobra.Command, args []string) {
 			},
 		)
 		if err != nil {
-			panic(err)
+			return errors.Wrap(err, "WaitUntilInstanceRunning failed:")
 		}
 	}
+
+	return nil
 }
