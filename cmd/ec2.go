@@ -83,7 +83,7 @@ func newEC2SSHCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ssh INSTANCE_ID",
 		Short: "SSH to EC2 instance",
-		Run:   ec2.SSH,
+		RunE:  ec2.SSH,
 	}
 
 	flags := cmd.Flags()

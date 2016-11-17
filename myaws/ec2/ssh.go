@@ -1,38 +1,40 @@
 package ec2
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 
 	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/terminal"
-
-	"github.com/minamijoyo/myaws/myaws"
 )
 
 // SSH resolves IP address of EC2 instance and connects to it by SSH.
-func SSH(cmd *cobra.Command, args []string) {
+func SSH(cmd *cobra.Command, args []string) error {
 	if len(args) == 0 {
-		myaws.UsageError(cmd, "INSTANCE_ID is required.")
+		return errors.New("INSTANCE_ID is required")
 	}
-	hostname := resolveIPAddress(args[0])
+	hostname, err := resolveIPAddress(args[0])
+	if err != nil {
+		return errors.Wrap(err, "unable to resolve IP address:")
+	}
 
 	loginName := viper.GetString("ec2.ssh.login-name")
 	identityFile := strings.Replace(viper.GetString("ec2.ssh.identity-file"), "~", os.Getenv("HOME"), 1)
 	key, err := ioutil.ReadFile(identityFile)
 	if err != nil {
-		log.Fatalf("Unable to read private key: %v", err)
+		return errors.Wrap(err, "unable to read private key:")
 	}
 
 	signer, err := ssh.ParsePrivateKey(key)
 	if err != nil {
-		log.Fatalf("Unable to parse private key: %v", err)
+		return errors.Wrap(err, "unable to parse private key:")
 	}
 
 	config := &ssh.ClientConfig{
@@ -44,13 +46,13 @@ func SSH(cmd *cobra.Command, args []string) {
 
 	client, err := ssh.Dial("tcp", hostname+":22", config)
 	if err != nil {
-		log.Fatalf("Unable to connect: %v", err)
+		return errors.Wrap(err, "unable to connect:")
 	}
 	defer client.Close()
 
 	session, err := client.NewSession()
 	if err != nil {
-		panic(err)
+		return errors.Wrap(err, "unable to new session failed:")
 	}
 	defer session.Close()
 
@@ -63,41 +65,43 @@ func SSH(cmd *cobra.Command, args []string) {
 	fd := int(os.Stdin.Fd())
 	oldState, err := terminal.MakeRaw(fd)
 	if err != nil {
-		log.Fatal("Unable to put terminal in Raw Mode", err)
+		return errors.Wrap(err, "unable to put terminal in Raw Mode:")
 	}
 	defer terminal.Restore(fd, oldState)
 
 	width, height, _ := terminal.GetSize(fd)
 
 	if err := session.RequestPty("xterm", height, width, modes); err != nil {
-		log.Fatalf("Request for pseudo terminal failed: %s", err)
+		return errors.Wrap(err, "request for pseudo terminal failed:")
 	}
 
 	stdin, err := session.StdinPipe()
 	if err != nil {
-		log.Fatal("Unable to setup stdin for session", err)
+		return errors.Wrap(err, "unable to setup stdin for session:")
 	}
 	go io.Copy(stdin, os.Stdin)
 
 	stdout, err := session.StdoutPipe()
 	if err != nil {
-		log.Fatal("Unable to setup stdout for session", err)
+		return errors.Wrap(err, "unable to setup stdout for session:")
 	}
 	go io.Copy(os.Stdout, stdout)
 
 	stderr, err := session.StderrPipe()
 	if err != nil {
-		log.Fatal("Unable to setup stderr for session", err)
+		return errors.Wrap(err, "unable to setup stderr for session:")
 	}
 	go io.Copy(os.Stderr, stderr)
 
 	if err := session.Shell(); err != nil {
-		log.Fatalf("Failed to start shell: %s", err)
+		return errors.Wrap(err, "failed to start shell:")
 	}
 	session.Wait()
+
+	return nil
 }
 
-func resolveIPAddress(instanceID string) string {
+func resolveIPAddress(instanceID string) (string, error) {
 	client := newEC2Client()
 
 	params := &ec2.DescribeInstancesInput{
@@ -106,8 +110,13 @@ func resolveIPAddress(instanceID string) string {
 
 	response, err := client.DescribeInstances(params)
 	if err != nil {
-		panic(err)
+		return "", errors.Wrap(err, "DescribeInstances failed:")
 	}
 
-	return *response.Reservations[0].Instances[0].PublicIpAddress
+	instance := *response.Reservations[0].Instances[0]
+	if instance.PublicIpAddress == nil {
+		return "", fmt.Errorf("no public ip address: %s", instanceID)
+	}
+
+	return *instance.PublicIpAddress, nil
 }
