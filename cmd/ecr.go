@@ -26,7 +26,7 @@ func newECRGetLoginCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-login",
 		Short: "Get docker login command for ECR",
-		Run:   ecr.GetLogin,
+		RunE:  ecr.GetLogin,
 	}
 
 	return cmd

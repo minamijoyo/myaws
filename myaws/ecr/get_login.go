@@ -6,19 +6,22 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go/service/ecr"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
 // GetLogin gets docker login command with authorization token for ECR.
-func GetLogin(*cobra.Command, []string) {
+func GetLogin(*cobra.Command, []string) error {
 	client := newECRClient()
 	params := &ecr.GetAuthorizationTokenInput{}
 
 	response, err := client.GetAuthorizationToken(params)
 	if err != nil {
-		panic(err)
+		return errors.Wrap(err, "GetAuthorizationToken failed:")
 	}
 	fmt.Println(formatAuthorizationData(response.AuthorizationData))
+
+	return nil
 }
 
 func formatAuthorizationData(authDataList []*ecr.AuthorizationData) string {
