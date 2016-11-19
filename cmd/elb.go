@@ -27,7 +27,7 @@ func newELBLsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ls",
 		Short: "List ELB instances",
-		Run:   elb.Ls,
+		RunE:  elb.Ls,
 	}
 
 	return cmd
@@ -37,7 +37,7 @@ func newELBPsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ps ELB_NAME",
 		Short: "Show ELB instances",
-		Run:   elb.Ps,
+		RunE:  elb.Ps,
 	}
 
 	return cmd

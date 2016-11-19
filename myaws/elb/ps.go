@@ -6,15 +6,14 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/elb"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-
-	"github.com/minamijoyo/myaws/myaws"
 )
 
 // Ps describes ELB's instance health status.
-func Ps(cmd *cobra.Command, args []string) {
+func Ps(cmd *cobra.Command, args []string) error {
 	if len(args) == 0 {
-		myaws.UsageError(cmd, "ELB_NAME is required.")
+		return errors.New("ELB_NAME is required")
 	}
 
 	client := newELBClient()
@@ -24,12 +23,14 @@ func Ps(cmd *cobra.Command, args []string) {
 
 	response, err := client.DescribeInstanceHealth(params)
 	if err != nil {
-		panic(err)
+		return errors.Wrap(err, "DescribeInstanceHealth failed:")
 	}
 
 	for _, state := range response.InstanceStates {
 		fmt.Println(formatInstanceState(state))
 	}
+
+	return nil
 }
 
 func formatInstanceState(state *elb.InstanceState) string {
