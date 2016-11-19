@@ -7,6 +7,10 @@ import (
 	"github.com/minamijoyo/myaws/myaws/autoscaling"
 )
 
+func init() {
+	RootCmd.AddCommand(newAutoscalingCmd())
+}
+
 func newAutoscalingCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "autoscaling",

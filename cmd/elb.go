@@ -6,6 +6,10 @@ import (
 	"github.com/minamijoyo/myaws/myaws/elb"
 )
 
+func init() {
+	RootCmd.AddCommand(newELBCmd())
+}
+
 func newELBCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "elb",

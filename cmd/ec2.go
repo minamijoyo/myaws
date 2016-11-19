@@ -7,6 +7,10 @@ import (
 	"github.com/minamijoyo/myaws/myaws/ec2"
 )
 
+func init() {
+	RootCmd.AddCommand(newEC2Cmd())
+}
+
 func newEC2Cmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ec2",

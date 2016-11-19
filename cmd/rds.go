@@ -7,6 +7,10 @@ import (
 	"github.com/minamijoyo/myaws/myaws/rds"
 )
 
+func init() {
+	RootCmd.AddCommand(newRDSCmd())
+}
+
 func newRDSCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "rds",

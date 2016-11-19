@@ -6,6 +6,10 @@ import (
 	"github.com/minamijoyo/myaws/myaws/ecr"
 )
 
+func init() {
+	RootCmd.AddCommand(newECRCmd())
+}
+
 func newECRCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ecr",

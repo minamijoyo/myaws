@@ -11,6 +11,10 @@ const version string = "v0.0.6"
 // Revision is git commit hash which automatically set `git describe --always` on build
 var Revision string
 
+func init() {
+	RootCmd.AddCommand(newVersionCmd())
+}
+
 func newVersionCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "version",
