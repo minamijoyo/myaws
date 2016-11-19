@@ -27,7 +27,7 @@ func newRDSLsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ls",
 		Short: "List RDS instances",
-		Run:   rds.Ls,
+		RunE:  rds.Ls,
 	}
 
 	flags := cmd.Flags()

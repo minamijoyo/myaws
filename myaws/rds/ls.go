@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go/service/rds"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -12,18 +13,20 @@ import (
 )
 
 // Ls describes RDSs.
-func Ls(*cobra.Command, []string) {
+func Ls(*cobra.Command, []string) error {
 	client := newRDSClient()
 	params := &rds.DescribeDBInstancesInput{}
 
 	response, err := client.DescribeDBInstances(params)
 	if err != nil {
-		panic(err)
+		return errors.Wrap(err, "DescribeDBInstances failed:")
 	}
 
 	for _, db := range response.DBInstances {
 		fmt.Println(formatDBInstance(db))
 	}
+
+	return nil
 }
 
 func formatDBInstance(db *rds.DBInstance) string {
