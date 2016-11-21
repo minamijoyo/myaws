@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -34,7 +35,7 @@ func newEC2LsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ls",
 		Short: "List EC2 instances",
-		RunE:  ec2.Ls,
+		RunE:  runEC2LsCmd,
 	}
 
 	flags := cmd.Flags()
@@ -51,6 +52,22 @@ func newEC2LsCmd() *cobra.Command {
 	viper.BindPFlag("ec2.ls.fields", flags.Lookup("fields"))
 
 	return cmd
+}
+
+func runEC2LsCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		errors.Wrap(err, "newClient failed:")
+	}
+
+	options := ec2.LsOptions{
+		All:       viper.GetBool("ec2.ls.all"),
+		Quiet:     viper.GetBool("ec2.ls.quiet"),
+		FilterTag: viper.GetString("ec2.ls.filter-tag"),
+		Fields:    viper.GetStringSlice("ec2.ls.fields"),
+	}
+
+	return ec2.Ls(client, options)
 }
 
 func newEC2StartCmd() *cobra.Command {

@@ -7,30 +7,35 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 
 	"github.com/minamijoyo/myaws/myaws"
 )
 
+// LsClient has options
+type LsOptions struct {
+	All       bool
+	Quiet     bool
+	FilterTag string
+	Fields    []string
+}
+
 // Ls describes EC2 instances.
-func Ls(*cobra.Command, []string) error {
-	client := newEC2Client()
+func Ls(client *myaws.Client, options LsOptions) error {
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
-			buildStateFilter(viper.GetBool("ec2.ls.all")),
-			buildTagFilter(viper.GetString("ec2.ls.filter-tag")),
+			buildStateFilter(options.All),
+			buildTagFilter(options.FilterTag),
 		},
 	}
 
-	response, err := client.DescribeInstances(params)
+	response, err := client.EC2.DescribeInstances(params)
 	if err != nil {
 		return errors.Wrap(err, "DescribeInstances failed")
 	}
 
 	for _, reservation := range response.Reservations {
 		for _, instance := range reservation.Instances {
-			fmt.Println(formatInstance(instance))
+			fmt.Println(formatInstance(instance, options.Fields, options.Quiet))
 		}
 	}
 
@@ -64,7 +69,7 @@ func buildTagFilter(filterTag string) *ec2.Filter {
 	return tagFilter
 }
 
-func formatInstance(instance *ec2.Instance) string {
+func formatInstance(instance *ec2.Instance, fields []string, quiet bool) string {
 	formatFuncs := map[string]func(instance *ec2.Instance) string{
 		"InstanceId":       formatInstanceID,
 		"InstanceType":     formatInstanceType,
@@ -74,16 +79,16 @@ func formatInstance(instance *ec2.Instance) string {
 		"LaunchTime":       formatLaunchTime,
 	}
 
-	var fields []string
-	if viper.GetBool("ec2.ls.quiet") {
-		fields = []string{"InstanceId"}
+	var outputFields []string
+	if quiet {
+		outputFields = []string{"InstanceId"}
 	} else {
-		fields = viper.GetStringSlice("ec2.ls.fields")
+		outputFields = fields
 	}
 
 	output := []string{}
 
-	for _, field := range fields {
+	for _, field := range outputFields {
 		value := ""
 		if strings.Index(field, "Tag:") != -1 {
 			key := strings.Split(field, ":")[1]

@@ -3,6 +3,8 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	"github.com/minamijoyo/myaws/myaws"
 )
 
 var cfgFile string
@@ -41,4 +43,13 @@ func initConfig() {
 	viper.AutomaticEnv()
 
 	viper.ReadInConfig()
+}
+
+func newClient() (*myaws.Client, error) {
+	return myaws.NewClient(
+		viper.GetString("profile"),
+		viper.GetString("region"),
+		viper.GetString("timezone"),
+		viper.GetBool("humanize"),
+	)
 }
