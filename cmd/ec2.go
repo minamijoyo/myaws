@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -74,7 +75,7 @@ func newEC2StartCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "start INSTANCE_ID [...]",
 		Short: "Start EC2 instances",
-		RunE:  ec2.Start,
+		RunE:  runEC2StartCmd,
 	}
 
 	flags := cmd.Flags()
@@ -83,6 +84,25 @@ func newEC2StartCmd() *cobra.Command {
 	viper.BindPFlag("ec2.start.wait", flags.Lookup("wait"))
 
 	return cmd
+}
+
+func runEC2StartCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	if len(args) == 0 {
+		return errors.New("INSTANCE_ID is required")
+	}
+	instanceIds := aws.StringSlice(args)
+
+	options := ec2.StartOptions{
+		InstanceIds: instanceIds,
+		Wait:        viper.GetBool("ec2.start.wait"),
+	}
+
+	return ec2.Start(client, options)
 }
 
 func newEC2StopCmd() *cobra.Command {
