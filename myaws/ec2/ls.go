@@ -11,7 +11,7 @@ import (
 	"github.com/minamijoyo/myaws/myaws"
 )
 
-// LsClient has options
+// LsOptions customize the behavior of the Ls command.
 type LsOptions struct {
 	All       bool
 	Quiet     bool
