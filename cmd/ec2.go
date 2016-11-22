@@ -57,7 +57,7 @@ func newEC2LsCmd() *cobra.Command {
 func runEC2LsCmd(cmd *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
-		errors.Wrap(err, "newClient failed:")
+		return errors.Wrap(err, "newClient failed:")
 	}
 
 	options := ec2.LsOptions{
