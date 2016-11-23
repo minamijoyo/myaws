@@ -109,7 +109,7 @@ func newEC2StopCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "stop INSTANCE_ID [...]",
 		Short: "Stop EC2 instances",
-		RunE:  ec2.Stop,
+		RunE:  runEC2StopCmd,
 	}
 
 	flags := cmd.Flags()
@@ -118,6 +118,25 @@ func newEC2StopCmd() *cobra.Command {
 	viper.BindPFlag("ec2.stop.wait", flags.Lookup("wait"))
 
 	return cmd
+}
+
+func runEC2StopCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	if len(args) == 0 {
+		return errors.New("INSTANCE_ID is required")
+	}
+	instanceIds := aws.StringSlice(args)
+
+	options := ec2.StopOptions{
+		InstanceIds: instanceIds,
+		Wait:        viper.GetBool("ec2.stop.wait"),
+	}
+
+	return ec2.Stop(client, options)
 }
 
 func newEC2SSHCmd() *cobra.Command {

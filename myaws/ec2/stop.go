@@ -3,38 +3,37 @@ package ec2
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+
+	"github.com/minamijoyo/myaws/myaws"
 )
+
+// StopOptions customize the behavior of the Stop command.
+type StopOptions struct {
+	InstanceIds []*string
+	Wait        bool
+}
 
 // Stop stops EC2 instances.
 // If wait flag is true, wait until instance is in stopped state.
-func Stop(cmd *cobra.Command, args []string) error {
-	if len(args) == 0 {
-		return errors.New("INSTANCE_ID is required")
-	}
-	instanceIds := aws.StringSlice(args)
-
-	client := newEC2Client()
-
+func Stop(client *myaws.Client, options StopOptions) error {
 	params := &ec2.StopInstancesInput{
-		InstanceIds: instanceIds,
+		InstanceIds: options.InstanceIds,
 	}
 
-	response, err := client.StopInstances(params)
+	response, err := client.EC2.StopInstances(params)
 	if err != nil {
 		return errors.Wrap(err, "StopInstances failed:")
 	}
 
 	fmt.Println(response)
-	if viper.GetBool("ec2.stop.wait") {
+
+	if options.Wait {
 		fmt.Println("Wait until instance stopped...")
-		err := client.WaitUntilInstanceStopped(
+		err := client.EC2.WaitUntilInstanceStopped(
 			&ec2.DescribeInstancesInput{
-				InstanceIds: instanceIds,
+				InstanceIds: options.InstanceIds,
 			},
 		)
 		if err != nil {
