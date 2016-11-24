@@ -143,7 +143,7 @@ func newEC2SSHCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ssh INSTANCE_ID",
 		Short: "SSH to EC2 instance",
-		RunE:  ec2.SSH,
+		RunE:  runEC2SSHCmd,
 	}
 
 	flags := cmd.Flags()
@@ -154,4 +154,23 @@ func newEC2SSHCmd() *cobra.Command {
 	viper.BindPFlag("ec2.ssh.identity-file", flags.Lookup("identity-file"))
 
 	return cmd
+}
+
+func runEC2SSHCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	if len(args) == 0 {
+		return errors.New("INSTANCE_ID is required")
+	}
+
+	options := ec2.SSHOptions{
+		InstanceID:   args[0],
+		LoginName:    viper.GetString("ec2.ssh.login-name"),
+		IdentityFile: viper.GetString("ec2.ssh.identity-file"),
+	}
+
+	return ec2.SSH(client, options)
 }

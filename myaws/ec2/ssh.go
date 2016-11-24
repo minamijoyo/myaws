@@ -9,24 +9,27 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/terminal"
+
+	"github.com/minamijoyo/myaws/myaws"
 )
 
+// SSHOptions customize the behavior of the SSH command.
+type SSHOptions struct {
+	InstanceID   string
+	LoginName    string
+	IdentityFile string
+}
+
 // SSH resolves IP address of EC2 instance and connects to it by SSH.
-func SSH(cmd *cobra.Command, args []string) error {
-	if len(args) == 0 {
-		return errors.New("INSTANCE_ID is required")
-	}
-	hostname, err := resolveIPAddress(args[0])
+func SSH(client *myaws.Client, options SSHOptions) error {
+	hostname, err := resolveIPAddress(client, options.InstanceID)
 	if err != nil {
 		return errors.Wrap(err, "unable to resolve IP address:")
 	}
 
-	loginName := viper.GetString("ec2.ssh.login-name")
-	identityFile := strings.Replace(viper.GetString("ec2.ssh.identity-file"), "~", os.Getenv("HOME"), 1)
+	identityFile := strings.Replace(options.IdentityFile, "~", os.Getenv("HOME"), 1)
 	key, err := ioutil.ReadFile(identityFile)
 	if err != nil {
 		return errors.Wrap(err, "unable to read private key:")
@@ -38,19 +41,19 @@ func SSH(cmd *cobra.Command, args []string) error {
 	}
 
 	config := &ssh.ClientConfig{
-		User: loginName,
+		User: options.LoginName,
 		Auth: []ssh.AuthMethod{
 			ssh.PublicKeys(signer),
 		},
 	}
 
-	client, err := ssh.Dial("tcp", hostname+":22", config)
+	connection, err := ssh.Dial("tcp", hostname+":22", config)
 	if err != nil {
 		return errors.Wrap(err, "unable to connect:")
 	}
-	defer client.Close()
+	defer connection.Close()
 
-	session, err := client.NewSession()
+	session, err := connection.NewSession()
 	if err != nil {
 		return errors.Wrap(err, "unable to new session failed:")
 	}
@@ -101,14 +104,12 @@ func SSH(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func resolveIPAddress(instanceID string) (string, error) {
-	client := newEC2Client()
-
+func resolveIPAddress(client *myaws.Client, instanceID string) (string, error) {
 	params := &ec2.DescribeInstancesInput{
 		InstanceIds: []*string{&instanceID},
 	}
 
-	response, err := client.DescribeInstances(params)
+	response, err := client.EC2.DescribeInstances(params)
 	if err != nil {
 		return "", errors.Wrap(err, "DescribeInstances failed:")
 	}
