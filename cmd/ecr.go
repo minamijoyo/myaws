@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
 	"github.com/minamijoyo/myaws/myaws/ecr"
@@ -30,8 +31,17 @@ func newECRGetLoginCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "get-login",
 		Short: "Get docker login command for ECR",
-		RunE:  ecr.GetLogin,
+		RunE:  runECRGetLoginCmd,
 	}
 
 	return cmd
+}
+
+func runECRGetLoginCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	return ecr.GetLogin(client)
 }
