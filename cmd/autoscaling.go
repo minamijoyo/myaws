@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -34,7 +35,7 @@ func newAutoscalingLsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ls",
 		Short: "List autoscaling groups",
-		RunE:  autoscaling.Ls,
+		RunE:  runAutoscalingLsCmd,
 	}
 
 	flags := cmd.Flags()
@@ -43,6 +44,19 @@ func newAutoscalingLsCmd() *cobra.Command {
 	viper.BindPFlag("autoscaling.ls.all", flags.Lookup("all"))
 
 	return cmd
+}
+
+func runAutoscalingLsCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	options := autoscaling.LsOptions{
+		All: viper.GetBool("autoscaling.ls.all"),
+	}
+
+	return autoscaling.Ls(client, options)
 }
 
 func newAutoscalingAttachCmd() *cobra.Command {

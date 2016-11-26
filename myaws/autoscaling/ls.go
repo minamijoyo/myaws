@@ -8,22 +8,26 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+
+	"github.com/minamijoyo/myaws/myaws"
 )
 
+// LsOptions customize the behavior of the Ls command.
+type LsOptions struct {
+	All bool
+}
+
 // Ls describes autoscaling groups.
-func Ls(*cobra.Command, []string) error {
-	client := newAutoScalingClient()
+func Ls(client *myaws.Client, options LsOptions) error {
 	params := &autoscaling.DescribeAutoScalingGroupsInput{}
 
-	response, err := client.DescribeAutoScalingGroups(params)
+	response, err := client.AutoScaling.DescribeAutoScalingGroups(params)
 	if err != nil {
 		return errors.Wrap(err, "DescribeAutoScalingGroups failed:")
 	}
 
 	for _, asg := range response.AutoScalingGroups {
-		if viper.GetBool("autoscaling.ls.all") || len(asg.Instances) > 0 {
+		if options.All || len(asg.Instances) > 0 {
 			fmt.Println(formatAutoScalingGroup(asg))
 		}
 	}
