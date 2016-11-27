@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -63,7 +64,7 @@ func newAutoscalingAttachCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "attach AUTO_SCALING_GROUP_NAME",
 		Short: "Attach instances/loadbalancers to autoscaling group",
-		RunE:  autoscaling.Attach,
+		RunE:  runAutoscalingAttachCmd,
 	}
 
 	flags := cmd.Flags()
@@ -74,6 +75,27 @@ func newAutoscalingAttachCmd() *cobra.Command {
 	viper.BindPFlag("autoscaling.attach.load-balancer-names", flags.Lookup("load-balancer-names"))
 
 	return cmd
+}
+
+func runAutoscalingAttachCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	if len(args) == 0 {
+		return errors.New("AUTO_SCALING_GROUP_NAME is required")
+	}
+
+	instanceIds := aws.StringSlice(viper.GetStringSlice("autoscaling.attach.instance-ids"))
+	loadBalancerNames := aws.StringSlice(viper.GetStringSlice("autoscaling.attach.load-balancer-names"))
+	options := autoscaling.AttachOptions{
+		AsgName:           args[0],
+		InstanceIds:       instanceIds,
+		LoadBalancerNames: loadBalancerNames,
+	}
+
+	return autoscaling.Attach(client, options)
 }
 
 func newAutoscalingDetachCmd() *cobra.Command {
