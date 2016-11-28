@@ -102,7 +102,7 @@ func newAutoscalingDetachCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "detach AUTO_SCALING_GROUP_NAME",
 		Short: "Detach instances/loadbalancers from autoscaling group",
-		RunE:  autoscaling.Detach,
+		RunE:  runAutoscalingDetachCmd,
 	}
 
 	flags := cmd.Flags()
@@ -113,6 +113,27 @@ func newAutoscalingDetachCmd() *cobra.Command {
 	viper.BindPFlag("autoscaling.detach.load-balancer-names", flags.Lookup("load-balancer-names"))
 
 	return cmd
+}
+
+func runAutoscalingDetachCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	if len(args) == 0 {
+		return errors.New("AUTO_SCALING_GROUP_NAME is required")
+	}
+
+	instanceIds := aws.StringSlice(viper.GetStringSlice("autoscaling.detach.instance-ids"))
+	loadBalancerNames := aws.StringSlice(viper.GetStringSlice("autoscaling.detach.load-balancer-names"))
+	options := autoscaling.DetachOptions{
+		AsgName:           args[0],
+		InstanceIds:       instanceIds,
+		LoadBalancerNames: loadBalancerNames,
+	}
+
+	return autoscaling.Detach(client, options)
 }
 
 func newAutoscalingUpdateCmd() *cobra.Command {

@@ -1,28 +1,29 @@
 package autoscaling
 
 import (
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+
+	"github.com/minamijoyo/myaws/myaws"
 )
 
-// Detach detaches instances or load balancers from autoscaling group.
-func Detach(cmd *cobra.Command, args []string) error {
-	if len(args) == 0 {
-		return errors.New("AUTO_SCALING_GROUP_NAME is required")
-	}
-	asgName := args[0]
+// DetachOptions customize the behavior of the Detach command.
+type DetachOptions struct {
+	AsgName           string
+	InstanceIds       []*string
+	LoadBalancerNames []*string
+}
 
-	if viper.GetString("autoscaling.detach.instance-ids") != "" {
-		if err := detachInstances(asgName); err != nil {
+// Detach detaches instances or load balancers from autoscaling group.
+func Detach(client *myaws.Client, options DetachOptions) error {
+	if len(options.InstanceIds) > 0 {
+		if err := detachInstances(client, options.AsgName, options.InstanceIds); err != nil {
 			return err
 		}
 	}
 
-	if viper.GetString("autoscaling.detach.load-balancer-names") != "" {
-		if err := detachLoadBalancers(asgName); err != nil {
+	if len(options.LoadBalancerNames) > 0 {
+		if err := detachLoadBalancers(client, options.AsgName, options.LoadBalancerNames); err != nil {
 			return err
 		}
 	}
@@ -30,10 +31,7 @@ func Detach(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func detachInstances(asgName string) error {
-	client := newAutoScalingClient()
-
-	instanceIds := aws.StringSlice(viper.GetStringSlice("autoscaling.detach.instance-ids"))
+func detachInstances(client *myaws.Client, asgName string, instanceIds []*string) error {
 	decrementCapacity := true
 	params := &autoscaling.DetachInstancesInput{
 		AutoScalingGroupName:           &asgName,
@@ -41,23 +39,20 @@ func detachInstances(asgName string) error {
 		ShouldDecrementDesiredCapacity: &decrementCapacity,
 	}
 
-	if _, err := client.DetachInstances(params); err != nil {
+	if _, err := client.AutoScaling.DetachInstances(params); err != nil {
 		return errors.Wrap(err, "DetachInstances failed:")
 	}
 
 	return nil
 }
 
-func detachLoadBalancers(asgName string) error {
-	client := newAutoScalingClient()
-
-	loadBalancerNames := aws.StringSlice(viper.GetStringSlice("autoscaling.detach.load-balancer-names"))
+func detachLoadBalancers(client *myaws.Client, asgName string, loadBalancerNames []*string) error {
 	params := &autoscaling.DetachLoadBalancersInput{
 		AutoScalingGroupName: &asgName,
 		LoadBalancerNames:    loadBalancerNames,
 	}
 
-	if _, err := client.DetachLoadBalancers(params); err != nil {
+	if _, err := client.AutoScaling.DetachLoadBalancers(params); err != nil {
 		return errors.Wrap(err, "DetachLoadBalancers failed:")
 	}
 
