@@ -140,7 +140,7 @@ func newAutoscalingUpdateCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update AUTO_SCALING_GROUP_NAME",
 		Short: "Update autoscaling group",
-		RunE:  autoscaling.Update,
+		RunE:  runAutoscalingUpdateCmd,
 	}
 
 	flags := cmd.Flags()
@@ -149,4 +149,27 @@ func newAutoscalingUpdateCmd() *cobra.Command {
 	viper.BindPFlag("autoscaling.update.desired-capacity", flags.Lookup("desired-capacity"))
 
 	return cmd
+}
+
+func runAutoscalingUpdateCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	if len(args) == 0 {
+		return errors.New("AUTO_SCALING_GROUP_NAME is required")
+	}
+
+	desiredCapacity := viper.GetInt64("autoscaling.update.desired-capacity")
+	if desiredCapacity == -1 {
+		return errors.New("--desired-capacity is required")
+	}
+
+	options := autoscaling.UpdateOptions{
+		AsgName:         args[0],
+		DesiredCapacity: desiredCapacity,
+	}
+
+	return autoscaling.Update(client, options)
 }
