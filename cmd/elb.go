@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
 	"github.com/minamijoyo/myaws/myaws/elb"
@@ -31,10 +32,19 @@ func newELBLsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ls",
 		Short: "List ELB instances",
-		RunE:  elb.Ls,
+		RunE:  runELBLsCmd,
 	}
 
 	return cmd
+}
+
+func runELBLsCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	return elb.Ls(client)
 }
 
 func newELBPsCmd() *cobra.Command {

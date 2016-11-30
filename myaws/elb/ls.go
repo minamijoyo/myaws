@@ -6,15 +6,15 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/elb"
 	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
+
+	"github.com/minamijoyo/myaws/myaws"
 )
 
 // Ls describes ELBs.
-func Ls(*cobra.Command, []string) error {
-	client := newELBClient()
+func Ls(client *myaws.Client) error {
 	params := &elb.DescribeLoadBalancersInput{}
 
-	response, err := client.DescribeLoadBalancers(params)
+	response, err := client.ELB.DescribeLoadBalancers(params)
 	if err != nil {
 		return errors.Wrap(err, "DescribeLoadBalancers failed:")
 	}
