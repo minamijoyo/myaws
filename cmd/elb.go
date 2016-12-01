@@ -51,8 +51,25 @@ func newELBPsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ps ELB_NAME",
 		Short: "Show ELB instances",
-		RunE:  elb.Ps,
+		RunE:  runELBPsCmd,
 	}
 
 	return cmd
+}
+
+func runELBPsCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	if len(args) == 0 {
+		return errors.New("ELB_NAME is required")
+	}
+
+	options := elb.PsOptions{
+		LoadBalancerName: args[0],
+	}
+
+	return elb.Ps(client, options)
 }

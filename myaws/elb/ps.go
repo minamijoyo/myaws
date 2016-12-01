@@ -4,24 +4,24 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/elb"
 	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
+
+	"github.com/minamijoyo/myaws/myaws"
 )
 
+// PsOptions customize the behavior of the Ps command.
+type PsOptions struct {
+	LoadBalancerName string
+}
+
 // Ps describes ELB's instance health status.
-func Ps(cmd *cobra.Command, args []string) error {
-	if len(args) == 0 {
-		return errors.New("ELB_NAME is required")
-	}
-
-	client := newELBClient()
+func Ps(client *myaws.Client, options PsOptions) error {
 	params := &elb.DescribeInstanceHealthInput{
-		LoadBalancerName: aws.String(args[0]),
+		LoadBalancerName: &options.LoadBalancerName,
 	}
 
-	response, err := client.DescribeInstanceHealth(params)
+	response, err := client.ELB.DescribeInstanceHealth(params)
 	if err != nil {
 		return errors.Wrap(err, "DescribeInstanceHealth failed:")
 	}
