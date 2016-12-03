@@ -68,9 +68,8 @@ func formatDBInstanceIdentifier(db *rds.DBInstance) string {
 func formatDBInstanceClass(db *rds.DBInstance) string {
 	if *db.MultiAZ {
 		return fmt.Sprintf("%s:multi", *db.DBInstanceClass)
-	} else {
-		return fmt.Sprintf("%s:single", *db.DBInstanceClass)
 	}
+	return fmt.Sprintf("%s:single", *db.DBInstanceClass)
 }
 
 func formatEngine(db *rds.DBInstance) string {
