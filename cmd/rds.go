@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -31,7 +32,7 @@ func newRDSLsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ls",
 		Short: "List RDS instances",
-		RunE:  rds.Ls,
+		RunE:  runRDSLsCmd,
 	}
 
 	flags := cmd.Flags()
@@ -42,4 +43,18 @@ func newRDSLsCmd() *cobra.Command {
 	viper.BindPFlag("rds.ls.fields", flags.Lookup("fields"))
 
 	return cmd
+}
+
+func runRDSLsCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	options := rds.LsOptions{
+		Quiet:  viper.GetBool("rds.ls.quiet"),
+		Fields: viper.GetStringSlice("rds.ls.fields"),
+	}
+
+	return rds.Ls(client, options)
 }

@@ -6,30 +6,33 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 
 	"github.com/minamijoyo/myaws/myaws"
 )
 
+// LsOptions customize the behavior of the Ls command.
+type LsOptions struct {
+	Quiet  bool
+	Fields []string
+}
+
 // Ls describes RDSs.
-func Ls(*cobra.Command, []string) error {
-	client := newRDSClient()
+func Ls(client *myaws.Client, options LsOptions) error {
 	params := &rds.DescribeDBInstancesInput{}
 
-	response, err := client.DescribeDBInstances(params)
+	response, err := client.RDS.DescribeDBInstances(params)
 	if err != nil {
 		return errors.Wrap(err, "DescribeDBInstances failed:")
 	}
 
 	for _, db := range response.DBInstances {
-		fmt.Println(formatDBInstance(db))
+		fmt.Println(formatDBInstance(db, options.Fields, options.Quiet))
 	}
 
 	return nil
 }
 
-func formatDBInstance(db *rds.DBInstance) string {
+func formatDBInstance(db *rds.DBInstance, fields []string, quiet bool) string {
 	formatFuncs := map[string]func(db *rds.DBInstance) string{
 		"DBInstanceClass":      formatDBInstanceClass,
 		"Engine":               formatEngine,
@@ -41,16 +44,16 @@ func formatDBInstance(db *rds.DBInstance) string {
 		"InstanceCreateTime":   formatInstanceCreateTime,
 	}
 
-	var fields []string
-	if viper.GetBool("rds.ls.quiet") {
-		fields = []string{"DBInstanceIdentifier"}
+	var outputFields []string
+	if quiet {
+		outputFields = []string{"DBInstanceIdentifier"}
 	} else {
-		fields = viper.GetStringSlice("rds.ls.fields")
+		outputFields = fields
 	}
 
 	output := []string{}
 
-	for _, field := range fields {
+	for _, field := range outputFields {
 		value := formatFuncs[field](db)
 		output = append(output, value)
 	}
