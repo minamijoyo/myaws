@@ -25,7 +25,7 @@ type Client struct {
 // NewClient initializes Client instance
 func NewClient(profile string, region string, timezone string, humanize bool) (*Client, error) {
 	session := session.New()
-	config := NewConfig()
+	config := newConfig(profile, region)
 	client := &Client{
 		profile:     profile,
 		region:      region,
