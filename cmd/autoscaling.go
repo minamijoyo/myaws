@@ -15,8 +15,9 @@ func init() {
 
 func newAutoscalingCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "autoscaling",
-		Short: "Manage autoscaling resources",
+		Use:     "autoscaling",
+		Aliases: []string{"as"},
+		Short:   "Manage autoscaling resources",
 		Run: func(cmd *cobra.Command, args []string) {
 			cmd.Help()
 		},
