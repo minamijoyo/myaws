@@ -35,7 +35,7 @@ func Ls(client *myaws.Client, options LsOptions) error {
 
 	for _, reservation := range response.Reservations {
 		for _, instance := range reservation.Instances {
-			fmt.Println(formatInstance(instance, options.Fields, options.Quiet))
+			fmt.Println(formatInstance(client, options, instance))
 		}
 	}
 
@@ -69,8 +69,8 @@ func buildTagFilter(filterTag string) *ec2.Filter {
 	return tagFilter
 }
 
-func formatInstance(instance *ec2.Instance, fields []string, quiet bool) string {
-	formatFuncs := map[string]func(instance *ec2.Instance) string{
+func formatInstance(client *myaws.Client, options LsOptions, instance *ec2.Instance) string {
+	formatFuncs := map[string]func(client *myaws.Client, options LsOptions, instance *ec2.Instance) string{
 		"InstanceId":       formatInstanceID,
 		"InstanceType":     formatInstanceType,
 		"PublicIpAddress":  formatPublicIPAddress,
@@ -80,10 +80,10 @@ func formatInstance(instance *ec2.Instance, fields []string, quiet bool) string 
 	}
 
 	var outputFields []string
-	if quiet {
+	if options.Quiet {
 		outputFields = []string{"InstanceId"}
 	} else {
-		outputFields = fields
+		outputFields = options.Fields
 	}
 
 	output := []string{}
@@ -94,41 +94,41 @@ func formatInstance(instance *ec2.Instance, fields []string, quiet bool) string 
 			key := strings.Split(field, ":")[1]
 			value = formatTag(instance, key)
 		} else {
-			value = formatFuncs[field](instance)
+			value = formatFuncs[field](client, options, instance)
 		}
 		output = append(output, value)
 	}
 	return strings.Join(output[:], "\t")
 }
 
-func formatInstanceID(instance *ec2.Instance) string {
+func formatInstanceID(client *myaws.Client, options LsOptions, instance *ec2.Instance) string {
 	return *instance.InstanceId
 }
 
-func formatInstanceType(instance *ec2.Instance) string {
+func formatInstanceType(client *myaws.Client, options LsOptions, instance *ec2.Instance) string {
 	return fmt.Sprintf("%-11s", *instance.InstanceType)
 }
 
-func formatPublicIPAddress(instance *ec2.Instance) string {
+func formatPublicIPAddress(client *myaws.Client, options LsOptions, instance *ec2.Instance) string {
 	if instance.PublicIpAddress == nil {
 		return "___.___.___.___"
 	}
 	return *instance.PublicIpAddress
 }
 
-func formatPrivateIPAddress(instance *ec2.Instance) string {
+func formatPrivateIPAddress(client *myaws.Client, options LsOptions, instance *ec2.Instance) string {
 	if instance.PrivateIpAddress == nil {
 		return "___.___.___.___"
 	}
 	return *instance.PrivateIpAddress
 }
 
-func formatStateName(instance *ec2.Instance) string {
+func formatStateName(client *myaws.Client, options LsOptions, instance *ec2.Instance) string {
 	return *instance.State.Name
 }
 
-func formatLaunchTime(instance *ec2.Instance) string {
-	return myaws.FormatTime(instance.LaunchTime)
+func formatLaunchTime(client *myaws.Client, options LsOptions, instance *ec2.Instance) string {
+	return client.FormatTime(instance.LaunchTime)
 }
 
 func formatTag(instance *ec2.Instance, key string) string {

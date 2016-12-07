@@ -26,14 +26,14 @@ func Ls(client *myaws.Client, options LsOptions) error {
 	}
 
 	for _, db := range response.DBInstances {
-		fmt.Println(formatDBInstance(db, options.Fields, options.Quiet))
+		fmt.Println(formatDBInstance(client, options, db))
 	}
 
 	return nil
 }
 
-func formatDBInstance(db *rds.DBInstance, fields []string, quiet bool) string {
-	formatFuncs := map[string]func(db *rds.DBInstance) string{
+func formatDBInstance(client *myaws.Client, options LsOptions, db *rds.DBInstance) string {
+	formatFuncs := map[string]func(client *myaws.Client, options LsOptions, db *rds.DBInstance) string{
 		"DBInstanceClass":      formatDBInstanceClass,
 		"Engine":               formatEngine,
 		"AllocatedStorage":     formatAllocatedStorage,
@@ -45,46 +45,46 @@ func formatDBInstance(db *rds.DBInstance, fields []string, quiet bool) string {
 	}
 
 	var outputFields []string
-	if quiet {
+	if options.Quiet {
 		outputFields = []string{"DBInstanceIdentifier"}
 	} else {
-		outputFields = fields
+		outputFields = options.Fields
 	}
 
 	output := []string{}
 
 	for _, field := range outputFields {
-		value := formatFuncs[field](db)
+		value := formatFuncs[field](client, options, db)
 		output = append(output, value)
 	}
 
 	return strings.Join(output[:], "\t")
 }
 
-func formatDBInstanceIdentifier(db *rds.DBInstance) string {
+func formatDBInstanceIdentifier(client *myaws.Client, options LsOptions, db *rds.DBInstance) string {
 	return *db.DBInstanceIdentifier
 }
 
-func formatDBInstanceClass(db *rds.DBInstance) string {
+func formatDBInstanceClass(client *myaws.Client, options LsOptions, db *rds.DBInstance) string {
 	if *db.MultiAZ {
 		return fmt.Sprintf("%s:multi", *db.DBInstanceClass)
 	}
 	return fmt.Sprintf("%s:single", *db.DBInstanceClass)
 }
 
-func formatEngine(db *rds.DBInstance) string {
+func formatEngine(client *myaws.Client, options LsOptions, db *rds.DBInstance) string {
 	return fmt.Sprintf("%-15s", fmt.Sprintf("%s:%s", *db.Engine, *db.EngineVersion))
 }
 
-func formatAllocatedStorage(db *rds.DBInstance) string {
+func formatAllocatedStorage(client *myaws.Client, options LsOptions, db *rds.DBInstance) string {
 	return fmt.Sprintf("%4dGB", *db.AllocatedStorage)
 }
 
-func formatStorageType(db *rds.DBInstance) string {
+func formatStorageType(client *myaws.Client, options LsOptions, db *rds.DBInstance) string {
 	return *db.StorageType
 }
 
-func formatStorageTypeIops(db *rds.DBInstance) string {
+func formatStorageTypeIops(client *myaws.Client, options LsOptions, db *rds.DBInstance) string {
 	iops := "-"
 	if db.Iops != nil {
 		iops = fmt.Sprint(*db.Iops)
@@ -93,13 +93,13 @@ func formatStorageTypeIops(db *rds.DBInstance) string {
 	return fmt.Sprintf("%-8s", fmt.Sprintf("%s:%s", *db.StorageType, iops))
 }
 
-func formatReadReplicaSource(db *rds.DBInstance) string {
+func formatReadReplicaSource(client *myaws.Client, options LsOptions, db *rds.DBInstance) string {
 	if db.ReadReplicaSourceDBInstanceIdentifier == nil {
 		return "source:---"
 	}
 	return fmt.Sprintf("source:%s", *db.ReadReplicaSourceDBInstanceIdentifier)
 }
 
-func formatInstanceCreateTime(db *rds.DBInstance) string {
-	return myaws.FormatTime(db.InstanceCreateTime)
+func formatInstanceCreateTime(client *myaws.Client, options LsOptions, db *rds.DBInstance) string {
+	return client.FormatTime(db.InstanceCreateTime)
 }

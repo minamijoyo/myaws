@@ -4,18 +4,17 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/spf13/viper"
 )
 
 // FormatTime returns a localized time string.
 // If humanize flag is true, it is converted to human frendly representation.
-func FormatTime(t *time.Time) string {
-	location, err := time.LoadLocation(viper.GetString("timezone"))
+func (client *Client) FormatTime(t *time.Time) string {
+	location, err := time.LoadLocation(client.timezone)
 	if err != nil {
 		panic(err)
 	}
 
-	if viper.GetBool("humanize") {
+	if client.humanize {
 		// humanized format
 		return humanize.Time(t.In(location))
 	}
