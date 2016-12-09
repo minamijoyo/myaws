@@ -1,23 +1,21 @@
-package ec2
+package myaws
 
 import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/pkg/errors"
-
-	"github.com/minamijoyo/myaws/myaws"
 )
 
-// StopOptions customize the behavior of the Stop command.
-type StopOptions struct {
+// EC2StopOptions customize the behavior of the Stop command.
+type EC2StopOptions struct {
 	InstanceIds []*string
 	Wait        bool
 }
 
-// Stop stops EC2 instances.
+// EC2Stop stops EC2 instances.
 // If wait flag is true, wait until instance is in stopped state.
-func Stop(client *myaws.Client, options StopOptions) error {
+func (client *Client) EC2Stop(options EC2StopOptions) error {
 	params := &ec2.StopInstancesInput{
 		InstanceIds: options.InstanceIds,
 	}

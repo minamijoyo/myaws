@@ -1,23 +1,21 @@
-package ec2
+package myaws
 
 import (
 	"fmt"
 
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/pkg/errors"
-
-	"github.com/minamijoyo/myaws/myaws"
 )
 
-// StartOptions customize the behavior of the Start command.
-type StartOptions struct {
+// EC2StartOptions customize the behavior of the Start command.
+type EC2StartOptions struct {
 	InstanceIds []*string
 	Wait        bool
 }
 
-// Start starts EC2 instances.
+// EC2Start starts EC2 instances.
 // If wait flag is true, wait until instance is in running state.
-func Start(client *myaws.Client, options StartOptions) error {
+func (client *Client) EC2Start(options EC2StartOptions) error {
 	params := &ec2.StartInstancesInput{
 		InstanceIds: options.InstanceIds,
 	}

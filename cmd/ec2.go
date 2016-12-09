@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/minamijoyo/myaws/myaws/ec2"
+	"github.com/minamijoyo/myaws/myaws"
 )
 
 func init() {
@@ -61,14 +61,14 @@ func runEC2LsCmd(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "newClient failed:")
 	}
 
-	options := ec2.LsOptions{
+	options := myaws.EC2LsOptions{
 		All:       viper.GetBool("ec2.ls.all"),
 		Quiet:     viper.GetBool("ec2.ls.quiet"),
 		FilterTag: viper.GetString("ec2.ls.filter-tag"),
 		Fields:    viper.GetStringSlice("ec2.ls.fields"),
 	}
 
-	return ec2.Ls(client, options)
+	return client.EC2Ls(options)
 }
 
 func newEC2StartCmd() *cobra.Command {
@@ -97,12 +97,12 @@ func runEC2StartCmd(cmd *cobra.Command, args []string) error {
 	}
 	instanceIds := aws.StringSlice(args)
 
-	options := ec2.StartOptions{
+	options := myaws.EC2StartOptions{
 		InstanceIds: instanceIds,
 		Wait:        viper.GetBool("ec2.start.wait"),
 	}
 
-	return ec2.Start(client, options)
+	return client.EC2Start(options)
 }
 
 func newEC2StopCmd() *cobra.Command {
@@ -131,12 +131,12 @@ func runEC2StopCmd(cmd *cobra.Command, args []string) error {
 	}
 	instanceIds := aws.StringSlice(args)
 
-	options := ec2.StopOptions{
+	options := myaws.EC2StopOptions{
 		InstanceIds: instanceIds,
 		Wait:        viper.GetBool("ec2.stop.wait"),
 	}
 
-	return ec2.Stop(client, options)
+	return client.EC2Stop(options)
 }
 
 func newEC2SSHCmd() *cobra.Command {
@@ -166,11 +166,11 @@ func runEC2SSHCmd(cmd *cobra.Command, args []string) error {
 		return errors.New("INSTANCE_ID is required")
 	}
 
-	options := ec2.SSHOptions{
+	options := myaws.EC2SSHOptions{
 		InstanceID:   args[0],
 		LoginName:    viper.GetString("ec2.ssh.login-name"),
 		IdentityFile: viper.GetString("ec2.ssh.identity-file"),
 	}
 
-	return ec2.SSH(client, options)
+	return client.EC2SSH(options)
 }

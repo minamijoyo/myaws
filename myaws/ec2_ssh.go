@@ -1,4 +1,4 @@
-package ec2
+package myaws
 
 import (
 	"fmt"
@@ -11,20 +11,18 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/terminal"
-
-	"github.com/minamijoyo/myaws/myaws"
 )
 
-// SSHOptions customize the behavior of the SSH command.
-type SSHOptions struct {
+// EC2SSHOptions customize the behavior of the SSH command.
+type EC2SSHOptions struct {
 	InstanceID   string
 	LoginName    string
 	IdentityFile string
 }
 
-// SSH resolves IP address of EC2 instance and connects to it by SSH.
-func SSH(client *myaws.Client, options SSHOptions) error {
-	hostname, err := resolveIPAddress(client, options.InstanceID)
+// EC2SSH resolves IP address of EC2 instance and connects to it by SSH.
+func (client *Client) EC2SSH(options EC2SSHOptions) error {
+	hostname, err := client.resolveEC2IPAddress(options.InstanceID)
 	if err != nil {
 		return errors.Wrap(err, "unable to resolve IP address:")
 	}
@@ -104,7 +102,7 @@ func SSH(client *myaws.Client, options SSHOptions) error {
 	return nil
 }
 
-func resolveIPAddress(client *myaws.Client, instanceID string) (string, error) {
+func (client *Client) resolveEC2IPAddress(instanceID string) (string, error) {
 	params := &ec2.DescribeInstancesInput{
 		InstanceIds: []*string{&instanceID},
 	}
