@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/minamijoyo/myaws/myaws/autoscaling"
+	"github.com/minamijoyo/myaws/myaws"
 )
 
 func init() {
@@ -54,11 +54,11 @@ func runAutoscalingLsCmd(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "newClient failed:")
 	}
 
-	options := autoscaling.LsOptions{
+	options := myaws.AutoscalingLsOptions{
 		All: viper.GetBool("autoscaling.ls.all"),
 	}
 
-	return autoscaling.Ls(client, options)
+	return client.AutoscalingLs(options)
 }
 
 func newAutoscalingAttachCmd() *cobra.Command {
@@ -90,13 +90,13 @@ func runAutoscalingAttachCmd(cmd *cobra.Command, args []string) error {
 
 	instanceIds := aws.StringSlice(viper.GetStringSlice("autoscaling.attach.instance-ids"))
 	loadBalancerNames := aws.StringSlice(viper.GetStringSlice("autoscaling.attach.load-balancer-names"))
-	options := autoscaling.AttachOptions{
+	options := myaws.AutoscalingAttachOptions{
 		AsgName:           args[0],
 		InstanceIds:       instanceIds,
 		LoadBalancerNames: loadBalancerNames,
 	}
 
-	return autoscaling.Attach(client, options)
+	return client.AutoscalingAttach(options)
 }
 
 func newAutoscalingDetachCmd() *cobra.Command {
@@ -128,13 +128,13 @@ func runAutoscalingDetachCmd(cmd *cobra.Command, args []string) error {
 
 	instanceIds := aws.StringSlice(viper.GetStringSlice("autoscaling.detach.instance-ids"))
 	loadBalancerNames := aws.StringSlice(viper.GetStringSlice("autoscaling.detach.load-balancer-names"))
-	options := autoscaling.DetachOptions{
+	options := myaws.AutoscalingDetachOptions{
 		AsgName:           args[0],
 		InstanceIds:       instanceIds,
 		LoadBalancerNames: loadBalancerNames,
 	}
 
-	return autoscaling.Detach(client, options)
+	return client.AutoscalingDetach(options)
 }
 
 func newAutoscalingUpdateCmd() *cobra.Command {
@@ -167,10 +167,10 @@ func runAutoscalingUpdateCmd(cmd *cobra.Command, args []string) error {
 		return errors.New("--desired-capacity is required")
 	}
 
-	options := autoscaling.UpdateOptions{
+	options := myaws.AutoscalingUpdateOptions{
 		AsgName:         args[0],
 		DesiredCapacity: desiredCapacity,
 	}
 
-	return autoscaling.Update(client, options)
+	return client.AutoscalingUpdate(options)
 }

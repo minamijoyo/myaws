@@ -1,4 +1,4 @@
-package autoscaling
+package myaws
 
 import (
 	"fmt"
@@ -8,17 +8,15 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/pkg/errors"
-
-	"github.com/minamijoyo/myaws/myaws"
 )
 
-// LsOptions customize the behavior of the Ls command.
-type LsOptions struct {
+// AutoscalingLsOptions customize the behavior of the Ls command.
+type AutoscalingLsOptions struct {
 	All bool
 }
 
-// Ls describes autoscaling groups.
-func Ls(client *myaws.Client, options LsOptions) error {
+// AutoscalingLs describes autoscaling groups.
+func (client *Client) AutoscalingLs(options AutoscalingLsOptions) error {
 	params := &autoscaling.DescribeAutoScalingGroupsInput{}
 
 	response, err := client.AutoScaling.DescribeAutoScalingGroups(params)
@@ -28,40 +26,40 @@ func Ls(client *myaws.Client, options LsOptions) error {
 
 	for _, asg := range response.AutoScalingGroups {
 		if options.All || len(asg.Instances) > 0 {
-			fmt.Println(formatAutoScalingGroup(asg))
+			fmt.Println(formatAutoscalingGroup(asg))
 		}
 	}
 
 	return nil
 }
 
-func formatAutoScalingGroup(asg *autoscaling.Group) string {
+func formatAutoscalingGroup(asg *autoscaling.Group) string {
 	output := []string{
-		formatInstacesLen(asg.Instances),
+		formatAutoscalingInstacesLen(asg.Instances),
 		*asg.AutoScalingGroupName,
-		formatInstanceIds(asg.Instances),
-		formatLoadBalancerNames(asg.LoadBalancerNames),
+		formatAutoscalingInstanceIds(asg.Instances),
+		formatAutoscalingLoadBalancerNames(asg.LoadBalancerNames),
 	}
 
 	return strings.Join(output[:], "\t")
 }
 
-func formatInstacesLen(instances []*autoscaling.Instance) string {
+func formatAutoscalingInstacesLen(instances []*autoscaling.Instance) string {
 	if instances == nil {
 		return "0"
 	}
 	return strconv.Itoa(len(instances))
 }
 
-func formatInstanceIds(instances []*autoscaling.Instance) string {
+func formatAutoscalingInstanceIds(instances []*autoscaling.Instance) string {
 	if instances == nil {
 		return ""
 	}
-	instanceIds := lookupInstanceIds(instances)
+	instanceIds := lookupAutoscalingInstanceIds(instances)
 	return strings.Join(instanceIds[:], " ")
 }
 
-func lookupInstanceIds(instances []*autoscaling.Instance) []string {
+func lookupAutoscalingInstanceIds(instances []*autoscaling.Instance) []string {
 	var instanceIds []string
 	for _, instance := range instances {
 		instanceIds = append(instanceIds, *instance.InstanceId)
@@ -69,7 +67,7 @@ func lookupInstanceIds(instances []*autoscaling.Instance) []string {
 	return instanceIds
 }
 
-func formatLoadBalancerNames(lbNames []*string) string {
+func formatAutoscalingLoadBalancerNames(lbNames []*string) string {
 	if lbNames == nil {
 		return ""
 	}

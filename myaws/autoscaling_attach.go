@@ -1,29 +1,27 @@
-package autoscaling
+package myaws
 
 import (
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/pkg/errors"
-
-	"github.com/minamijoyo/myaws/myaws"
 )
 
-// AttachOptions customize the behavior of the Attach command.
-type AttachOptions struct {
+// AutoscalingAttachOptions customize the behavior of the Attach command.
+type AutoscalingAttachOptions struct {
 	AsgName           string
 	InstanceIds       []*string
 	LoadBalancerNames []*string
 }
 
-// Attach attaches instances or load balancers from autoscaling group.
-func Attach(client *myaws.Client, options AttachOptions) error {
+// AutoscalingAttach attaches instances or load balancers from autoscaling group.
+func (client *Client) AutoscalingAttach(options AutoscalingAttachOptions) error {
 	if len(options.InstanceIds) > 0 {
-		if err := attachInstances(client, options.AsgName, options.InstanceIds); err != nil {
+		if err := client.autoscalingAttachInstances(options.AsgName, options.InstanceIds); err != nil {
 			return err
 		}
 	}
 
 	if len(options.LoadBalancerNames) > 0 {
-		if err := attachLoadBalancers(client, options.AsgName, options.LoadBalancerNames); err != nil {
+		if err := client.autoscalingAttachLoadBalancers(options.AsgName, options.LoadBalancerNames); err != nil {
 			return err
 		}
 	}
@@ -31,7 +29,7 @@ func Attach(client *myaws.Client, options AttachOptions) error {
 	return nil
 }
 
-func attachInstances(client *myaws.Client, asgName string, instanceIds []*string) error {
+func (client *Client) autoscalingAttachInstances(asgName string, instanceIds []*string) error {
 	params := &autoscaling.AttachInstancesInput{
 		AutoScalingGroupName: &asgName,
 		InstanceIds:          instanceIds,
@@ -44,7 +42,7 @@ func attachInstances(client *myaws.Client, asgName string, instanceIds []*string
 	return nil
 }
 
-func attachLoadBalancers(client *myaws.Client, asgName string, loadBalancerNames []*string) error {
+func (client *Client) autoscalingAttachLoadBalancers(asgName string, loadBalancerNames []*string) error {
 	params := &autoscaling.AttachLoadBalancersInput{
 		AutoScalingGroupName: &asgName,
 		LoadBalancerNames:    loadBalancerNames,

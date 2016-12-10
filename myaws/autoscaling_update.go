@@ -1,21 +1,19 @@
-package autoscaling
+package myaws
 
 import (
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/pkg/errors"
-
-	"github.com/minamijoyo/myaws/myaws"
 )
 
-// UpdateOptions customize the behavior of the Update command.
-type UpdateOptions struct {
+// AutoscalingUpdateOptions customize the behavior of the Update command.
+type AutoscalingUpdateOptions struct {
 	AsgName         string
 	DesiredCapacity int64
 }
 
-// Update updates autoscaling group setting.
+// AutoscalingUpdate updates autoscaling group setting.
 // Available param is currently desired-capacity only.
-func Update(client *myaws.Client, options UpdateOptions) error {
+func (client *Client) AutoscalingUpdate(options AutoscalingUpdateOptions) error {
 	params := &autoscaling.SetDesiredCapacityInput{
 		AutoScalingGroupName: &options.AsgName,
 		DesiredCapacity:      &options.DesiredCapacity,
