@@ -6,10 +6,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const version string = "v0.0.6"
-
-// Revision is git commit hash which automatically set `git describe --always` on build
-var Revision string
+var (
+	// Version is version number which automatically set on build.
+	Version string
+	// Revision is git commit hash which automatically set `git rev-parse --short HEAD` on build.
+	Revision string
+)
 
 func init() {
 	RootCmd.AddCommand(newVersionCmd())
@@ -20,7 +22,7 @@ func newVersionCmd() *cobra.Command {
 		Use:   "version",
 		Short: "Print version",
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("myaws version: %s, revision: %s\n", version, Revision)
+			fmt.Printf("myaws version: %s, revision: %s\n", Version, Revision)
 		},
 	}
 
