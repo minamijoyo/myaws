@@ -1,4 +1,4 @@
-package elb
+package myaws
 
 import (
 	"fmt"
@@ -6,12 +6,10 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/elb"
 	"github.com/pkg/errors"
-
-	"github.com/minamijoyo/myaws/myaws"
 )
 
-// Ls describes ELBs.
-func Ls(client *myaws.Client) error {
+// ELBLs describes ELBs.
+func (client *Client) ELBLs() error {
 	params := &elb.DescribeLoadBalancersInput{}
 
 	response, err := client.ELB.DescribeLoadBalancers(params)

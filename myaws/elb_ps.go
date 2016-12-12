@@ -1,4 +1,4 @@
-package elb
+package myaws
 
 import (
 	"fmt"
@@ -6,17 +6,15 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/elb"
 	"github.com/pkg/errors"
-
-	"github.com/minamijoyo/myaws/myaws"
 )
 
-// PsOptions customize the behavior of the Ps command.
-type PsOptions struct {
+// ELBPsOptions customize the behavior of the Ps command.
+type ELBPsOptions struct {
 	LoadBalancerName string
 }
 
-// Ps describes ELB's instance health status.
-func Ps(client *myaws.Client, options PsOptions) error {
+// ELBPs describes ELB's instance health status.
+func (client *Client) ELBPs(options ELBPsOptions) error {
 	params := &elb.DescribeInstanceHealthInput{
 		LoadBalancerName: &options.LoadBalancerName,
 	}
@@ -27,13 +25,13 @@ func Ps(client *myaws.Client, options PsOptions) error {
 	}
 
 	for _, state := range response.InstanceStates {
-		fmt.Println(formatInstanceState(state))
+		fmt.Println(formatELBInstanceState(state))
 	}
 
 	return nil
 }
 
-func formatInstanceState(state *elb.InstanceState) string {
+func formatELBInstanceState(state *elb.InstanceState) string {
 	output := []string{
 		*state.InstanceId,
 		*state.State,

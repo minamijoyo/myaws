@@ -4,7 +4,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
-	"github.com/minamijoyo/myaws/myaws/elb"
+	"github.com/minamijoyo/myaws/myaws"
 )
 
 func init() {
@@ -44,7 +44,7 @@ func runELBLsCmd(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "newClient failed:")
 	}
 
-	return elb.Ls(client)
+	return client.ELBLs()
 }
 
 func newELBPsCmd() *cobra.Command {
@@ -67,9 +67,9 @@ func runELBPsCmd(cmd *cobra.Command, args []string) error {
 		return errors.New("ELB_NAME is required")
 	}
 
-	options := elb.PsOptions{
+	options := myaws.ELBPsOptions{
 		LoadBalancerName: args[0],
 	}
 
-	return elb.Ps(client, options)
+	return client.ELBPs(options)
 }
