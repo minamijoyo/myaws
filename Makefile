@@ -21,16 +21,20 @@ $(GHR): ; @go get github.com/tcnksm/ghr
 
 .DEFAULT_GOAL := build
 
+.PHONY: deps
+deps:
+	go get -d -v .
+
 .PHONY: build
-build:
+build: deps
 	go build -ldflags $(LDFLAGS) -o bin/$(NAME)
 
 .PHONY: install
-install:
+install: deps
 	go install -ldflags $(LDFLAGS)
 
 .PHONY: cross-build
-cross-build: $(GOX)
+cross-build: deps $(GOX)
 	rm -rf ./out && \
 	gox -ldflags $(LDFLAGS) -osarch $(OSARCH) -output "./out/${NAME}_${VERSION}_{{.OS}}_{{.Arch}}/{{.Dir}}"
 
@@ -54,7 +58,7 @@ vet:
 	@go vet ./...
 
 .PHONY: test
-test:
+test: deps
 	@go test ./...
 
 .PHONY: check
