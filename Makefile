@@ -58,7 +58,7 @@ vet:
 	@go vet ./...
 
 .PHONY: test
-test: deps
+test:
 	@go test ./...
 
 .PHONY: check
