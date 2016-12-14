@@ -1,4 +1,4 @@
-package ecr
+package myaws
 
 import (
 	"encoding/base64"
@@ -7,40 +7,38 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/ecr"
 	"github.com/pkg/errors"
-
-	"github.com/minamijoyo/myaws/myaws"
 )
 
-// GetLogin gets docker login command with authorization token for ECR.
-func GetLogin(client *myaws.Client) error {
+// ECRGetLogin gets docker login command with authorization token for ECR.
+func (client *Client) ECRGetLogin() error {
 	params := &ecr.GetAuthorizationTokenInput{}
 
 	response, err := client.ECR.GetAuthorizationToken(params)
 	if err != nil {
 		return errors.Wrap(err, "GetAuthorizationToken failed:")
 	}
-	fmt.Println(formatAuthorizationData(response.AuthorizationData))
+	fmt.Println(formatECRAuthorizationData(response.AuthorizationData))
 
 	return nil
 }
 
-func formatAuthorizationData(authDataList []*ecr.AuthorizationData) string {
+func formatECRAuthorizationData(authDataList []*ecr.AuthorizationData) string {
 	output := []string{}
 	for _, authData := range authDataList {
-		output = append(output, formatDockerLoginCommand(authData))
+		output = append(output, formatECRDockerLoginCommand(authData))
 	}
 	return strings.Join(output[:], "\n")
 }
 
-func formatDockerLoginCommand(authData *ecr.AuthorizationData) string {
+func formatECRDockerLoginCommand(authData *ecr.AuthorizationData) string {
 	return fmt.Sprintf(
 		"docker login -u AWS -p %s %s",
-		decodePassword(*authData.AuthorizationToken),
+		decodeECRPassword(*authData.AuthorizationToken),
 		*authData.ProxyEndpoint,
 	)
 }
 
-func decodePassword(authToken string) string {
+func decodeECRPassword(authToken string) string {
 	userAndPassword, _ := base64.StdEncoding.DecodeString(authToken)
 	s := strings.Split(string(userAndPassword), ":")
 	return s[1]

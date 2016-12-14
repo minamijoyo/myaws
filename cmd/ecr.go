@@ -3,8 +3,6 @@ package cmd
 import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-
-	"github.com/minamijoyo/myaws/myaws/ecr"
 )
 
 func init() {
@@ -43,5 +41,5 @@ func runECRGetLoginCmd(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "newClient failed:")
 	}
 
-	return ecr.GetLogin(client)
+	return client.ECRGetLogin()
 }
