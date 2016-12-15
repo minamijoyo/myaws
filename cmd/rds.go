@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/minamijoyo/myaws/myaws/rds"
+	"github.com/minamijoyo/myaws/myaws"
 )
 
 func init() {
@@ -51,10 +51,10 @@ func runRDSLsCmd(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "newClient failed:")
 	}
 
-	options := rds.LsOptions{
+	options := myaws.RDSLsOptions{
 		Quiet:  viper.GetBool("rds.ls.quiet"),
 		Fields: viper.GetStringSlice("rds.ls.fields"),
 	}
 
-	return rds.Ls(client, options)
+	return client.RDSLs(options)
 }
