@@ -46,7 +46,7 @@ package: cross-build $(ARCHIVER)
 	popd
 
 .PHONY: release
-release: package $(GHR)
+release: $(GHR)
 	ghr -u $(GITHUB_USER) $(VERSION) pkg/
 
 .PHONY: lint
