@@ -8,6 +8,15 @@ Note that MyAWS is under development and its interface is unstable.
 
 # Installation
 
+If you are Mac OSX user:
+
+```bash
+$ brew tap minamijoyo/myaws
+$ brew install myaws
+```
+
+or
+
 If you have Go development environment:
 
 ```bash
