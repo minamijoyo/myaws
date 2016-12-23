@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"strings"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -168,10 +170,20 @@ func runEC2SSHCmd(cmd *cobra.Command, args []string) error {
 		return errors.New("Instance name is required")
 	}
 
-	filterTag := "Name:" + args[0]
+	var loginName, instanceName string
+	if strings.Contains(args[0], "@") {
+		// parse loginName@instanceName format
+		splitted := strings.SplitN(args[0], "@", 2)
+		loginName, instanceName = splitted[0], splitted[1]
+	} else {
+		loginName = viper.GetString("ec2.ssh.login-name")
+		instanceName = args[0]
+	}
+
+	filterTag := "Name:" + instanceName
 	options := myaws.EC2SSHOptions{
 		FilterTag:    filterTag,
-		LoginName:    viper.GetString("ec2.ssh.login-name"),
+		LoginName:    loginName,
 		IdentityFile: viper.GetString("ec2.ssh.identity-file"),
 		Private:      viper.GetBool("ec2.ssh.private"),
 	}
