@@ -38,6 +38,54 @@ func (client *Client) EC2SSH(options EC2SSHOptions) error {
 	}
 	defer connection.Close()
 
+	if err := sshWithTerminal(connection); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (client *Client) resolveEC2IPAddress(instanceID string) (string, error) {
+	params := &ec2.DescribeInstancesInput{
+		InstanceIds: []*string{&instanceID},
+	}
+
+	response, err := client.EC2.DescribeInstances(params)
+	if err != nil {
+		return "", errors.Wrap(err, "DescribeInstances failed:")
+	}
+
+	instance := *response.Reservations[0].Instances[0]
+	if instance.PublicIpAddress == nil {
+		return "", fmt.Errorf("no public ip address: %s", instanceID)
+	}
+
+	return *instance.PublicIpAddress, nil
+}
+
+func buildSSHConfig(loginName string, identityFile string) (*ssh.ClientConfig, error) {
+	normalizedIdentityFile := strings.Replace(identityFile, "~", os.Getenv("HOME"), 1)
+	key, err := ioutil.ReadFile(normalizedIdentityFile)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to read private key:")
+	}
+
+	signer, err := ssh.ParsePrivateKey(key)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to parse private key:")
+	}
+
+	config := &ssh.ClientConfig{
+		User: loginName,
+		Auth: []ssh.AuthMethod{
+			ssh.PublicKeys(signer),
+		},
+	}
+
+	return config, nil
+}
+
+func sshWithTerminal(connection *ssh.Client) error {
 	session, err := connection.NewSession()
 	if err != nil {
 		return errors.Wrap(err, "unable to new session failed:")
@@ -87,44 +135,4 @@ func (client *Client) EC2SSH(options EC2SSHOptions) error {
 	session.Wait()
 
 	return nil
-}
-
-func (client *Client) resolveEC2IPAddress(instanceID string) (string, error) {
-	params := &ec2.DescribeInstancesInput{
-		InstanceIds: []*string{&instanceID},
-	}
-
-	response, err := client.EC2.DescribeInstances(params)
-	if err != nil {
-		return "", errors.Wrap(err, "DescribeInstances failed:")
-	}
-
-	instance := *response.Reservations[0].Instances[0]
-	if instance.PublicIpAddress == nil {
-		return "", fmt.Errorf("no public ip address: %s", instanceID)
-	}
-
-	return *instance.PublicIpAddress, nil
-}
-
-func buildSSHConfig(loginName string, identityFile string) (*ssh.ClientConfig, error) {
-	normalizedIdentityFile := strings.Replace(identityFile, "~", os.Getenv("HOME"), 1)
-	key, err := ioutil.ReadFile(normalizedIdentityFile)
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to read private key:")
-	}
-
-	signer, err := ssh.ParsePrivateKey(key)
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to parse private key:")
-	}
-
-	config := &ssh.ClientConfig{
-		User: loginName,
-		Auth: []ssh.AuthMethod{
-			ssh.PublicKeys(signer),
-		},
-	}
-
-	return config, nil
 }
