@@ -19,7 +19,7 @@ type EC2LsOptions struct {
 
 // EC2Ls describes EC2 instances.
 func (client *Client) EC2Ls(options EC2LsOptions) error {
-	instances, err := client.FindEC2Instances(options)
+	instances, err := client.FindEC2Instances(options.All, options.FilterTag)
 	if err != nil {
 		return err
 	}
@@ -31,11 +31,11 @@ func (client *Client) EC2Ls(options EC2LsOptions) error {
 }
 
 // FindEC2Instances returns an array of instances matching the conditions.
-func (client *Client) FindEC2Instances(options EC2LsOptions) ([]*ec2.Instance, error) {
+func (client *Client) FindEC2Instances(all bool, filterTag string) ([]*ec2.Instance, error) {
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
-			buildEC2StateFilter(options.All),
-			buildEC2TagFilter(options.FilterTag),
+			buildEC2StateFilter(all),
+			buildEC2TagFilter(filterTag),
 		},
 	}
 
