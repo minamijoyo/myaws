@@ -1,7 +1,6 @@
 package myaws
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -15,14 +14,28 @@ import (
 
 // EC2SSHOptions customize the behavior of the SSH command.
 type EC2SSHOptions struct {
-	InstanceID   string
+	FilterTag    string
 	LoginName    string
 	IdentityFile string
+	Private      bool
 }
 
 // EC2SSH resolves IP address of EC2 instance and connects to it by SSH.
 func (client *Client) EC2SSH(options EC2SSHOptions) error {
-	hostname, err := client.resolveEC2IPAddress(options.InstanceID)
+	instances, err := client.FindEC2Instances(options.FilterTag, false)
+	if err != nil {
+		return err
+	}
+	if len(instances) == 0 {
+		return errors.Errorf("no such instance: %s", options.FilterTag)
+	}
+
+	if len(instances) >= 2 {
+		return errors.New("multiple instances found")
+	}
+
+	instance := instances[0]
+	hostname, err := client.resolveEC2IPAddress(instance, options.Private)
 	if err != nil {
 		return errors.Wrap(err, "unable to resolve IP address:")
 	}
@@ -45,21 +58,24 @@ func (client *Client) EC2SSH(options EC2SSHOptions) error {
 	return nil
 }
 
-func (client *Client) resolveEC2IPAddress(instanceID string) (string, error) {
-	params := &ec2.DescribeInstancesInput{
-		InstanceIds: []*string{&instanceID},
+func (client *Client) resolveEC2IPAddress(instance *ec2.Instance, private bool) (string, error) {
+	if private {
+		return client.resolveEC2PrivateIPAddress(instance)
 	}
+	return client.resolveEC2PublicIPAddress(instance)
+}
 
-	response, err := client.EC2.DescribeInstances(params)
-	if err != nil {
-		return "", errors.Wrap(err, "DescribeInstances failed:")
+func (client *Client) resolveEC2PrivateIPAddress(instance *ec2.Instance) (string, error) {
+	if instance.PrivateIpAddress == nil {
+		return "", errors.Errorf("no private ip address: %s", instance.InstanceId)
 	}
+	return *instance.PrivateIpAddress, nil
+}
 
-	instance := *response.Reservations[0].Instances[0]
+func (client *Client) resolveEC2PublicIPAddress(instance *ec2.Instance) (string, error) {
 	if instance.PublicIpAddress == nil {
-		return "", fmt.Errorf("no public ip address: %s", instanceID)
+		return "", errors.Errorf("no public ip address: %s", instance.InstanceId)
 	}
-
 	return *instance.PublicIpAddress, nil
 }
 

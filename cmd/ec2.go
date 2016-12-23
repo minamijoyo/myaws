@@ -149,9 +149,11 @@ func newEC2SSHCmd() *cobra.Command {
 	flags := cmd.Flags()
 	flags.StringP("login-name", "l", "", "Login username")
 	flags.StringP("identity-file", "i", "~/.ssh/id_rsa", "SSH private key file")
+	flags.BoolP("private", "", false, "Use private IP to connect")
 
 	viper.BindPFlag("ec2.ssh.login-name", flags.Lookup("login-name"))
 	viper.BindPFlag("ec2.ssh.identity-file", flags.Lookup("identity-file"))
+	viper.BindPFlag("ec2.ssh.private", flags.Lookup("private"))
 
 	return cmd
 }
@@ -163,13 +165,15 @@ func runEC2SSHCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	if len(args) == 0 {
-		return errors.New("INSTANCE_ID is required")
+		return errors.New("Instance name is required")
 	}
 
+	filterTag := "Name:" + args[0]
 	options := myaws.EC2SSHOptions{
-		InstanceID:   args[0],
+		FilterTag:    filterTag,
 		LoginName:    viper.GetString("ec2.ssh.login-name"),
 		IdentityFile: viper.GetString("ec2.ssh.identity-file"),
+		Private:      viper.GetBool("ec2.ssh.private"),
 	}
 
 	return client.EC2SSH(options)
