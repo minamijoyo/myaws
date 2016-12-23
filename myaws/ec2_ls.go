@@ -19,6 +19,19 @@ type EC2LsOptions struct {
 
 // EC2Ls describes EC2 instances.
 func (client *Client) EC2Ls(options EC2LsOptions) error {
+	instances, err := client.FindEC2Instances(options)
+	if err != nil {
+		return err
+	}
+
+	for _, instance := range instances {
+		fmt.Println(formatEC2Instance(client, options, instance))
+	}
+	return nil
+}
+
+// FindEC2Instances returns an array of instances matching the conditions.
+func (client *Client) FindEC2Instances(options EC2LsOptions) ([]*ec2.Instance, error) {
 	params := &ec2.DescribeInstancesInput{
 		Filters: []*ec2.Filter{
 			buildEC2StateFilter(options.All),
@@ -28,16 +41,17 @@ func (client *Client) EC2Ls(options EC2LsOptions) error {
 
 	response, err := client.EC2.DescribeInstances(params)
 	if err != nil {
-		return errors.Wrap(err, "DescribeInstances failed")
+		return nil, errors.Wrap(err, "DescribeInstances failed")
 	}
 
+	var instances []*ec2.Instance
 	for _, reservation := range response.Reservations {
 		for _, instance := range reservation.Instances {
-			fmt.Println(formatEC2Instance(client, options, instance))
+			instances = append(instances, instance)
 		}
 	}
 
-	return nil
+	return instances, nil
 }
 
 func buildEC2StateFilter(all bool) *ec2.Filter {
