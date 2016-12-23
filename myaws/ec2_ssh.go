@@ -27,22 +27,9 @@ func (client *Client) EC2SSH(options EC2SSHOptions) error {
 		return errors.Wrap(err, "unable to resolve IP address:")
 	}
 
-	identityFile := strings.Replace(options.IdentityFile, "~", os.Getenv("HOME"), 1)
-	key, err := ioutil.ReadFile(identityFile)
+	config, err := buildSSHConfig(options.LoginName, options.IdentityFile)
 	if err != nil {
-		return errors.Wrap(err, "unable to read private key:")
-	}
-
-	signer, err := ssh.ParsePrivateKey(key)
-	if err != nil {
-		return errors.Wrap(err, "unable to parse private key:")
-	}
-
-	config := &ssh.ClientConfig{
-		User: options.LoginName,
-		Auth: []ssh.AuthMethod{
-			ssh.PublicKeys(signer),
-		},
+		return err
 	}
 
 	connection, err := ssh.Dial("tcp", hostname+":22", config)
@@ -118,4 +105,26 @@ func (client *Client) resolveEC2IPAddress(instanceID string) (string, error) {
 	}
 
 	return *instance.PublicIpAddress, nil
+}
+
+func buildSSHConfig(loginName string, identityFile string) (*ssh.ClientConfig, error) {
+	normalizedIdentityFile := strings.Replace(identityFile, "~", os.Getenv("HOME"), 1)
+	key, err := ioutil.ReadFile(normalizedIdentityFile)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to read private key:")
+	}
+
+	signer, err := ssh.ParsePrivateKey(key)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to parse private key:")
+	}
+
+	config := &ssh.ClientConfig{
+		User: loginName,
+		Auth: []ssh.AuthMethod{
+			ssh.PublicKeys(signer),
+		},
+	}
+
+	return config, nil
 }
