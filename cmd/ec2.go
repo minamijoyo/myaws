@@ -181,11 +181,17 @@ func runEC2SSHCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	filterTag := "Name:" + instanceName
+
+	var command string
+	if len(args) >= 2 {
+		command = strings.Join(args[1:], " ")
+	}
 	options := myaws.EC2SSHOptions{
 		FilterTag:    filterTag,
 		LoginName:    loginName,
 		IdentityFile: viper.GetString("ec2.ssh.identity-file"),
 		Private:      viper.GetBool("ec2.ssh.private"),
+		Command:      command,
 	}
 
 	return client.EC2SSH(options)

@@ -18,6 +18,7 @@ type EC2SSHOptions struct {
 	LoginName    string
 	IdentityFile string
 	Private      bool
+	Command      string
 }
 
 // EC2SSH resolves IP address of EC2 instance and connects to it by SSH.
@@ -45,17 +46,11 @@ func (client *Client) EC2SSH(options EC2SSHOptions) error {
 		return err
 	}
 
-	connection, err := ssh.Dial("tcp", hostname+":22", config)
-	if err != nil {
-		return errors.Wrap(err, "unable to connect:")
-	}
-	defer connection.Close()
-
-	if err := sshWithTerminal(connection); err != nil {
-		return err
+	if options.Command == "" {
+		return startSSHSessionWithTerminal(hostname, config)
 	}
 
-	return nil
+	return executeSSHCommand(hostname, config, options.Command)
 }
 
 func (client *Client) resolveEC2IPAddress(instance *ec2.Instance, private bool) (string, error) {
@@ -101,7 +96,35 @@ func buildSSHConfig(loginName string, identityFile string) (*ssh.ClientConfig, e
 	return config, nil
 }
 
-func sshWithTerminal(connection *ssh.Client) error {
+func buildSSHSessionPipe(session *ssh.Session) error {
+	stdin, err := session.StdinPipe()
+	if err != nil {
+		return errors.Wrap(err, "unable to setup stdin for session:")
+	}
+	go io.Copy(stdin, os.Stdin)
+
+	stdout, err := session.StdoutPipe()
+	if err != nil {
+		return errors.Wrap(err, "unable to setup stdout for session:")
+	}
+	go io.Copy(os.Stdout, stdout)
+
+	stderr, err := session.StderrPipe()
+	if err != nil {
+		return errors.Wrap(err, "unable to setup stderr for session:")
+	}
+	go io.Copy(os.Stderr, stderr)
+
+	return nil
+}
+
+func startSSHSessionWithTerminal(hostname string, config *ssh.ClientConfig) error {
+	connection, err := ssh.Dial("tcp", hostname+":22", config)
+	if err != nil {
+		return errors.Wrap(err, "unable to connect:")
+	}
+	defer connection.Close()
+
 	session, err := connection.NewSession()
 	if err != nil {
 		return errors.Wrap(err, "unable to new session failed:")
@@ -127,28 +150,39 @@ func sshWithTerminal(connection *ssh.Client) error {
 		return errors.Wrap(err, "request for pseudo terminal failed:")
 	}
 
-	stdin, err := session.StdinPipe()
-	if err != nil {
-		return errors.Wrap(err, "unable to setup stdin for session:")
+	if err := buildSSHSessionPipe(session); err != nil {
+		return err
 	}
-	go io.Copy(stdin, os.Stdin)
-
-	stdout, err := session.StdoutPipe()
-	if err != nil {
-		return errors.Wrap(err, "unable to setup stdout for session:")
-	}
-	go io.Copy(os.Stdout, stdout)
-
-	stderr, err := session.StderrPipe()
-	if err != nil {
-		return errors.Wrap(err, "unable to setup stderr for session:")
-	}
-	go io.Copy(os.Stderr, stderr)
 
 	if err := session.Shell(); err != nil {
 		return errors.Wrap(err, "failed to start shell:")
 	}
 	session.Wait()
+
+	return nil
+}
+
+func executeSSHCommand(hostname string, config *ssh.ClientConfig, command string) error {
+	connection, err := ssh.Dial("tcp", hostname+":22", config)
+	if err != nil {
+		return errors.Wrap(err, "unable to connect:")
+	}
+	defer connection.Close()
+
+	session, err := connection.NewSession()
+	if err != nil {
+		return errors.Wrap(err, "unable to new session failed:")
+	}
+	defer session.Close()
+
+	if err := buildSSHSessionPipe(session); err != nil {
+		return err
+	}
+
+	session.Wait()
+	if err := session.Run(command); err != nil {
+		return errors.Wrapf(err, "failed to execute command: %s", command)
+	}
 
 	return nil
 }
