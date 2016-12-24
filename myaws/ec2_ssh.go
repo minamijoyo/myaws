@@ -190,6 +190,13 @@ func executeSSHCommand(hostname string, port string, config *ssh.ClientConfig, c
 	}
 	defer session.Close()
 
+	// Request pty for sudo
+	fd := int(os.Stdin.Fd())
+	width, height, _ := terminal.GetSize(fd)
+	if err := session.RequestPty("xterm", height, width, ssh.TerminalModes{}); err != nil {
+		return errors.Wrap(err, "request for pseudo terminal failed:")
+	}
+
 	out, err := session.CombinedOutput(command)
 
 	fmt.Printf("========== Start output on host: %s ==========\n", hostname)
