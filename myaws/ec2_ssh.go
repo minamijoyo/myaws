@@ -48,10 +48,10 @@ func (client *Client) EC2SSH(options EC2SSHOptions) error {
 	}
 
 	if options.Command == "" {
-		return startSSHSessionWithTerminal(hostname, config)
+		return startSSHSessionWithTerminal(hostname, "22", config)
 	}
 
-	return executeSSHCommand(hostname, config, options.Command)
+	return executeSSHCommand(hostname, "22", config, options.Command)
 }
 
 func (client *Client) resolveEC2IPAddress(instance *ec2.Instance, private bool) (string, error) {
@@ -119,8 +119,9 @@ func buildSSHSessionPipe(session *ssh.Session) error {
 	return nil
 }
 
-func startSSHSessionWithTerminal(hostname string, config *ssh.ClientConfig) error {
-	connection, err := ssh.Dial("tcp", hostname+":22", config)
+func startSSHSessionWithTerminal(hostname string, port string, config *ssh.ClientConfig) error {
+	addr := fmt.Sprintf("%s:%s", hostname, port)
+	connection, err := ssh.Dial("tcp", addr, config)
 	if err != nil {
 		return errors.Wrap(err, "unable to connect:")
 	}
@@ -163,8 +164,9 @@ func startSSHSessionWithTerminal(hostname string, config *ssh.ClientConfig) erro
 	return nil
 }
 
-func executeSSHCommand(hostname string, config *ssh.ClientConfig, command string) error {
-	connection, err := ssh.Dial("tcp", hostname+":22", config)
+func executeSSHCommand(hostname string, port string, config *ssh.ClientConfig, command string) error {
+	addr := fmt.Sprintf("%s:%s", hostname, port)
+	connection, err := ssh.Dial("tcp", addr, config)
 	if err != nil {
 		return errors.Wrap(err, "unable to connect:")
 	}
