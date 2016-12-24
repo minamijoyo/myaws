@@ -130,6 +130,7 @@ Usage:
 
 Available Commands:
   ls          List EC2 instances
+  ssh         SSH to EC2 instances
   start       Start EC2 instances
   stop        Stop EC2 instances
 
