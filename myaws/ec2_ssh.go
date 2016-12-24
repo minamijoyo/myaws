@@ -11,6 +11,7 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/sync/errgroup"
 )
 
 // EC2SSHOptions customize the behavior of the SSH command.
@@ -24,34 +25,52 @@ type EC2SSHOptions struct {
 
 // EC2SSH resolves IP address of EC2 instance and connects to it by SSH.
 func (client *Client) EC2SSH(options EC2SSHOptions) error {
-	instances, err := client.FindEC2Instances(options.FilterTag, false)
-	if err != nil {
-		return err
-	}
-	if len(instances) == 0 {
-		return errors.Errorf("no such instance: %s", options.FilterTag)
-	}
-
-	if len(instances) >= 2 {
-		return errors.New("multiple instances found")
-	}
-
-	instance := instances[0]
-	hostname, err := client.resolveEC2IPAddress(instance, options.Private)
-	if err != nil {
-		return errors.Wrap(err, "unable to resolve IP address:")
-	}
-
 	config, err := buildSSHConfig(options.LoginName, options.IdentityFile)
 	if err != nil {
 		return err
 	}
 
-	if options.Command == "" {
-		return startSSHSessionWithTerminal(hostname, "22", config)
+	instances, err := client.FindEC2Instances(options.FilterTag, false)
+	if err != nil {
+		return err
 	}
 
-	return executeSSHCommand(hostname, "22", config, options.Command)
+	if len(instances) == 0 {
+		return errors.Errorf("no such instance: %s", options.FilterTag)
+	}
+
+	if len(instances) >= 2 && options.Command == "" {
+		return errors.Errorf("multiple instances found")
+	}
+
+	hostnames := []string{}
+	for _, instance := range instances {
+		hostname, err := client.resolveEC2IPAddress(instance, options.Private)
+		if err != nil {
+			return err
+		}
+		hostnames = append(hostnames, hostname)
+	}
+
+	// Start single ssh session with terminal
+	if options.Command == "" {
+		return startSSHSessionWithTerminal(hostnames[0], "22", config)
+	}
+
+	// Execute ssh command to multiple hosts
+	eg := errgroup.Group{}
+	for _, hostname := range hostnames {
+		hostname := hostname
+		eg.Go(func() error {
+			return executeSSHCommand(hostname, "22", config, options.Command)
+		})
+	}
+
+	if err := eg.Wait(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (client *Client) resolveEC2IPAddress(instance *ec2.Instance, private bool) (string, error) {
@@ -179,10 +198,14 @@ func executeSSHCommand(hostname string, port string, config *ssh.ClientConfig, c
 	defer session.Close()
 
 	out, err := session.CombinedOutput(command)
+
+	fmt.Printf("========== Start output on host: %s ==========\n", hostname)
+	fmt.Println(string(out))
+	fmt.Printf("========== End   output on host: %s ==========\n", hostname)
+
 	if err != nil {
 		return errors.Wrapf(err, "failed to execute command: %s", command)
 	}
 
-	fmt.Println(string(out))
 	return nil
 }
