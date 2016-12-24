@@ -11,7 +11,6 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/terminal"
-	"golang.org/x/sync/errgroup"
 )
 
 // EC2SSHOptions customize the behavior of the SSH command.
@@ -57,17 +56,11 @@ func (client *Client) EC2SSH(options EC2SSHOptions) error {
 		return startSSHSessionWithTerminal(hostnames[0], "22", config)
 	}
 
-	// Execute ssh command to multiple hosts
-	eg := errgroup.Group{}
+	// Execute ssh command to multiple hosts in series
 	for _, hostname := range hostnames {
-		hostname := hostname
-		eg.Go(func() error {
-			return executeSSHCommand(hostname, "22", config, options.Command)
-		})
-	}
-
-	if err := eg.Wait(); err != nil {
-		return err
+		if err := executeSSHCommand(hostname, "22", config, options.Command); err != nil {
+			return err
+		}
 	}
 
 	return nil
