@@ -1,6 +1,7 @@
 package myaws
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
@@ -175,14 +176,11 @@ func executeSSHCommand(hostname string, config *ssh.ClientConfig, command string
 	}
 	defer session.Close()
 
-	if err := buildSSHSessionPipe(session); err != nil {
-		return err
-	}
-
-	session.Wait()
-	if err := session.Run(command); err != nil {
+	out, err := session.CombinedOutput(command)
+	if err != nil {
 		return errors.Wrapf(err, "failed to execute command: %s", command)
 	}
 
+	fmt.Println(string(out))
 	return nil
 }
