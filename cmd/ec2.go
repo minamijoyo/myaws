@@ -143,7 +143,7 @@ func runEC2StopCmd(cmd *cobra.Command, args []string) error {
 
 func newEC2SSHCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "ssh [USER]@INSTANCE_NAME [COMMAND...]",
+		Use:   "ssh [USER@]INSTANCE_NAME [COMMAND...]",
 		Short: "SSH to EC2 instances",
 		RunE:  runEC2SSHCmd,
 	}
