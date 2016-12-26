@@ -75,14 +75,14 @@ func (client *Client) resolveEC2IPAddress(instance *ec2.Instance, private bool) 
 
 func (client *Client) resolveEC2PrivateIPAddress(instance *ec2.Instance) (string, error) {
 	if instance.PrivateIpAddress == nil {
-		return "", errors.Errorf("no private ip address: %s", instance.InstanceId)
+		return "", errors.Errorf("no private ip address: %s", *instance.InstanceId)
 	}
 	return *instance.PrivateIpAddress, nil
 }
 
 func (client *Client) resolveEC2PublicIPAddress(instance *ec2.Instance) (string, error) {
 	if instance.PublicIpAddress == nil {
-		return "", errors.Errorf("no public ip address: %s", instance.InstanceId)
+		return "", errors.Errorf("no public ip address: %s", *instance.InstanceId)
 	}
 	return *instance.PublicIpAddress, nil
 }
