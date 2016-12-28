@@ -3,7 +3,7 @@ VERSION			:= v0.0.8
 REVISION		:= $(shell git rev-parse --short HEAD)
 LDFLAGS			:= "-X github.com/minamijoyo/myaws/cmd.Version=${VERSION} -X github.com/minamijoyo/myaws/cmd.Revision=${REVISION}"
 OSARCH			:= "darwin/amd64 linux/amd64"
-GITHUB_USER	:= minamijoyo
+GITHUB_ORG	:= minamijoyo
 
 ifndef GOBIN
 GOBIN := $(shell echo "$${GOPATH%%:*}/bin")
@@ -47,7 +47,7 @@ package: cross-build $(ARCHIVER)
 
 .PHONY: release
 release: $(GHR)
-	ghr -u $(GITHUB_USER) $(VERSION) pkg/
+	ghr -u $(GITHUB_ORG) $(VERSION) pkg/
 
 .PHONY: lint
 lint: $(LINT)
