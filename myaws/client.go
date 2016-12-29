@@ -1,6 +1,8 @@
 package myaws
 
 import (
+	"io"
+
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -11,6 +13,8 @@ import (
 
 // Client represents myaws CLI
 type Client struct {
+	stdout      io.Writer
+	stderr      io.Writer
 	profile     string
 	region      string
 	timezone    string
@@ -23,10 +27,12 @@ type Client struct {
 }
 
 // NewClient initializes Client instance
-func NewClient(profile string, region string, timezone string, humanize bool) (*Client, error) {
+func NewClient(stdout io.Writer, stderr io.Writer, profile string, region string, timezone string, humanize bool) (*Client, error) {
 	session := session.New()
 	config := newConfig(profile, region)
 	client := &Client{
+		stdout:      stdout,
+		stderr:      stderr,
 		profile:     profile,
 		region:      region,
 		timezone:    timezone,

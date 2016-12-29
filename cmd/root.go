@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -47,6 +49,8 @@ func initConfig() {
 
 func newClient() (*myaws.Client, error) {
 	return myaws.NewClient(
+		os.Stdout,
+		os.Stderr,
 		viper.GetString("profile"),
 		viper.GetString("region"),
 		viper.GetString("timezone"),
