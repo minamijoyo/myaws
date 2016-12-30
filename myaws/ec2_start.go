@@ -25,10 +25,10 @@ func (client *Client) EC2Start(options EC2StartOptions) error {
 		return errors.Wrap(err, "StartInstances failed:")
 	}
 
-	fmt.Println(response)
+	fmt.Fprintln(client.stdout, response)
 
 	if options.Wait {
-		fmt.Println("Wait until instance running...")
+		fmt.Fprintln(client.stdout, "Wait until instance running...")
 		err := client.EC2.WaitUntilInstanceRunning(
 			&ec2.DescribeInstancesInput{
 				InstanceIds: options.InstanceIds,

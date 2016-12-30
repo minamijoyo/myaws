@@ -24,7 +24,7 @@ func (client *Client) RDSLs(options RDSLsOptions) error {
 	}
 
 	for _, db := range response.DBInstances {
-		fmt.Println(formatDBInstance(client, options, db))
+		fmt.Fprintln(client.stdout, formatDBInstance(client, options, db))
 	}
 
 	return nil

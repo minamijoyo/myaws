@@ -53,12 +53,12 @@ func (client *Client) EC2SSH(options EC2SSHOptions) error {
 
 	// Start single ssh session with terminal
 	if options.Command == "" {
-		return startSSHSessionWithTerminal(hostnames[0], "22", config)
+		return client.startSSHSessionWithTerminal(hostnames[0], "22", config)
 	}
 
 	// Execute ssh command to multiple hosts in series
 	for _, hostname := range hostnames {
-		if err := executeSSHCommand(hostname, "22", config, options.Command); err != nil {
+		if err := client.executeSSHCommand(hostname, "22", config, options.Command); err != nil {
 			return err
 		}
 	}
@@ -131,7 +131,7 @@ func buildSSHSessionPipe(session *ssh.Session) error {
 	return nil
 }
 
-func startSSHSessionWithTerminal(hostname string, port string, config *ssh.ClientConfig) error {
+func (client *Client) startSSHSessionWithTerminal(hostname string, port string, config *ssh.ClientConfig) error {
 	addr := fmt.Sprintf("%s:%s", hostname, port)
 	connection, err := ssh.Dial("tcp", addr, config)
 	if err != nil {
@@ -176,7 +176,7 @@ func startSSHSessionWithTerminal(hostname string, port string, config *ssh.Clien
 	return nil
 }
 
-func executeSSHCommand(hostname string, port string, config *ssh.ClientConfig, command string) error {
+func (client *Client) executeSSHCommand(hostname string, port string, config *ssh.ClientConfig, command string) error {
 	addr := fmt.Sprintf("%s:%s", hostname, port)
 	connection, err := ssh.Dial("tcp", addr, config)
 	if err != nil {
@@ -199,9 +199,9 @@ func executeSSHCommand(hostname string, port string, config *ssh.ClientConfig, c
 
 	out, err := session.CombinedOutput(command)
 
-	fmt.Printf("========== Start output on host: %s ==========\n", hostname)
-	fmt.Println(string(out))
-	fmt.Printf("========== End   output on host: %s ==========\n", hostname)
+	fmt.Fprintf(client.stdout, "========== Start output on host: %s ==========\n", hostname)
+	fmt.Fprintln(client.stdout, string(out))
+	fmt.Fprintf(client.stdout, "========== End   output on host: %s ==========\n", hostname)
 
 	if err != nil {
 		return errors.Wrapf(err, "failed to execute command: %s", command)

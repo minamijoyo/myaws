@@ -25,10 +25,10 @@ func (client *Client) EC2Stop(options EC2StopOptions) error {
 		return errors.Wrap(err, "StopInstances failed:")
 	}
 
-	fmt.Println(response)
+	fmt.Fprintln(client.stdout, response)
 
 	if options.Wait {
-		fmt.Println("Wait until instance stopped...")
+		fmt.Fprintln(client.stdout, "Wait until instance stopped...")
 		err := client.EC2.WaitUntilInstanceStopped(
 			&ec2.DescribeInstancesInput{
 				InstanceIds: options.InstanceIds,

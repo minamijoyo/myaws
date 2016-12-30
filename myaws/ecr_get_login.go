@@ -17,7 +17,7 @@ func (client *Client) ECRGetLogin() error {
 	if err != nil {
 		return errors.Wrap(err, "GetAuthorizationToken failed:")
 	}
-	fmt.Println(formatECRAuthorizationData(response.AuthorizationData))
+	fmt.Fprintln(client.stdout, formatECRAuthorizationData(response.AuthorizationData))
 
 	return nil
 }

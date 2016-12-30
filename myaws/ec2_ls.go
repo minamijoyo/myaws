@@ -23,7 +23,7 @@ func (client *Client) EC2Ls(options EC2LsOptions) error {
 	}
 
 	for _, instance := range instances {
-		fmt.Println(formatEC2Instance(client, options, instance))
+		fmt.Fprintln(client.stdout, formatEC2Instance(client, options, instance))
 	}
 	return nil
 }

@@ -26,7 +26,7 @@ func (client *Client) AutoscalingLs(options AutoscalingLsOptions) error {
 
 	for _, asg := range response.AutoScalingGroups {
 		if options.All || len(asg.Instances) > 0 {
-			fmt.Println(formatAutoscalingGroup(asg))
+			fmt.Fprintln(client.stdout, formatAutoscalingGroup(asg))
 		}
 	}
 

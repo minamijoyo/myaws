@@ -25,7 +25,7 @@ func (client *Client) ELBPs(options ELBPsOptions) error {
 	}
 
 	for _, state := range response.InstanceStates {
-		fmt.Println(formatELBInstanceState(state))
+		fmt.Fprintln(client.stdout, formatELBInstanceState(state))
 	}
 
 	return nil

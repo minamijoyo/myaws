@@ -18,7 +18,7 @@ func (client *Client) ELBLs() error {
 	}
 
 	for _, lb := range response.LoadBalancerDescriptions {
-		fmt.Println(formatLoadBalancer(lb))
+		fmt.Fprintln(client.stdout, formatLoadBalancer(lb))
 	}
 
 	return nil
