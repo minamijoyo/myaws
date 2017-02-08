@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/ecr"
 	"github.com/aws/aws-sdk-go/service/elb"
+	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/rds"
 )
 
@@ -23,6 +24,7 @@ type Client struct {
 	EC2         *ec2.EC2
 	ECR         *ecr.ECR
 	ELB         *elb.ELB
+	IAM         *iam.IAM
 	RDS         *rds.RDS
 }
 
@@ -41,6 +43,7 @@ func NewClient(stdout io.Writer, stderr io.Writer, profile string, region string
 		EC2:         ec2.New(session, config),
 		ECR:         ecr.New(session, config),
 		ELB:         elb.New(session, config),
+		IAM:         iam.New(session, config),
 		RDS:         rds.New(session, config),
 	}
 	return client, nil
