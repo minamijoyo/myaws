@@ -51,6 +51,7 @@ func initConfig() {
 
 func newClient() (*myaws.Client, error) {
 	return myaws.NewClient(
+		os.Stdin,
 		os.Stdout,
 		os.Stderr,
 		viper.GetString("profile"),

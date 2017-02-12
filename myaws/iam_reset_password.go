@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 )
 
+// IAMResetPasswordOptions customize the behavior of the ResetPassword command.
 type IAMResetPasswordOptions struct {
 	UserName string
 }
@@ -27,17 +28,35 @@ func generateRandomPassword(length int) string {
 	return string(b)
 }
 
-// IAMResetPassword reset password for IAM user
+// IAMResetPassword reset password for IAM user.
 func (client *Client) IAMResetPassword(options IAMResetPasswordOptions) error {
+	user, err := client.IAMGetUser(options.UserName)
+	if err != nil {
+		return err
+	}
+
+	fmt.Fprintf(client.stdout, "%v\n", user)
+
+	confirm, err := client.Confirmation("Are you sure want to reset password?")
+	if err != nil {
+		return err
+	}
+
+	if !confirm {
+		// cancel reset password.
+		fmt.Fprintln(client.stdout, "Cancelled.")
+		return nil
+	}
+
 	password := generateRandomPassword(16)
-	change_required := true
+	changeRequired := true
 	params := &iam.UpdateLoginProfileInput{
 		UserName:              &options.UserName,
 		Password:              &password,
-		PasswordResetRequired: &change_required,
+		PasswordResetRequired: &changeRequired,
 	}
 
-	_, err := client.IAM.UpdateLoginProfile(params)
+	_, err = client.IAM.UpdateLoginProfile(params)
 	if err != nil {
 		return errors.Wrap(err, "UpdateLoginProfile failed:")
 	}
@@ -45,4 +64,18 @@ func (client *Client) IAMResetPassword(options IAMResetPasswordOptions) error {
 	fmt.Fprintf(client.stdout, "NewPassword: %s\n", password)
 
 	return nil
+}
+
+// IAMGetUser returns IAM user.
+func (client *Client) IAMGetUser(username string) (*iam.User, error) {
+	params := &iam.GetUserInput{
+		UserName: &username,
+	}
+
+	response, err := client.IAM.GetUser(params)
+	if err != nil {
+		return nil, errors.Wrap(err, "GetUser failed:")
+	}
+
+	return response.User, nil
 }

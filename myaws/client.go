@@ -1,7 +1,10 @@
 package myaws
 
 import (
+	"bufio"
+	"fmt"
 	"io"
+	"strings"
 
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
@@ -10,10 +13,12 @@ import (
 	"github.com/aws/aws-sdk-go/service/elb"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/rds"
+	"github.com/pkg/errors"
 )
 
 // Client represents myaws CLI
 type Client struct {
+	stdin       io.Reader
 	stdout      io.Writer
 	stderr      io.Writer
 	profile     string
@@ -29,10 +34,11 @@ type Client struct {
 }
 
 // NewClient initializes Client instance
-func NewClient(stdout io.Writer, stderr io.Writer, profile string, region string, timezone string, humanize bool) (*Client, error) {
+func NewClient(stdin io.Reader, stdout io.Writer, stderr io.Writer, profile string, region string, timezone string, humanize bool) (*Client, error) {
 	session := session.New()
 	config := newConfig(profile, region)
 	client := &Client{
+		stdin:       stdin,
 		stdout:      stdout,
 		stderr:      stderr,
 		profile:     profile,
@@ -47,4 +53,19 @@ func NewClient(stdout io.Writer, stderr io.Writer, profile string, region string
 		RDS:         rds.New(session, config),
 	}
 	return client, nil
+}
+
+// Confirmation asks user for confirmation.
+// "y" and "Y" returns true and others are false.
+func (client *Client) Confirmation(message string) (bool, error) {
+	fmt.Fprintf(client.stdout, "%s [y/n]: ", message)
+
+	reader := bufio.NewReader(client.stdin)
+	input, err := reader.ReadString('\n')
+	if err != nil {
+		return false, errors.Wrap(err, "ReadString failed:")
+	}
+
+	normalized := strings.ToLower(strings.TrimSpace(input))
+	return normalized == "y", nil
 }
