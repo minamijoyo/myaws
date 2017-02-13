@@ -9,6 +9,10 @@ import (
 // FormatTime returns a localized time string.
 // If humanize flag is true, it is converted to human frendly representation.
 func (client *Client) FormatTime(t *time.Time) string {
+	if t == nil {
+		return ""
+	}
+
 	location, err := time.LoadLocation(client.timezone)
 	if err != nil {
 		panic(err)

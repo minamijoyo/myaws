@@ -37,10 +37,30 @@ func newIAMUserCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
+		newIAMUserLsCmd(),
 		newIAMUserResetPasswordCmd(),
 	)
 
 	return cmd
+}
+
+func newIAMUserLsCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "ls",
+		Short: "List IAM users",
+		RunE:  runIAMUserLsCmd,
+	}
+
+	return cmd
+}
+
+func runIAMUserLsCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	return client.IAMUserLs()
 }
 
 func newIAMUserResetPasswordCmd() *cobra.Command {
