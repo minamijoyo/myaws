@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 
 	"github.com/minamijoyo/myaws/myaws"
 )
@@ -22,39 +21,50 @@ func newIAMCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		newIAMResetPasswordCmd(),
+		newIAMUserCmd(),
 	)
 
 	return cmd
 }
 
-func newIAMResetPasswordCmd() *cobra.Command {
+func newIAMUserCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "reset-password",
-		Short: "Reset login password for IAM user",
-		RunE:  runIAMResetPasswordCmd,
+		Use:   "user",
+		Short: "Manage IAM user resources",
+		Run: func(cmd *cobra.Command, args []string) {
+			cmd.Help()
+		},
 	}
 
-	flags := cmd.Flags()
-	flags.StringP("username", "u", "", "Username whose password is to be changed")
+	cmd.AddCommand(
+		newIAMUserResetPasswordCmd(),
+	)
 
-	viper.BindPFlag("iam.reset-password.username", flags.Lookup("username"))
 	return cmd
 }
 
-func runIAMResetPasswordCmd(cmd *cobra.Command, args []string) error {
+func newIAMUserResetPasswordCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "reset-password USERNAME",
+		Short: "Reset login password for IAM user",
+		RunE:  runIAMUserResetPasswordCmd,
+	}
+
+	return cmd
+}
+
+func runIAMUserResetPasswordCmd(cmd *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
 	}
 
-	username := viper.GetString("iam.reset-password.username")
-	if username == "" {
-		return errors.New("username is required")
+	if len(args) == 0 {
+		return errors.New("USERNAME is required")
 	}
 
-	options := myaws.IAMResetPasswordOptions{
-		UserName: username,
+	options := myaws.IAMUserResetPasswordOptions{
+		UserName: args[0],
 	}
-	return client.IAMResetPassword(options)
+	return client.IAMUserResetPassword(options)
 }

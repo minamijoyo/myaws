@@ -9,8 +9,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// IAMResetPasswordOptions customize the behavior of the ResetPassword command.
-type IAMResetPasswordOptions struct {
+// IAMUserResetPasswordOptions customize the behavior of the IAMUserResetPassword command.
+type IAMUserResetPasswordOptions struct {
 	UserName string
 }
 
@@ -28,8 +28,8 @@ func generateRandomPassword(length int) string {
 	return string(b)
 }
 
-// IAMResetPassword reset password for IAM user.
-func (client *Client) IAMResetPassword(options IAMResetPasswordOptions) error {
+// IAMUserResetPassword reset password for IAM user.
+func (client *Client) IAMUserResetPassword(options IAMUserResetPasswordOptions) error {
 	user, err := client.IAMGetUser(options.UserName)
 	if err != nil {
 		return err
