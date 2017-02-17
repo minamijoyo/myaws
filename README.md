@@ -32,7 +32,7 @@ https://github.com/minamijoyo/myaws/releases
 ## OSX (64bit)
 
 ```bash
-$ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.0.8/myaws_v0.0.8_darwin_amd64.tar.gz \
+$ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.0.9/myaws_v0.0.9_darwin_amd64.tar.gz \
     | tar -xzC /usr/local/bin && chmod +x /usr/local/bin/myaws
 $ myaws --help
 ```
@@ -40,7 +40,7 @@ $ myaws --help
 ## Linux (64bit)
 
 ```bash
-$ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.0.8/myaws_v0.0.8_linux_amd64.tar.gz \
+$ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.0.9/myaws_v0.0.9_linux_amd64.tar.gz \
     | tar -xzC /usr/local/bin && chmod +x /usr/local/bin/myaws
 $ myaws --help
 ```
@@ -107,7 +107,9 @@ Available Commands:
   ec2         Manage EC2 resources
   ecr         Manage ECR resources
   elb         Manage ELB resources
+  iam         Manage IAM resources
   rds         Manage RDS resources
+  ssm         Manage SSM resources
   version     Print version
 
 Flags:
@@ -253,6 +255,51 @@ Use "myaws ecr [command] --help" for more information about a command.
 ```
 
 ```bash
+$ myaws iam --help
+Manage IAM resources
+
+Usage:
+  myaws iam [flags]
+  myaws iam [command]
+
+Available Commands:
+  user        Manage IAM user resources
+
+Global Flags:
+      --config string     config file (default $HOME/.myaws.yml)
+      --debug             Enable debug mode
+      --humanize          Use Human friendly format for time (default true)
+      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
+      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
+
+Use "myaws iam [command] --help" for more information about a command.
+```
+
+```bash
+$ myaws iam user --help
+Manage IAM user resources
+
+Usage:
+  myaws iam user [flags]
+  myaws iam user [command]
+
+Available Commands:
+  ls             List IAM users
+  reset-password Reset login password for IAM user
+
+Global Flags:
+      --config string     config file (default $HOME/.myaws.yml)
+      --debug             Enable debug mode
+      --humanize          Use Human friendly format for time (default true)
+      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
+      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
+
+Use "myaws iam user [command] --help" for more information about a command.
+```
+
+```bash
 $ myaws rds --help
 Manage RDS resources
 
@@ -271,6 +318,51 @@ Global Flags:
       --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
 
 Use "myaws rds [command] --help" for more information about a command.
+```
+
+```bash
+$ myaws ssm --help
+Manage SSM resources
+
+Usage:
+  myaws ssm [flags]
+  myaws ssm [command]
+
+Available Commands:
+  parameter   Manage SSM parameter resources
+
+Global Flags:
+      --config string     config file (default $HOME/.myaws.yml)
+      --debug             Enable debug mode
+      --humanize          Use Human friendly format for time (default true)
+      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
+      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
+
+Use "myaws ssm [command] --help" for more information about a command.
+```
+
+```bash
+$ myaws ssm parameter --help
+Manage SSM parameter resources
+
+Usage:
+  myaws ssm parameter [flags]
+  myaws ssm parameter [command]
+
+Available Commands:
+  get         Get SSM parameter
+  put         Put SSM parameter
+
+Global Flags:
+      --config string     config file (default $HOME/.myaws.yml)
+      --debug             Enable debug mode
+      --humanize          Use Human friendly format for time (default true)
+      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
+      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
+
+Use "myaws ssm parameter [command] --help" for more information about a command.
 ```
 
 # Example
