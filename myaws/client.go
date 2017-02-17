@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/elb"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/rds"
+	"github.com/aws/aws-sdk-go/service/ssm"
 	"github.com/pkg/errors"
 )
 
@@ -31,6 +32,7 @@ type Client struct {
 	ELB         *elb.ELB
 	IAM         *iam.IAM
 	RDS         *rds.RDS
+	SSM         *ssm.SSM
 }
 
 // NewClient initializes Client instance
@@ -51,6 +53,7 @@ func NewClient(stdin io.Reader, stdout io.Writer, stderr io.Writer, profile stri
 		ELB:         elb.New(session, config),
 		IAM:         iam.New(session, config),
 		RDS:         rds.New(session, config),
+		SSM:         ssm.New(session, config),
 	}
 	return client, nil
 }
