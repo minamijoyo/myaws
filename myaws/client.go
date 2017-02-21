@@ -14,6 +14,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/aws/aws-sdk-go/service/ssm"
+	"github.com/aws/aws-sdk-go/service/sts"
 	"github.com/pkg/errors"
 )
 
@@ -33,6 +34,7 @@ type Client struct {
 	IAM         *iam.IAM
 	RDS         *rds.RDS
 	SSM         *ssm.SSM
+	STS         *sts.STS
 }
 
 // NewClient initializes Client instance
@@ -54,6 +56,7 @@ func NewClient(stdin io.Reader, stdout io.Writer, stderr io.Writer, profile stri
 		IAM:         iam.New(session, config),
 		RDS:         rds.New(session, config),
 		SSM:         ssm.New(session, config),
+		STS:         sts.New(session, config),
 	}
 	return client, nil
 }

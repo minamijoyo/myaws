@@ -110,6 +110,7 @@ Available Commands:
   iam         Manage IAM resources
   rds         Manage RDS resources
   ssm         Manage SSM resources
+  sts         Manage STS resources
   version     Print version
 
 Flags:
