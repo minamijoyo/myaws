@@ -1,49 +1,47 @@
 package myaws
 
 import (
-	"net/http"
 	"os"
-	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds"
-	"github.com/aws/aws-sdk-go/aws/ec2metadata"
-	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/aws/defaults"
 )
 
 // newConfig creates *aws.config from profile and region options.
 // AWS credentials are checked in the order of
-// the profile, environment variables, IAM Role.
+// profile, environment variables, IAM Task Role (ECS), IAM Role.
+// Unlike the aws default, load profile before environment variables
+// because we want to prioritize explicit arguments over the environment.
 func newConfig(profile string, region string) *aws.Config {
-	return &aws.Config{
-		Credentials: newCredentials(profile),
-		Region:      getRegion(region),
-	}
+	defaultConfig := defaults.Get().Config
+	cred := newCredentials(profile, getRegion(region))
+	return defaultConfig.WithCredentials(cred).WithRegion(getRegion(region))
 }
 
-func newCredentials(profile string) *credentials.Credentials {
+func newCredentials(profile string, region string) *credentials.Credentials {
+	// temporary config to resolve RemoteCredProvider
+	tmpConfig := defaults.Get().Config.WithRegion(region)
+	tmpHandlers := defaults.Handlers()
+
 	return credentials.NewChainCredentials(
 		[]credentials.Provider{
+			// Read profile before environment variables
 			&credentials.SharedCredentialsProvider{
 				Profile: profile,
 			},
 			&credentials.EnvProvider{},
-			&ec2rolecreds.EC2RoleProvider{
-				Client: ec2metadata.New(session.New(&aws.Config{
-					HTTPClient: &http.Client{Timeout: 3000 * time.Millisecond},
-				},
-				)),
-			},
+			// for IAM Task Role (ECS) and IAM Role
+			defaults.RemoteCredProvider(*tmpConfig, tmpHandlers),
 		})
 }
 
-func getRegion(region string) *string {
+func getRegion(region string) string {
 	if region != "" {
 		// get region from the arg
-		return aws.String(region)
+		return region
 	}
 
 	// get region from the environement variable
-	return aws.String(os.Getenv("AWS_DEFAULT_REGION"))
+	return os.Getenv("AWS_DEFAULT_REGION")
 }

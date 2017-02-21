@@ -64,7 +64,12 @@ aws_access_key_id = XXXXXX
 aws_secret_access_key = XXXXXX
 ```
 
-or IAM Role is also avaiable.
+or IAM Task Role (ECS) or IAM Role are also avaiable.
+
+AWS credentials are checked in the order of
+profile, environment variables, IAM Task Role (ECS), IAM Role.
+Unlike the aws default, load profile before environment variables
+because we want to prioritize explicit arguments over the environment.
 
 AWS region can be set in Environment variable ( `AWS_DEFAULT_REGION` ), configuration file ( `$HOME/.myaws.yaml` ) , or command argument ( `--region` ).
 
