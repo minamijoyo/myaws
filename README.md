@@ -64,7 +64,7 @@ aws_access_key_id = XXXXXX
 aws_secret_access_key = XXXXXX
 ```
 
-or IAM Task Role (ECS) or IAM Role are also avaiable.
+or IAM Task Role (ECS) or IAM Role are also available.
 
 AWS credentials are checked in the order of
 profile, environment variables, IAM Task Role (ECS), IAM Role.
