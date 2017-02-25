@@ -178,7 +178,7 @@ $ myaws ec2 ssh --help
 SSH to EC2 instances
 
 Usage:
-  myaws ec2 ssh [USER]@INSTANCE_NAME [COMMAND...] [flags]
+  myaws ec2 ssh [USER@]INSTANCE_NAME [COMMAND...] [flags]
 
 Flags:
   -i, --identity-file string   SSH private key file (default "~/.ssh/id_rsa")
@@ -187,6 +187,7 @@ Flags:
 
 Global Flags:
       --config string     config file (default $HOME/.myaws.yml)
+      --debug             Enable debug mode
       --humanize          Use Human friendly format for time (default true)
       --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
       --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
