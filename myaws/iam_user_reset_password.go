@@ -5,6 +5,8 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/pkg/errors"
 )
@@ -50,15 +52,32 @@ func (client *Client) IAMUserResetPassword(options IAMUserResetPasswordOptions) 
 
 	password := generateRandomPassword(16)
 	changeRequired := true
-	params := &iam.UpdateLoginProfileInput{
-		UserName:              &options.UserName,
-		Password:              &password,
-		PasswordResetRequired: &changeRequired,
+
+	// Check if IAM user has a login profile.
+	_, err = client.IAM.GetLoginProfile(&iam.GetLoginProfileInput{
+		UserName: aws.String(options.UserName),
+	})
+
+	if err != nil {
+		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == "NoSuchEntity" {
+			// if IAM user has no login profile, create a login profile with initial password.
+			err = client.IAMUserCreateLoginProfile(options.UserName, password, changeRequired)
+			if err != nil {
+				return err
+			}
+
+			fmt.Fprintf(client.stdout, "InitialPassword: %s\n", password)
+
+			return nil
+		}
+		// unexpected error
+		return err
 	}
 
-	_, err = client.IAM.UpdateLoginProfile(params)
+	// if IAM user has a login profile already, update password.
+	err = client.IAMUserUpdatePassword(options.UserName, password, changeRequired)
 	if err != nil {
-		return errors.Wrap(err, "UpdateLoginProfile failed:")
+		return err
 	}
 
 	fmt.Fprintf(client.stdout, "NewPassword: %s\n", password)
@@ -78,4 +97,36 @@ func (client *Client) IAMGetUser(username string) (*iam.User, error) {
 	}
 
 	return response.User, nil
+}
+
+// IAMUserCreateLoginProfile creates a login profile for IAM User with initial password.
+func (client *Client) IAMUserCreateLoginProfile(username string, password string, changeRequired bool) error {
+	params := &iam.CreateLoginProfileInput{
+		UserName:              &username,
+		Password:              &password,
+		PasswordResetRequired: &changeRequired,
+	}
+
+	_, err := client.IAM.CreateLoginProfile(params)
+	if err != nil {
+		return errors.Wrap(err, "CreateLoginProfile failed:")
+	}
+
+	return nil
+}
+
+// IAMUserUpdatePassword updates the password of existing login profile for IAM user.
+func (client *Client) IAMUserUpdatePassword(username string, password string, changeRequired bool) error {
+	params := &iam.UpdateLoginProfileInput{
+		UserName:              &username,
+		Password:              &password,
+		PasswordResetRequired: &changeRequired,
+	}
+
+	_, err := client.IAM.UpdateLoginProfile(params)
+	if err != nil {
+		return errors.Wrap(err, "UpdateLoginProfile failed:")
+	}
+
+	return nil
 }
