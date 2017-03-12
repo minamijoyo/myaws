@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"encoding/json"
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/pkg/errors"
 )
@@ -23,14 +24,19 @@ func (client *Client) RDSLs(options RDSLsOptions) error {
 		return errors.Wrap(err, "DescribeDBInstances failed:")
 	}
 
-	for _, db := range response.DBInstances {
-		fmt.Fprintln(client.stdout, formatDBInstance(client, options, db))
+	switch client.format {
+	case "json":
+		fmt.Fprintln(client.stdout, formatJSONDBInstances(client, options, response.DBInstances))
+	default:
+		for _, db := range response.DBInstances {
+			fmt.Fprintln(client.stdout, formatTsvDBInstance(client, options, db))
+		}
 	}
 
 	return nil
 }
 
-func formatDBInstance(client *Client, options RDSLsOptions, db *rds.DBInstance) string {
+func dbInstanceValues(client *Client, options RDSLsOptions, db *rds.DBInstance) map[string]string {
 	formatFuncs := map[string]func(client *Client, options RDSLsOptions, db *rds.DBInstance) string{
 		"DBInstanceClass":      formatRDSDBInstanceClass,
 		"Engine":               formatRDSEngine,
@@ -42,6 +48,19 @@ func formatDBInstance(client *Client, options RDSLsOptions, db *rds.DBInstance) 
 		"InstanceCreateTime":   formatRDSInstanceCreateTime,
 	}
 
+	values := map[string]string{}
+
+	for _, field := range options.Fields {
+		value := formatFuncs[field](client, options, db)
+		values[field] = value
+	}
+
+	return values
+}
+
+func formatTsvDBInstance(client *Client, options RDSLsOptions, db *rds.DBInstance) string {
+	values := dbInstanceValues(client, options, db)
+
 	var outputFields []string
 	if options.Quiet {
 		outputFields = []string{"DBInstanceIdentifier"}
@@ -50,13 +69,24 @@ func formatDBInstance(client *Client, options RDSLsOptions, db *rds.DBInstance) 
 	}
 
 	output := []string{}
-
 	for _, field := range outputFields {
-		value := formatFuncs[field](client, options, db)
-		output = append(output, value)
+		output = append(output, values[field])
 	}
 
 	return strings.Join(output[:], "\t")
+}
+
+func formatJSONDBInstances(client *Client, options RDSLsOptions, dbInstances []*rds.DBInstance) string {
+	outputs := []map[string]string{}
+	for _, db := range dbInstances {
+		outputs = append(outputs, dbInstanceValues(client, options, db))
+	}
+
+	bytes, err := json.Marshal(outputs)
+	if err != nil {
+		panic(err)
+	}
+	return fmt.Sprintf("%s", bytes)
 }
 
 func formatRDSDBInstanceIdentifier(client *Client, options RDSLsOptions, db *rds.DBInstance) string {
@@ -71,10 +101,17 @@ func formatRDSDBInstanceClass(client *Client, options RDSLsOptions, db *rds.DBIn
 }
 
 func formatRDSEngine(client *Client, options RDSLsOptions, db *rds.DBInstance) string {
-	return fmt.Sprintf("%-15s", fmt.Sprintf("%s:%s", *db.Engine, *db.EngineVersion))
+	engine := fmt.Sprintf("%s:%s", *db.Engine, *db.EngineVersion)
+	if client.format == "json" {
+		return engine
+	}
+	return fmt.Sprintf("%-15s", engine)
 }
 
 func formatRDSAllocatedStorage(client *Client, options RDSLsOptions, db *rds.DBInstance) string {
+	if client.format == "json" {
+		return fmt.Sprintf("%dGB", *db.AllocatedStorage)
+	}
 	return fmt.Sprintf("%4dGB", *db.AllocatedStorage)
 }
 
@@ -87,12 +124,19 @@ func formatRDSStorageTypeIops(client *Client, options RDSLsOptions, db *rds.DBIn
 	if db.Iops != nil {
 		iops = fmt.Sprint(*db.Iops)
 	}
+	storage := fmt.Sprintf("%s:%s", *db.StorageType, iops)
+	if client.format == "json" {
+		return storage
+	}
 
-	return fmt.Sprintf("%-8s", fmt.Sprintf("%s:%s", *db.StorageType, iops))
+	return fmt.Sprintf("%-8s", storage)
 }
 
 func formatRDSReadReplicaSource(client *Client, options RDSLsOptions, db *rds.DBInstance) string {
 	if db.ReadReplicaSourceDBInstanceIdentifier == nil {
+		if client.format == "json" {
+			return ""
+		}
 		return "source:---"
 	}
 	return fmt.Sprintf("source:%s", *db.ReadReplicaSourceDBInstanceIdentifier)
