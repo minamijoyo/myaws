@@ -18,6 +18,10 @@ func (client *Client) FormatTime(t *time.Time) string {
 		panic(err)
 	}
 
+	if client.format == "json" {
+		return t.Format("2006-01-02T15:04:05Z")
+	}
+
 	if client.humanize {
 		// humanized format
 		return humanize.Time(t.In(location))
