@@ -47,7 +47,7 @@ func newEC2LsCmd() *cobra.Command {
 	flags.StringP("filter-tag", "t", "Name:",
 		"Filter instances by tag, such as \"Name:app-production\". The value of tag is assumed to be a partial match",
 	)
-	flags.StringP("fields", "F", "InstanceId InstanceType PublicIpAddress PrivateIpAddress StateName LaunchTime Tag:Name", "Output fields list separated by space")
+	flags.StringP("fields", "F", "InstanceId InstanceType PublicIpAddress PrivateIpAddress StateName LaunchTime AvailabilityZone Tag:Name", "Output fields list separated by space")
 
 	viper.BindPFlag("ec2.ls.all", flags.Lookup("all"))
 	viper.BindPFlag("ec2.ls.quiet", flags.Lookup("quiet"))

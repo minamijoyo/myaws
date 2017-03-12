@@ -36,6 +36,7 @@ func formatEC2Instance(client *Client, options EC2LsOptions, instance *ec2.Insta
 		"PrivateIpAddress": formatEC2PrivateIPAddress,
 		"StateName":        formatEC2StateName,
 		"LaunchTime":       formatEC2LaunchTime,
+		"AvailabilityZone": formatEC2AvailabilityZone,
 	}
 
 	var outputFields []string
@@ -99,4 +100,8 @@ func formatEC2Tag(instance *ec2.Instance, key string) string {
 		}
 	}
 	return value
+}
+
+func formatEC2AvailabilityZone(client *Client, options EC2LsOptions, instance *ec2.Instance) string {
+	return *instance.Placement.AvailabilityZone
 }
