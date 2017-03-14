@@ -2,8 +2,9 @@ package myaws
 
 import (
 	"fmt"
-	"github.com/aws/aws-sdk-go/service/ec2"
 	"strings"
+
+	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
 type EC2RILsOptions struct {
