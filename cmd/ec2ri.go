@@ -53,9 +53,9 @@ func runEC2RILsCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	options := myaws.EC2RILsOptions{
-		All:       viper.GetBool("ec2ri.ls.all"),
-		Quiet:     viper.GetBool("ec2ri.ls.quiet"),
-		Fields:    viper.GetStringSlice("ec2ri.ls.fields"),
+		All:    viper.GetBool("ec2ri.ls.all"),
+		Quiet:  viper.GetBool("ec2ri.ls.quiet"),
+		Fields: viper.GetStringSlice("ec2ri.ls.fields"),
 	}
 
 	return client.EC2RILs(options)
