@@ -6,13 +6,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-type EC2ReservedInstanceOptions struct {
-	All       bool
-	Quiet     bool
-	FilterTag string
-	Fields    []string
-}
-
 // FindEC2ReservedInstances return an array of reserved instances matching the conditions.
 func (client *Client) FindEC2ReservedInstances(all bool) ([]*ec2.ReservedInstances, error) {
 	params := &ec2.DescribeReservedInstancesInput{
