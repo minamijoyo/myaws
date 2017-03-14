@@ -7,12 +7,14 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
+// EC2RILsOptions customize the behavior of the Ls command.
 type EC2RILsOptions struct {
 	All    bool
 	Quiet  bool
 	Fields []string
 }
 
+// EC2RILs describes EC2 Reserved Instances.
 func (client *Client) EC2RILs(options EC2RILsOptions) error {
 	instances, err := client.FindEC2ReservedInstances(options.All)
 	if err != nil {
