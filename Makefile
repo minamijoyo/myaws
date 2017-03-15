@@ -49,6 +49,10 @@ package: cross-build $(ARCHIVER)
 release: $(GHR)
 	ghr -u $(GITHUB_ORG) $(VERSION) pkg/
 
+.PHONY: digest
+digest:
+	openssl dgst -sha256 pkg/${NAME}_${VERSION}_darwin_amd64.tar.gz
+
 .PHONY: lint
 lint: $(LINT)
 	@golint ./...
