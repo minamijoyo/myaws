@@ -34,9 +34,9 @@ func formatEC2Instance(client *Client, options EC2LsOptions, instance *ec2.Insta
 		"InstanceType":     formatEC2InstanceType,
 		"PublicIpAddress":  formatEC2PublicIPAddress,
 		"PrivateIpAddress": formatEC2PrivateIPAddress,
+		"AvailabilityZone": formatEC2AvailabilityZone,
 		"StateName":        formatEC2StateName,
 		"LaunchTime":       formatEC2LaunchTime,
-		"AvailabilityZone": formatEC2AvailabilityZone,
 	}
 
 	var outputFields []string
