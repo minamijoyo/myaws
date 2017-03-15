@@ -1,5 +1,5 @@
 NAME				:= myaws
-VERSION			:= v0.1.1
+VERSION			:= v0.1.2
 REVISION		:= $(shell git rev-parse --short HEAD)
 LDFLAGS			:= "-X github.com/minamijoyo/myaws/cmd.Version=${VERSION} -X github.com/minamijoyo/myaws/cmd.Revision=${REVISION}"
 OSARCH			:= "darwin/amd64 linux/amd64"
