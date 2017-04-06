@@ -15,8 +15,8 @@ import (
 // because we want to prioritize explicit arguments over the environment.
 func newConfig(profile string, region string) *aws.Config {
 	defaultConfig := defaults.Get().Config
-	cred := newCredentials(profile, getRegion(region))
-	return defaultConfig.WithCredentials(cred).WithRegion(getRegion(region))
+	cred := newCredentials(getenv("AWS_DEFAULT_PROFILE", profile), getenv("AWS_DEFAULT_REGION", region))
+	return defaultConfig.WithCredentials(cred).WithRegion(getenv("AWS_DEFAULT_REGION", region))
 }
 
 func newCredentials(profile string, region string) *credentials.Credentials {
@@ -36,12 +36,10 @@ func newCredentials(profile string, region string) *credentials.Credentials {
 		})
 }
 
-func getRegion(region string) string {
-	if region != "" {
-		// get region from the arg
-		return region
+func getenv(key, fallback string) string {
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return fallback
 	}
-
-	// get region from the environement variable
-	return os.Getenv("AWS_DEFAULT_REGION")
+	return value
 }
