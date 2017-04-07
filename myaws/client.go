@@ -27,6 +27,7 @@ type Client struct {
 	region      string
 	timezone    string
 	humanize    bool
+	format      string
 	AutoScaling *autoscaling.AutoScaling
 	EC2         *ec2.EC2
 	ECR         *ecr.ECR
@@ -38,7 +39,7 @@ type Client struct {
 }
 
 // NewClient initializes Client instance
-func NewClient(stdin io.Reader, stdout io.Writer, stderr io.Writer, profile string, region string, timezone string, humanize bool) (*Client, error) {
+func NewClient(stdin io.Reader, stdout io.Writer, stderr io.Writer, profile string, region string, timezone string, humanize bool, format string) (*Client, error) {
 	session := session.New()
 	config := newConfig(profile, region)
 	client := &Client{
@@ -49,6 +50,7 @@ func NewClient(stdin io.Reader, stdout io.Writer, stderr io.Writer, profile stri
 		region:      region,
 		timezone:    timezone,
 		humanize:    humanize,
+		format:      format,
 		AutoScaling: autoscaling.New(session, config),
 		EC2:         ec2.New(session, config),
 		ECR:         ecr.New(session, config),

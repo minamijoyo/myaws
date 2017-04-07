@@ -28,13 +28,14 @@ func init() {
 	RootCmd.PersistentFlags().StringP("region", "", "", "AWS region (default none and used AWS_DEFAULT_REGION environment variable.")
 	RootCmd.PersistentFlags().StringP("timezone", "", "Local", "Time zone, such as UTC, Asia/Tokyo")
 	RootCmd.PersistentFlags().BoolP("humanize", "", true, "Use Human friendly format for time")
+	RootCmd.PersistentFlags().StringP("format", "", "tsv", "Output format")
 
 	viper.BindPFlag("profile", RootCmd.PersistentFlags().Lookup("profile"))
 	viper.BindPFlag("debug", RootCmd.PersistentFlags().Lookup("debug"))
 	viper.BindPFlag("region", RootCmd.PersistentFlags().Lookup("region"))
 	viper.BindPFlag("timezone", RootCmd.PersistentFlags().Lookup("timezone"))
 	viper.BindPFlag("humanize", RootCmd.PersistentFlags().Lookup("humanize"))
-
+	viper.BindPFlag("format", RootCmd.PersistentFlags().Lookup("format"))
 }
 
 func initConfig() {
@@ -58,5 +59,6 @@ func newClient() (*myaws.Client, error) {
 		viper.GetString("region"),
 		viper.GetString("timezone"),
 		viper.GetBool("humanize"),
+		viper.GetString("format"),
 	)
 }
