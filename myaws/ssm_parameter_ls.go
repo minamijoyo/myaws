@@ -15,11 +15,14 @@ type SSMParameterLsOptions struct {
 
 // SSMParameterLs get values from SSM parameter store with KMS decryption.
 func (client *Client) SSMParameterLs(options SSMParameterLsOptions) error {
-	filter := &ssm.ParametersFilter{
-		Key: aws.String("Name"),
-		Values: []*string{
-			aws.String(options.Name),
-		},
+	var filter *ssm.ParametersFilter
+	if len(options.Name) > 0 {
+		filter = &ssm.ParametersFilter{
+			Key: aws.String("Name"),
+			Values: []*string{
+				aws.String(options.Name),
+			},
+		}
 	}
 	filters := []*ssm.ParametersFilter{filter}
 
