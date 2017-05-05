@@ -42,6 +42,7 @@ func newSSMParameterCmd() *cobra.Command {
 		newSSMParameterPutCmd(),
 		newSSMParameterGetCmd(),
 		newSSMParameterLsCmd(),
+		newSSMParameterEnvCmd(),
 	)
 
 	return cmd
@@ -141,4 +142,31 @@ func runSSMParameterLsCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	return client.SSMParameterLs(options)
+}
+
+func newSSMParameterEnvCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "env NAME",
+		Short: "Print SSM parameters as a list of environment variables",
+		RunE:  runSSMParameterEnvCmd,
+	}
+
+	return cmd
+}
+
+func runSSMParameterEnvCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	if len(args) == 0 {
+		return errors.New("NAME is required")
+	}
+
+	options := myaws.SSMParameterEnvOptions{
+		Name: args[0],
+	}
+
+	return client.SSMParameterEnv(options)
 }
