@@ -123,7 +123,7 @@ func newSSMParameterLsCmd() *cobra.Command {
 
 	flags := cmd.Flags()
 	flags.StringP("name", "n", "",
-		"Filter parameters by Name, such as foo.dev. The value of tag is assumed to be a partial match",
+		"Filter parameters by Name, such as foo.dev. The value of tag is assumed to be a prefix match",
 	)
 
 	viper.BindPFlag("ssm.parameter.ls.name", flags.Lookup("name"))
