@@ -41,6 +41,7 @@ func newSSMParameterCmd() *cobra.Command {
 	cmd.AddCommand(
 		newSSMParameterPutCmd(),
 		newSSMParameterGetCmd(),
+		newSSMParameterLsCmd(),
 	)
 
 	return cmd
@@ -111,4 +112,33 @@ func runSSMParameterGetCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	return client.SSMParameterGet(options)
+}
+
+func newSSMParameterLsCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "ls",
+		Short: "List SSM parameters",
+		RunE:  runSSMParameterLsCmd,
+	}
+
+	flags := cmd.Flags()
+	flags.StringP("name", "n", "",
+		"Filter parameters by Name, such as foo.dev. The value of tag is assumed to be a partial match",
+	)
+
+	viper.BindPFlag("ssm.parameter.ls.name", flags.Lookup("name"))
+	return cmd
+}
+
+func runSSMParameterLsCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	options := myaws.SSMParameterLsOptions{
+		Name: viper.GetString("ssm.parameter.ls.name"),
+	}
+
+	return client.SSMParameterLs(options)
 }
