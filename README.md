@@ -98,6 +98,15 @@ ec2:
       - Tag:attached_asg
 ```
 
+# Example
+
+```bash
+$ myaws ec2 ls
+i-0f48fxxxxxxxxxxxx     t2.micro        52.197.xxx.xxx  10.193.xxx.xxx    running 1 minute ago    proxy
+i-0e267xxxxxxxxxxxx     t2.medium       52.198.xxx.xxx  10.193.xxx.xxx    running 2 days ago      app
+i-0fdaaxxxxxxxxxxxx     t2.large        52.197.xxx.xxx  10.193.xxx.xxx    running 1 month ago     batch
+```
+
 # Usage
 
 ```bash
@@ -372,15 +381,6 @@ Global Flags:
       --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
 
 Use "myaws ssm parameter [command] --help" for more information about a command.
-```
-
-# Example
-
-```bash
-$ myaws ec2 ls
-i-0f48fxxxxxxxxxxxx     t2.micro        52.197.xxx.xxx  10.193.xxx.xxx    running 1 minute ago    proxy
-i-0e267xxxxxxxxxxxx     t2.medium       52.198.xxx.xxx  10.193.xxx.xxx    running 2 days ago      app
-i-0fdaaxxxxxxxxxxxx     t2.large        52.197.xxx.xxx  10.193.xxx.xxx    running 1 month ago     batch
 ```
 
 # LICENCE
