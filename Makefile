@@ -1,7 +1,7 @@
 NAME				:= myaws
 VERSION			:= v0.1.3
 REVISION		:= $(shell git rev-parse --short HEAD)
-LDFLAGS			:= "-X github.com/minamijoyo/myaws/cmd.Version=${VERSION} -X github.com/minamijoyo/myaws/cmd.Revision=${REVISION}"
+LDFLAGS			:= "-X github.com/minamijoyo/myaws/cmd.Version=${VERSION} -X github.com/minamijoyo/myaws/cmd.Revision=${REVISION} -extldflags \"-static\""
 OSARCH			:= "darwin/amd64 linux/amd64"
 GITHUB_ORG	:= minamijoyo
 
@@ -27,7 +27,7 @@ deps:
 
 .PHONY: build
 build: deps
-	go build -ldflags $(LDFLAGS) -o bin/$(NAME)
+	go build -a -tags netgo -installsuffix netgo -ldflags $(LDFLAGS) -o bin/$(NAME)
 
 .PHONY: install
 install: deps
