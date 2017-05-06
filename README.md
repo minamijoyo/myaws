@@ -358,7 +358,9 @@ Usage:
   myaws ssm parameter [command]
 
 Available Commands:
+  env         Print SSM parameters as a list of environment variables
   get         Get SSM parameter
+  ls          List SSM parameters
   put         Put SSM parameter
 
 Global Flags:
