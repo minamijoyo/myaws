@@ -27,7 +27,7 @@ func (client *Client) SSMParameterPut(options SSMParameterPutOptions) error {
 		keyID = nil
 	}
 
-	params := &ssm.PutParameterInput{
+	input := &ssm.PutParameterInput{
 		Name:      &options.Name,
 		Value:     &options.Value,
 		KeyId:     keyID,
@@ -35,7 +35,7 @@ func (client *Client) SSMParameterPut(options SSMParameterPutOptions) error {
 		Overwrite: &overwrite,
 	}
 
-	_, err := client.SSM.PutParameter(params)
+	_, err := client.SSM.PutParameter(input)
 	if err != nil {
 		return errors.Wrap(err, "PutParameter failed:")
 	}

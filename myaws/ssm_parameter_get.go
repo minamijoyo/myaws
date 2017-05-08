@@ -16,12 +16,12 @@ type SSMParameterGetOptions struct {
 
 // SSMParameterGet get values from SSM parameter store with KMS decryption.
 func (client *Client) SSMParameterGet(options SSMParameterGetOptions) error {
-	params := &ssm.GetParametersInput{
+	input := &ssm.GetParametersInput{
 		Names:          options.Names,
 		WithDecryption: &options.WithDecryption,
 	}
 
-	response, err := client.SSM.GetParameters(params)
+	response, err := client.SSM.GetParameters(input)
 	if err != nil {
 		return errors.Wrap(err, "GetParameters failed:")
 	}

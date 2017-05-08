@@ -9,13 +9,13 @@ type SSMParameterLsOptions struct {
 
 // SSMParameterLs describes SSM parameters.
 func (client *Client) SSMParameterLs(options SSMParameterLsOptions) error {
-	parameters, err := client.FindSSMParameters(options.Name)
+	metadata, err := client.FindSSMParameterMetadata(options.Name)
 	if err != nil {
 		return err
 	}
 
-	for _, parameter := range parameters {
-		fmt.Fprintln(client.stdout, *parameter.Name)
+	for _, m := range metadata {
+		fmt.Fprintln(client.stdout, *m.Name)
 	}
 
 	return nil

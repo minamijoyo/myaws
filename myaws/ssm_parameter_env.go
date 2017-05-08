@@ -17,22 +17,22 @@ type SSMParameterEnvOptions struct {
 
 // SSMParameterEnv prints SSM parameters as a list of environment variables.
 func (client *Client) SSMParameterEnv(options SSMParameterEnvOptions) error {
-	parameters, err := client.FindSSMParameters(options.Name)
+	metadata, err := client.FindSSMParameterMetadata(options.Name)
 	if err != nil {
 		return err
 	}
 
 	names := []*string{}
-	for _, parameter := range parameters {
-		names = append(names, parameter.Name)
+	for _, m := range metadata {
+		names = append(names, m.Name)
 	}
 
-	params := &ssm.GetParametersInput{
+	input := &ssm.GetParametersInput{
 		Names:          names,
 		WithDecryption: aws.Bool(true),
 	}
 
-	response, err := client.SSM.GetParameters(params)
+	response, err := client.SSM.GetParameters(input)
 	if err != nil {
 		return errors.Wrap(err, "GetParameters failed:")
 	}
