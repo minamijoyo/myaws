@@ -1,0 +1,4 @@
+.envrc
+.git
+pkg/
+out/
