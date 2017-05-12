@@ -34,7 +34,6 @@ https://github.com/minamijoyo/myaws/releases
 ```bash
 $ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.2.0/myaws_v0.2.0_darwin_amd64.tar.gz \
     | tar -xzC /usr/local/bin && chmod +x /usr/local/bin/myaws
-$ myaws --help
 ```
 
 ## Linux (64bit)
@@ -42,7 +41,6 @@ $ myaws --help
 ```bash
 $ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.2.0/myaws_v0.2.0_linux_amd64.tar.gz \
     | tar -xzC /usr/local/bin && chmod +x /usr/local/bin/myaws
-$ myaws --help
 ```
 
 # Configuration
