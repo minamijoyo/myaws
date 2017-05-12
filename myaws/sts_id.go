@@ -19,6 +19,6 @@ func (client *Client) STSID() error {
 }
 
 func formatSTSID(id *sts.GetCallerIdentityOutput) string {
-	return fmt.Sprintf("Account: %s\nUserId: %s\nArn: %s\n",
+	return fmt.Sprintf("Account: %s\nUserId: %s\nArn: %s",
 		*id.Account, *id.UserId, *id.Arn)
 }
