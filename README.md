@@ -367,6 +367,7 @@ Usage:
   myaws ssm parameter [command]
 
 Available Commands:
+  del         Delete SSM parameter
   env         Print SSM parameters as a list of environment variables
   get         Get SSM parameter
   ls          List SSM parameters

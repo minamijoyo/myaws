@@ -43,6 +43,7 @@ func newSSMParameterCmd() *cobra.Command {
 		newSSMParameterGetCmd(),
 		newSSMParameterLsCmd(),
 		newSSMParameterEnvCmd(),
+		newSSMParameterDelCmd(),
 	)
 
 	return cmd
@@ -169,4 +170,31 @@ func runSSMParameterEnvCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	return client.SSMParameterEnv(options)
+}
+
+func newSSMParameterDelCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "del NAME",
+		Short: "Delete SSM parameter",
+		RunE:  runSSMParameterDelCmd,
+	}
+
+	return cmd
+}
+
+func runSSMParameterDelCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	if len(args) == 0 {
+		return errors.New("NAME is required")
+	}
+
+	options := myaws.SSMParameterDelOptions{
+		Name: args[0],
+	}
+
+	return client.SSMParameterDel(options)
 }
