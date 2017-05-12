@@ -32,7 +32,7 @@ https://github.com/minamijoyo/myaws/releases
 ## OSX (64bit)
 
 ```bash
-$ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.1.3/myaws_v0.1.3_darwin_amd64.tar.gz \
+$ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.2.0/myaws_v0.2.0_darwin_amd64.tar.gz \
     | tar -xzC /usr/local/bin && chmod +x /usr/local/bin/myaws
 $ myaws --help
 ```
@@ -40,7 +40,7 @@ $ myaws --help
 ## Linux (64bit)
 
 ```bash
-$ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.1.3/myaws_v0.1.3_linux_amd64.tar.gz \
+$ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.2.0/myaws_v0.2.0_linux_amd64.tar.gz \
     | tar -xzC /usr/local/bin && chmod +x /usr/local/bin/myaws
 $ myaws --help
 ```
