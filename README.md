@@ -11,8 +11,7 @@ Note that MyAWS is under development and its interface is unstable.
 If you are Mac OSX user:
 
 ```bash
-$ brew tap minamijoyo/myaws
-$ brew install myaws
+$ brew install minamijoyo/myaws/myaws
 ```
 
 or
