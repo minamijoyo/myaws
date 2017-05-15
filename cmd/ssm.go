@@ -152,6 +152,10 @@ func newSSMParameterEnvCmd() *cobra.Command {
 		RunE:  runSSMParameterEnvCmd,
 	}
 
+	flags := cmd.Flags()
+	flags.BoolP("docker-format", "e", false, "Output in docker environment variables format such as -e KEY=VALUE")
+
+	viper.BindPFlag("ssm.parameter.env.docker-format", flags.Lookup("docker-format"))
 	return cmd
 }
 
@@ -166,7 +170,8 @@ func runSSMParameterEnvCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	options := myaws.SSMParameterEnvOptions{
-		Name: args[0],
+		Name:         args[0],
+		DockerFormat: viper.GetBool("ssm.parameter.env.docker-format"),
 	}
 
 	return client.SSMParameterEnv(options)
