@@ -167,8 +167,8 @@ Usage:
 
 Flags:
   -a, --all                 List all instances (by default, list running instances only)
-  -F, --fields string       Output fields list separated by space (default "InstanceId InstanceType PublicIpAddress PrivateIpAddress StateName LaunchTime Tag:Name")
-  -t, --filter-tag string   Filter instances by tag, such as "Name:app-production". The value of tag is assumed to be a partial match (default "Name:")
+  -F, --fields string       Output fields list separated by space (default "InstanceId InstanceType PublicIpAddress PrivateIpAddress AvailabilityZone StateName LaunchTime Tag:Name")
+  -t, --filter-tag string   Filter instances by tag, such as "Name:app-production". The value of tag is assumed to be a partial match
   -q, --quiet               Only display InstanceIDs
 
 Global Flags:
