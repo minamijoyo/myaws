@@ -44,7 +44,7 @@ func newEC2LsCmd() *cobra.Command {
 	flags := cmd.Flags()
 	flags.BoolP("all", "a", false, "List all instances (by default, list running instances only)")
 	flags.BoolP("quiet", "q", false, "Only display InstanceIDs")
-	flags.StringP("filter-tag", "t", "Name:",
+	flags.StringP("filter-tag", "t", "",
 		"Filter instances by tag, such as \"Name:app-production\". The value of tag is assumed to be a partial match",
 	)
 	flags.StringP("fields", "F", "InstanceId InstanceType PublicIpAddress PrivateIpAddress AvailabilityZone StateName LaunchTime Tag:Name", "Output fields list separated by space")
