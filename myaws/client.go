@@ -6,6 +6,7 @@ import (
 	"io"
 	"strings"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -20,6 +21,7 @@ import (
 
 // Client represents myaws CLI
 type Client struct {
+	config      *aws.Config
 	stdin       io.Reader
 	stdout      io.Writer
 	stderr      io.Writer
@@ -42,6 +44,7 @@ func NewClient(stdin io.Reader, stdout io.Writer, stderr io.Writer, profile stri
 	session := session.New()
 	config := newConfig(profile, region)
 	client := &Client{
+		config:      config,
 		stdin:       stdin,
 		stdout:      stdout,
 		stderr:      stderr,

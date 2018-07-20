@@ -71,9 +71,11 @@ func newAutoscalingAttachCmd() *cobra.Command {
 	flags := cmd.Flags()
 	flags.StringP("instance-ids", "i", "", "One or more instance IDs")
 	flags.StringP("load-balancer-names", "l", "", "One or more load balancer names")
+	flags.BoolP("wait", "w", false, "Wait until all instances are InService")
 
 	viper.BindPFlag("autoscaling.attach.instance-ids", flags.Lookup("instance-ids"))
 	viper.BindPFlag("autoscaling.attach.load-balancer-names", flags.Lookup("load-balancer-names"))
+	viper.BindPFlag("autoscaling.attach.wait", flags.Lookup("wait"))
 
 	return cmd
 }
@@ -94,6 +96,7 @@ func runAutoscalingAttachCmd(cmd *cobra.Command, args []string) error {
 		AsgName:           args[0],
 		InstanceIds:       instanceIds,
 		LoadBalancerNames: loadBalancerNames,
+		Wait:              viper.GetBool("autoscaling.attach.wait"),
 	}
 
 	return client.AutoscalingAttach(options)
@@ -109,9 +112,11 @@ func newAutoscalingDetachCmd() *cobra.Command {
 	flags := cmd.Flags()
 	flags.StringP("instance-ids", "i", "", "One or more instance IDs")
 	flags.StringP("load-balancer-names", "l", "", "One or more load balancer names")
+	flags.BoolP("wait", "w", false, "Wait until all instances are InService")
 
 	viper.BindPFlag("autoscaling.detach.instance-ids", flags.Lookup("instance-ids"))
 	viper.BindPFlag("autoscaling.detach.load-balancer-names", flags.Lookup("load-balancer-names"))
+	viper.BindPFlag("autoscaling.detach.wait", flags.Lookup("wait"))
 
 	return cmd
 }
@@ -132,6 +137,7 @@ func runAutoscalingDetachCmd(cmd *cobra.Command, args []string) error {
 		AsgName:           args[0],
 		InstanceIds:       instanceIds,
 		LoadBalancerNames: loadBalancerNames,
+		Wait:              viper.GetBool("autoscaling.detach.wait"),
 	}
 
 	return client.AutoscalingDetach(options)
@@ -146,8 +152,10 @@ func newAutoscalingUpdateCmd() *cobra.Command {
 
 	flags := cmd.Flags()
 	flags.Int64P("desired-capacity", "c", -1, "The number of EC2 instances that should be running in the Auto Scaling group.")
+	flags.BoolP("wait", "w", false, "Wait until all instances are InService")
 
 	viper.BindPFlag("autoscaling.update.desired-capacity", flags.Lookup("desired-capacity"))
+	viper.BindPFlag("autoscaling.update.wait", flags.Lookup("wait"))
 
 	return cmd
 }
@@ -170,6 +178,7 @@ func runAutoscalingUpdateCmd(cmd *cobra.Command, args []string) error {
 	options := myaws.AutoscalingUpdateOptions{
 		AsgName:         args[0],
 		DesiredCapacity: desiredCapacity,
+		Wait:            viper.GetBool("autoscaling.update.wait"),
 	}
 
 	return client.AutoscalingUpdate(options)

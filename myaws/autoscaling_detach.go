@@ -1,6 +1,8 @@
 package myaws
 
 import (
+	"fmt"
+
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/pkg/errors"
 )
@@ -10,6 +12,7 @@ type AutoscalingDetachOptions struct {
 	AsgName           string
 	InstanceIds       []*string
 	LoadBalancerNames []*string
+	Wait              bool
 }
 
 // AutoscalingDetach detaches instances or load balancers from autoscaling group.
@@ -24,6 +27,11 @@ func (client *Client) AutoscalingDetach(options AutoscalingDetachOptions) error 
 		if err := client.autoscalingDetachLoadBalancers(options.AsgName, options.LoadBalancerNames); err != nil {
 			return err
 		}
+	}
+
+	if options.Wait {
+		fmt.Fprintln(client.stdout, "Wait until the desired capacity instances are InService...")
+		return client.waitUntilAutoScalingGroupDesiredState(options.AsgName)
 	}
 
 	return nil

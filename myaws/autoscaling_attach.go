@@ -1,6 +1,8 @@
 package myaws
 
 import (
+	"fmt"
+
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/pkg/errors"
 )
@@ -10,6 +12,7 @@ type AutoscalingAttachOptions struct {
 	AsgName           string
 	InstanceIds       []*string
 	LoadBalancerNames []*string
+	Wait              bool
 }
 
 // AutoscalingAttach attaches instances or load balancers from autoscaling group.
@@ -24,6 +27,11 @@ func (client *Client) AutoscalingAttach(options AutoscalingAttachOptions) error 
 		if err := client.autoscalingAttachLoadBalancers(options.AsgName, options.LoadBalancerNames); err != nil {
 			return err
 		}
+	}
+
+	if options.Wait {
+		fmt.Fprintln(client.stdout, "Wait until the desired capacity instances are InService...")
+		return client.waitUntilAutoScalingGroupDesiredState(options.AsgName)
 	}
 
 	return nil
