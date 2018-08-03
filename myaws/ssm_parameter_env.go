@@ -4,10 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/awsutil"
 	"github.com/aws/aws-sdk-go/service/ssm"
-	"github.com/pkg/errors"
 )
 
 // SSMParameterEnvOptions customize the behavior of the ParameterEnv command.
@@ -28,22 +25,13 @@ func (client *Client) SSMParameterEnv(options SSMParameterEnvOptions) error {
 		names = append(names, m.Name)
 	}
 
-	input := &ssm.GetParametersInput{
-		Names:          names,
-		WithDecryption: aws.Bool(true),
-	}
-
-	response, err := client.SSM.GetParameters(input)
+	parameters, err := client.GetSSMParameters(names, true)
 	if err != nil {
-		return errors.Wrap(err, "GetParameters failed:")
-	}
-
-	if len(response.InvalidParameters) > 0 {
-		return errors.Errorf("InvalidParameters: %v", awsutil.Prettify(response.InvalidParameters))
+		return err
 	}
 
 	output := []string{}
-	for _, parameter := range response.Parameters {
+	for _, parameter := range parameters {
 		output = append(output, formatSSMParameterAsEnv(parameter, options.Name, options.DockerFormat))
 	}
 

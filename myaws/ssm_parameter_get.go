@@ -3,9 +3,7 @@ package myaws
 import (
 	"fmt"
 
-	"github.com/aws/aws-sdk-go/aws/awsutil"
 	"github.com/aws/aws-sdk-go/service/ssm"
-	"github.com/pkg/errors"
 )
 
 // SSMParameterGetOptions customize the behavior of the ParameterGet command.
@@ -16,21 +14,12 @@ type SSMParameterGetOptions struct {
 
 // SSMParameterGet get values from SSM parameter store with KMS decryption.
 func (client *Client) SSMParameterGet(options SSMParameterGetOptions) error {
-	input := &ssm.GetParametersInput{
-		Names:          options.Names,
-		WithDecryption: &options.WithDecryption,
-	}
-
-	response, err := client.SSM.GetParameters(input)
+	parameters, err := client.GetSSMParameters(options.Names, options.WithDecryption)
 	if err != nil {
-		return errors.Wrap(err, "GetParameters failed:")
+		return err
 	}
 
-	if len(response.InvalidParameters) > 0 {
-		return errors.Errorf("InvalidParameters: %v", awsutil.Prettify(response.InvalidParameters))
-	}
-
-	for _, parameter := range response.Parameters {
+	for _, parameter := range parameters {
 		fmt.Fprintln(client.stdout, formatSSMParameter(parameter))
 	}
 
