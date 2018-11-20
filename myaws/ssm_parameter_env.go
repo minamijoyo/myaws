@@ -51,9 +51,12 @@ func formatSSMParameterAsEnv(parameter *ssm.Parameter, prefix string, dockerForm
 	// The name of environment variable should be uppercase.
 	name := strings.ToUpper(flatten)
 	outputOptionName := ""
+	// Escape % character
+	value := strings.Replace(*parameter.Value, "%", "%%", -1)
+
 	if dockerFormat {
 		// Output in docker environment variables format such as -e KEY=VALUE
 		outputOptionName = "-e "
 	}
-	return fmt.Sprintf("%s%s=%s", outputOptionName, name, *parameter.Value)
+	return fmt.Sprintf("%s%s=%s", outputOptionName, name, value)
 }
