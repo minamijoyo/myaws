@@ -31,14 +31,14 @@ https://github.com/minamijoyo/myaws/releases
 ## OSX (64bit)
 
 ```bash
-$ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.3.2/myaws_v0.3.2_darwin_amd64.tar.gz \
+$ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.3.3/myaws_v0.3.3_darwin_amd64.tar.gz \
     | tar -xzC /usr/local/bin && chmod +x /usr/local/bin/myaws
 ```
 
 ## Linux (64bit)
 
 ```bash
-$ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.3.2/myaws_v0.3.2_linux_amd64.tar.gz \
+$ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.3.3/myaws_v0.3.3_linux_amd64.tar.gz \
     | tar -xzC /usr/local/bin && chmod +x /usr/local/bin/myaws
 ```
 

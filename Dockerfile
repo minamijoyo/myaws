@@ -1,6 +1,6 @@
 FROM alpine:3.5
 
-ENV MYAWS_VERSION=v0.3.2
+ENV MYAWS_VERSION=v0.3.3
 
 RUN apk --no-cache add curl ca-certificates && update-ca-certificates
 RUN curl -fsSL https://github.com/minamijoyo/myaws/releases/download/${MYAWS_VERSION}/myaws_${MYAWS_VERSION}_linux_amd64.tar.gz \
