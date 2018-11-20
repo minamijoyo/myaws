@@ -35,7 +35,7 @@ func (client *Client) SSMParameterEnv(options SSMParameterEnvOptions) error {
 		output = append(output, formatSSMParameterAsEnv(parameter, options.Name, options.DockerFormat))
 	}
 
-	fmt.Fprintf(client.stdout, strings.Join(output[:], " "))
+	fmt.Print(strings.Join(output[:], " "))
 	return nil
 }
 
@@ -51,12 +51,10 @@ func formatSSMParameterAsEnv(parameter *ssm.Parameter, prefix string, dockerForm
 	// The name of environment variable should be uppercase.
 	name := strings.ToUpper(flatten)
 	outputOptionName := ""
-	// Escape % character
-	value := strings.Replace(*parameter.Value, "%", "%%", -1)
 
 	if dockerFormat {
 		// Output in docker environment variables format such as -e KEY=VALUE
 		outputOptionName = "-e "
 	}
-	return fmt.Sprintf("%s%s=%s", outputOptionName, name, value)
+	return fmt.Sprintf("%s%s=", outputOptionName, name) + *parameter.Value
 }
