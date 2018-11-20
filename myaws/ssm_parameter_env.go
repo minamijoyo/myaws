@@ -35,7 +35,7 @@ func (client *Client) SSMParameterEnv(options SSMParameterEnvOptions) error {
 		output = append(output, formatSSMParameterAsEnv(parameter, options.Name, options.DockerFormat))
 	}
 
-	fmt.Print(strings.Join(output[:], " "))
+	fmt.Fprint(client.stdout, strings.Join(output[:], " "))
 	return nil
 }
 
