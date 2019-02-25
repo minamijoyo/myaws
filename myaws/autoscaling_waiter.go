@@ -16,12 +16,7 @@ import (
 // of ELB can link with the health status of ASG, so we don't check the status
 // of ELB here.
 func (client *Client) waitUntilAutoScalingGroupDesiredState(asgName string) error {
-	err := client.waitUntilAutoScalingGroupAllInstancesAreInService(
-		&autoscaling.DescribeAutoScalingGroupsInput{
-			AutoScalingGroupNames: []*string{&asgName},
-		},
-	)
-	if err != nil {
+	if err := client.waitUntilAutoScalingGroupAllInstancesAreInService(asgName); err != nil {
 		return errors.Wrap(err, "waitUntilAutoScalingGroupAllInstancesAreInService failed:")
 	}
 
@@ -33,12 +28,31 @@ func (client *Client) waitUntilAutoScalingGroupDesiredState(asgName string) erro
 // `request.Waiter`, we need to wait it in two steps.
 // 1. Wait until the number of instances equals `DesiredCapacity`.
 // 2. Wait until all instances are InService.
-func (client *Client) waitUntilAutoScalingGroupAllInstancesAreInService(input *autoscaling.DescribeAutoScalingGroupsInput) error {
+func (client *Client) waitUntilAutoScalingGroupAllInstancesAreInService(asgName string) error {
+	desiredCapacity, err := client.getAutoScalingGroupDesiredCapacity(asgName)
+	if err != nil {
+		return err
+	}
+
 	ctx := aws.BackgroundContext()
+	input := &autoscaling.DescribeAutoScalingGroupsInput{
+		AutoScalingGroupNames: []*string{&asgName},
+	}
 
 	// make sure instances are created or terminated.
-	if err := client.waitUntilAutoScalingGroupNumberOfInstancesEqualsDesiredCapacityWithContext(ctx, input); err != nil {
+	err = client.waitUntilAutoScalingGroupNumberOfInstancesEqualsDesiredCapacityWithContext(
+		ctx,
+		desiredCapacity,
+		input,
+	)
+
+	if err != nil {
 		return err
+	}
+
+	// if the desired state is no instance, we just return here.
+	if desiredCapacity == 0 {
+		return nil
 	}
 
 	// check all instances are InService state.
@@ -47,17 +61,10 @@ func (client *Client) waitUntilAutoScalingGroupAllInstancesAreInService(input *a
 
 // waitUntilAutoScalingGroupNumberOfInstancesEqualsDesiredCapacityWithContext
 // waits the number of instances equals DesiredCapacity.
-func (client *Client) waitUntilAutoScalingGroupNumberOfInstancesEqualsDesiredCapacityWithContext(ctx aws.Context, input *autoscaling.DescribeAutoScalingGroupsInput, opts ...request.WaiterOption) error {
-	// Note that interface is the same as the official
-	// `WaitUntilGroupInServiceWithContext` in aws-sdk-go, but we implicitly
-	// assume that the number of AutoScalingGroup is only one. In our case,
-	// multiple AutoScalingGroup doesn't passed this function.
-	asgName := *(input.AutoScalingGroupNames[0])
-	desiredCapacity, err := client.getAutoScalingGroupDesiredCapacity(asgName)
-	if err != nil {
-		return err
-	}
-
+func (client *Client) waitUntilAutoScalingGroupNumberOfInstancesEqualsDesiredCapacityWithContext(ctx aws.Context, desiredCapacity int64, input *autoscaling.DescribeAutoScalingGroupsInput, opts ...request.WaiterOption) error {
+	// We implicitly assume that the number of AutoScalingGroup is only one to
+	// simplify checking desiredCapacity. In our case, multiple AutoScalingGroup
+	// doesn't passed this function.
 	// Properties in the response returned by aws-sdk-go are reference type and
 	// not primitive. Thus we can not be directly compared on JMESPath.
 	matcher := fmt.Sprintf("AutoScalingGroups[].[length(Instances) == `%d`][]", desiredCapacity)
