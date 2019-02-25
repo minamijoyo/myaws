@@ -4,7 +4,6 @@ import (
 	"github.com/minamijoyo/myaws/myaws"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 func init() {
@@ -45,14 +44,10 @@ func newECSNodeCmd() *cobra.Command {
 
 func newECSNodeLsCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "ls",
+		Use:   "ls CLUSTER",
 		Short: "List ECS nodes",
 		RunE:  runECSNodeLsCmd,
 	}
-
-	flags := cmd.Flags()
-	flags.StringP("cluster", "c", "", "cluster name")
-	viper.BindPFlag("ecs.node.ls.cluster", flags.Lookup("cluster"))
 
 	return cmd
 }
@@ -63,13 +58,12 @@ func runECSNodeLsCmd(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "newClient failed:")
 	}
 
-	cluster := viper.GetString("ecs.node.ls.cluster")
-	if len(cluster) == 0 {
-		return errors.New("cluster is required")
+	if len(args) == 0 {
+		return errors.New("CLUSTER is required")
 	}
 
 	options := myaws.ECSNodeLsOptions{
-		Cluster: cluster,
+		Cluster: args[0],
 	}
 	return client.ECSNodeLs(options)
 }
