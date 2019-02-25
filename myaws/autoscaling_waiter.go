@@ -10,25 +10,16 @@ import (
 	"github.com/pkg/errors"
 )
 
-// waitUntilAutoScalingGroupDesiredState is a helper function which waits until
-// the AutoScaling Group converges to the desired state.  We only check the
-// status of AutoScaling Group.  If the ASG has an ELB, the health check status
+// WaitUntilAutoScalingGroupStable is a helper function which waits until
+// the AutoScaling Group converges to the desired state. We only check the
+// status of AutoScaling Group. If the ASG has an ELB, the health check status
 // of ELB can link with the health status of ASG, so we don't check the status
 // of ELB here.
-func (client *Client) waitUntilAutoScalingGroupDesiredState(asgName string) error {
-	if err := client.waitUntilAutoScalingGroupAllInstancesAreInService(asgName); err != nil {
-		return errors.Wrap(err, "waitUntilAutoScalingGroupAllInstancesAreInService failed:")
-	}
-
-	return nil
-}
-
-// waitUntilAutoScalingGroupAllInstancesAreInService waits until all instances
-// are in service. Due to the current limitation of the implementation of
+// Due to the current limitation of the implementation of
 // `request.Waiter`, we need to wait it in two steps.
 // 1. Wait until the number of instances equals `DesiredCapacity`.
 // 2. Wait until all instances are InService.
-func (client *Client) waitUntilAutoScalingGroupAllInstancesAreInService(asgName string) error {
+func (client *Client) WaitUntilAutoScalingGroupStable(asgName string) error {
 	desiredCapacity, err := client.getAutoScalingGroupDesiredCapacity(asgName)
 	if err != nil {
 		return err

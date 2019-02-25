@@ -30,8 +30,8 @@ func (client *Client) AutoscalingAttach(options AutoscalingAttachOptions) error 
 	}
 
 	if options.Wait {
-		fmt.Fprintln(client.stdout, "Wait until the desired capacity instances are InService...")
-		return client.waitUntilAutoScalingGroupDesiredState(options.AsgName)
+		fmt.Fprintln(client.stdout, "Wait until desired capacity instances are InService...")
+		return client.WaitUntilAutoScalingGroupStable(options.AsgName)
 	}
 
 	return nil

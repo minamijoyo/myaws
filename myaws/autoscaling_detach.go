@@ -31,7 +31,7 @@ func (client *Client) AutoscalingDetach(options AutoscalingDetachOptions) error 
 
 	if options.Wait {
 		fmt.Fprintln(client.stdout, "Wait until desired capacity instances are InService...")
-		return client.waitUntilAutoScalingGroupDesiredState(options.AsgName)
+		return client.WaitUntilAutoScalingGroupStable(options.AsgName)
 	}
 
 	return nil
