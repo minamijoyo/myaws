@@ -64,9 +64,9 @@ func (client *Client) waitUntilAutoScalingGroupAllInstancesAreInService(asgName 
 func (client *Client) waitUntilAutoScalingGroupNumberOfInstancesEqualsDesiredCapacityWithContext(ctx aws.Context, desiredCapacity int64, input *autoscaling.DescribeAutoScalingGroupsInput, opts ...request.WaiterOption) error {
 	// We implicitly assume that the number of AutoScalingGroup is only one to
 	// simplify checking desiredCapacity. In our case, multiple AutoScalingGroup
-	// doesn't passed this function.
-	// Properties in the response returned by aws-sdk-go are reference type and
-	// not primitive. Thus we can not be directly compared on JMESPath.
+	// doesn't pass this function.
+	// Properties in the response returned by aws-sdk-go are reference types and
+	// not primitive. Thus we cannot be directly compared on JMESPath.
 	matcher := fmt.Sprintf("AutoScalingGroups[].[length(Instances) == `%d`][]", desiredCapacity)
 
 	w := request.Waiter{
