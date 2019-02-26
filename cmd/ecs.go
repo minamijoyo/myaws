@@ -31,7 +31,7 @@ func newECSCmd() *cobra.Command {
 func newECSNodeCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "node",
-		Short: "Manage ECS node resources",
+		Short: "Manage ECS node resources (container instances)",
 		Run: func(cmd *cobra.Command, args []string) {
 			cmd.Help()
 		},
@@ -48,7 +48,7 @@ func newECSNodeCmd() *cobra.Command {
 func newECSNodeLsCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ls CLUSTER",
-		Short: "List ECS nodes",
+		Short: "List ECS nodes (container instances)",
 		RunE:  runECSNodeLsCmd,
 	}
 
@@ -74,7 +74,7 @@ func runECSNodeLsCmd(cmd *cobra.Command, args []string) error {
 func newECSNodeUpdateCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update CLUSTER",
-		Short: "Update ECS nodes",
+		Short: "Update ECS nodes (container instances)",
 		RunE:  runECSNodeUpdateCmd,
 	}
 
