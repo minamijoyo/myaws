@@ -49,7 +49,10 @@ func (client *Client) ECSNodeLs(options ECSNodeLsOptions) error {
 func formatECSNode(client *Client, options ECSNodeLsOptions, instance *ecs.ContainerInstance) string {
 	arn := strings.Split(*instance.ContainerInstanceArn, "/")
 
-	return fmt.Sprintf("%s\t%s\t%s\t%d\t%d\t%s",
+	// To fix misalignment, we use the width of state is 10 characters here,
+	// because 8 characters + 2 characters as future margin of change.
+	// The valid values of status are ACTIVE, INACTIVE, or DRAINING.
+	return fmt.Sprintf("%s\t%s\t%-10s\t%d\t%d\t%s",
 		arn[1],
 		*instance.Ec2InstanceId,
 		*instance.Status,
