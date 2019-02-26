@@ -11,6 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/ecr"
+	"github.com/aws/aws-sdk-go/service/ecs"
 	"github.com/aws/aws-sdk-go/service/elb"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/rds"
@@ -32,6 +33,7 @@ type Client struct {
 	debug       bool
 	AutoScaling *autoscaling.AutoScaling
 	EC2         *ec2.EC2
+	ECS         *ecs.ECS
 	ECR         *ecr.ECR
 	ELB         *elb.ELB
 	IAM         *iam.IAM
@@ -55,6 +57,7 @@ func NewClient(stdin io.Reader, stdout io.Writer, stderr io.Writer, profile stri
 		humanize:    humanize,
 		AutoScaling: autoscaling.New(session, config),
 		EC2:         ec2.New(session, config),
+		ECS:         ecs.New(session, config),
 		ECR:         ecr.New(session, config),
 		ELB:         elb.New(session, config),
 		IAM:         iam.New(session, config),
