@@ -40,6 +40,7 @@ func newECSNodeCmd() *cobra.Command {
 	cmd.AddCommand(
 		newECSNodeLsCmd(),
 		newECSNodeUpdateCmd(),
+		newECSNodeDrainCmd(),
 	)
 
 	return cmd
@@ -115,4 +116,45 @@ func runECSNodeUpdateCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	return client.ECSNodeUpdate(options)
+}
+
+func newECSNodeDrainCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "drain CLUSTER",
+		Short: "Drain ECS nodes (container instances)",
+		RunE:  runECSNodeDrainCmd,
+	}
+
+	flags := cmd.Flags()
+	flags.StringP("container-instances", "i", "", "A list of container instance IDs or full ARN entries separated by space")
+	flags.BoolP("wait", "w", false, "Wait until container instances are drained")
+
+	viper.BindPFlag("ecs.node.drain.container-instances", flags.Lookup("container-instances"))
+	viper.BindPFlag("ecs.node.drain.wait", flags.Lookup("wait"))
+
+	return cmd
+}
+
+func runECSNodeDrainCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	if len(args) == 0 {
+		return errors.New("CLUSTER is required")
+	}
+
+	containerInstances := aws.StringSlice(viper.GetStringSlice("ecs.node.drain.container-instances"))
+	if len(containerInstances) == 0 {
+		return errors.New("container-instances is required")
+	}
+
+	options := myaws.ECSNodeDrainOptions{
+		Cluster:            args[0],
+		ContainerInstances: containerInstances,
+		Wait:               viper.GetBool("ecs.node.drain.wait"),
+	}
+
+	return client.ECSNodeDrain(options)
 }
