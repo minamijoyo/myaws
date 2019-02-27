@@ -8,6 +8,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/acm"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/ecr"
@@ -32,6 +33,7 @@ type Client struct {
 	humanize    bool
 	debug       bool
 	AutoScaling *autoscaling.AutoScaling
+	ACM         *acm.ACM
 	EC2         *ec2.EC2
 	ECS         *ecs.ECS
 	ECR         *ecr.ECR
@@ -55,6 +57,7 @@ func NewClient(stdin io.Reader, stdout io.Writer, stderr io.Writer, profile stri
 		region:      region,
 		timezone:    timezone,
 		humanize:    humanize,
+		ACM:         acm.New(session, config),
 		AutoScaling: autoscaling.New(session, config),
 		EC2:         ec2.New(session, config),
 		ECS:         ecs.New(session, config),

@@ -114,10 +114,12 @@ Usage:
   myaws [command]
 
 Available Commands:
+  acm         Manage ACM resources
   autoscaling Manage autoscaling resources
   ec2         Manage EC2 resources
   ecr         Manage ECR resources
   elb         Manage ELB resources
+  help        Help about any command
   iam         Manage IAM resources
   rds         Manage RDS resources
   ssm         Manage SSM resources
@@ -198,6 +200,29 @@ Global Flags:
       --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
       --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
       --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
+```
+
+```bash
+$ myaws acm --help
+
+Manage ACM resources
+
+Usage:
+  myaws acm [flags]
+  myaws acm [command]
+
+Available Commands:
+  ls          List certificates
+
+Global Flags:
+      --config string     config file (default $HOME/.myaws.yml)
+      --debug             Enable debug mode
+      --humanize          Use Human friendly format for time (default true)
+      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
+      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
+      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
+
+Use "myaws acm [command] --help" for more information about a command.
 ```
 
 ```bash
