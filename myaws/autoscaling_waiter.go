@@ -15,8 +15,8 @@ import (
 // status of AutoScaling Group. If the ASG has an ELB, the health check status
 // of ELB can link with the health status of ASG, so we don't check the status
 // of ELB here.
-// Due to the current limitation of the implementation of
-// `request.Waiter`, we need to wait it in two steps.
+// Due to the current limitation of the implementation of `request.Waiter`,
+// we need to wait it in two steps.
 // 1. Wait until the number of instances equals `DesiredCapacity`.
 // 2. Wait until all instances are InService.
 func (client *Client) WaitUntilAutoScalingGroupStable(asgName string) error {
@@ -107,15 +107,15 @@ func (client *Client) getAutoScalingGroupDesiredCapacity(asgName string) (int64,
 }
 
 // waitUntilAutoScalingGroupAllInstancesAreInService waits until all instances
-// are in service.
-// Since the official `WaitUntilGroupInServiceWithContext` in aws-sdk-go checks
-// `>=MinSize` and we found this does not make sense. Properties in the
-// response returned by aws-sdk-go are reference type and not primitive. Thus
-// we can not be directly compared on JMESPath. So we implement a customized
-// waiter here.  When the number of desired instances increase or decrease, the
-// affected instances are in states other than InService until the operation
-// completes. So we should check that all the states of instances are
-// InService.
+// are in service.  Since the official `WaitUntilGroupInServiceWithContext` in
+// aws-sdk-go checks as follow:
+// contains(AutoScalingGroups[].[length(Instances[?LifecycleState=='InService']) >= MinSize][], `false`)
+// But we found this doesn't work as expected. Properties in the response
+// returned by aws-sdk-go are reference type and not primitive. Thus we can not
+// be directly compared on JMESPath. So we implement a customized waiter here.
+// When the number of desired instances increase or decrease, the affected
+// instances are in states other than InService until the operation completes.
+// So we should check that all the states of instances are InService.
 func (client *Client) waitUntilAutoScalingGroupAllInstancesAreInServiceWithContext(ctx aws.Context, input *autoscaling.DescribeAutoScalingGroupsInput, opts ...request.WaiterOption) error {
 	w := request.Waiter{
 		Name:        "WaitUntilAutoScalingGroupAllInstancesAreInService",
