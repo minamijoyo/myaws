@@ -23,6 +23,7 @@ func newECSCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		newECSNodeCmd(),
+		newECSServiceCmd(),
 	)
 
 	return cmd
@@ -157,4 +158,46 @@ func runECSNodeDrainCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	return client.ECSNodeDrain(options)
+}
+
+func newECSServiceCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "service",
+		Short: "Manage ECS service resources",
+		Run: func(cmd *cobra.Command, args []string) {
+			cmd.Help()
+		},
+	}
+
+	cmd.AddCommand(
+		newECSServiceLsCmd(),
+	)
+
+	return cmd
+}
+
+func newECSServiceLsCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "ls CLUSTER",
+		Short: "List ECS services",
+		RunE:  runECSServiceLsCmd,
+	}
+
+	return cmd
+}
+
+func runECSServiceLsCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	if len(args) == 0 {
+		return errors.New("CLUSTER is required")
+	}
+
+	options := myaws.ECSServiceLsOptions{
+		Cluster: args[0],
+	}
+	return client.ECSServiceLs(options)
 }
