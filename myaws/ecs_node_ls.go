@@ -20,13 +20,13 @@ func (client *Client) ECSNodeLs(options ECSNodeLsOptions) error {
 	}
 
 	for _, instance := range instances {
-		fmt.Fprintln(client.stdout, formatECSNode(client, options, instance))
+		fmt.Fprintln(client.stdout, formatECSNode(client, instance))
 	}
 
 	return nil
 }
 
-func formatECSNode(client *Client, options ECSNodeLsOptions, instance *ecs.ContainerInstance) string {
+func formatECSNode(client *Client, instance *ecs.ContainerInstance) string {
 	arn := strings.Split(*instance.ContainerInstanceArn, "/")
 
 	// To fix misalignment, we use the width of state is 10 characters here,
