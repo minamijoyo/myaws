@@ -18,6 +18,12 @@ type ECSNodeRenewOptions struct {
 // if you update the AMI. creates new instances, drains the old instances,
 // and discards the old instances.
 func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
+	fmt.Fprintf(client.stdout, "ECS nodes renew start... options: %s\n", awsutil.Prettify(options))
+
+	if err := client.printECSStatus(options.Cluster); err != nil {
+		return err
+	}
+
 	// get the current desired capacity
 	desiredCapacity, err := client.getAutoScalingGroupDesiredCapacity(options.AsgName)
 	if err != nil {
@@ -28,9 +34,6 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 	oldNodes, err := client.findECSNodes(options.Cluster)
 	if err != nil {
 		return err
-	}
-	for _, instance := range oldNodes {
-		fmt.Fprintln(client.stdout, formatECSNode(client, instance))
 	}
 
 	if len(oldNodes) == int(desiredCapacity) {
@@ -54,12 +57,20 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 		return err
 	}
 
+	if err = client.printECSStatus(options.Cluster); err != nil {
+		return err
+	}
+
 	// A status of instance in autoscaling group is InService doesn't mean the
 	// container instance is registered. We should make sure container instances
 	// are registered
 	fmt.Fprintln(client.stdout, "Wait until ECS container instances are registered...")
 	err = client.WaitUntilECSContainerInstancesAreRegistered(options.Cluster, targetCapacity)
 	if err != nil {
+		return err
+	}
+
+	if err = client.printECSStatus(options.Cluster); err != nil {
 		return err
 	}
 
@@ -75,12 +86,20 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 		Wait:               true,
 	})
 
+	if err = client.printECSStatus(options.Cluster); err != nil {
+		return err
+	}
+
 	// All old container instances are drained doesn't mean all services are stable.
 	// It depends on the deployment strategy of each service.
 	// We should make sure all services are stable
 	fmt.Fprintln(client.stdout, "Wait until all ECS services stable...")
 	client.WaitUntilECSAllServicesStable(options.Cluster)
 	if err != nil {
+		return err
+	}
+
+	if err = client.printECSStatus(options.Cluster); err != nil {
 		return err
 	}
 
@@ -96,5 +115,10 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 		return err
 	}
 
+	if err = client.printECSStatus(options.Cluster); err != nil {
+		return err
+	}
+
+	fmt.Fprintln(client.stdout, "ECS nodes renew end")
 	return nil
 }

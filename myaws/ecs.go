@@ -1,6 +1,8 @@
 package myaws
 
 import (
+	"fmt"
+
 	"github.com/aws/aws-sdk-go/service/ecs"
 	"github.com/pkg/errors"
 	funk "github.com/thoas/go-funk"
@@ -78,4 +80,24 @@ func (client *Client) findECSServices(cluster string) ([]*ecs.Service, error) {
 	}
 
 	return services, nil
+}
+
+func (client *Client) printECSStatus(cluster string) error {
+	fmt.Fprintln(client.stdout, "[Service]")
+	err := client.ECSServiceLs(ECSServiceLsOptions{
+		Cluster: cluster,
+	})
+	if err != nil {
+		return err
+	}
+
+	fmt.Fprintln(client.stdout, "[Node]")
+	err = client.ECSNodeLs(ECSNodeLsOptions{
+		Cluster: cluster,
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
