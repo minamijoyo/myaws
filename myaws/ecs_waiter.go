@@ -143,8 +143,8 @@ func (client *Client) waitUntilECSContainerInstancesCountWithContext(ctx aws.Con
 		Acceptors: []request.WaiterAcceptor{
 			{
 				State:   request.SuccessWaiterState,
-				Matcher: request.PathAllWaiterMatch, Argument: "length(ContainerInstances[])",
-				Expected: targetCapacity,
+				Matcher: request.PathAllWaiterMatch, Argument: "length(ContainerInstanceArns[])",
+				Expected: float64(targetCapacity),
 			},
 		},
 		Logger: client.config.Logger,
