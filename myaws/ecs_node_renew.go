@@ -18,7 +18,7 @@ type ECSNodeRenewOptions struct {
 // if you update the AMI. creates new instances, drains the old instances,
 // and discards the old instances.
 func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
-	fmt.Fprintf(client.stdout, "ECS nodes renew start... options: %s\n", awsutil.Prettify(options))
+	fmt.Fprintf(client.stdout, "start: ecs node renew\noptions: %s\n", awsutil.Prettify(options))
 
 	if err := client.printECSStatus(options.Cluster); err != nil {
 		return err
@@ -46,7 +46,7 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 	// rolling update.
 	targetCapacity := desiredCapacity * 2
 
-	fmt.Fprintf(client.stdout, "Update autoscaling group %s (DesiredCapacity: %d => %d\n)", options.AsgName, desiredCapacity, targetCapacity)
+	fmt.Fprintf(client.stdout, "Update autoscaling group %s (DesiredCapacity: %d => %d)\n", options.AsgName, desiredCapacity, targetCapacity)
 
 	err = client.AutoscalingUpdate(AutoscalingUpdateOptions{
 		AsgName:         options.AsgName,
@@ -79,7 +79,7 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 	for _, oldNode := range oldNodes {
 		oldNodeArns = append(oldNodeArns, oldNode.ContainerInstanceArn)
 	}
-	fmt.Fprintf(client.stdout, "Drain old container instances and wait until no task running... %v", awsutil.Prettify(oldNodeArns))
+	fmt.Fprintf(client.stdout, "Drain old container instances and wait until no task running...\n%v\n", awsutil.Prettify(oldNodeArns))
 	err = client.ECSNodeDrain(ECSNodeDrainOptions{
 		Cluster:            options.Cluster,
 		ContainerInstances: oldNodeArns,
@@ -104,7 +104,7 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 	}
 
 	// restore the desired capacity and wait until old instances are discarded
-	fmt.Fprintf(client.stdout, "Update autoscaling group %s (DesiredCapacity: %d => %d\n)", options.AsgName, targetCapacity, desiredCapacity)
+	fmt.Fprintf(client.stdout, "Update autoscaling group %s (DesiredCapacity: %d => %d)\n", options.AsgName, targetCapacity, desiredCapacity)
 
 	err = client.AutoscalingUpdate(AutoscalingUpdateOptions{
 		AsgName:         options.AsgName,
@@ -119,6 +119,6 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 		return err
 	}
 
-	fmt.Fprintln(client.stdout, "ECS nodes renew end")
+	fmt.Fprintln(client.stdout, "end: ecs node renew")
 	return nil
 }
