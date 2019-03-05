@@ -42,6 +42,7 @@ func newECSNodeCmd() *cobra.Command {
 		newECSNodeLsCmd(),
 		newECSNodeUpdateCmd(),
 		newECSNodeDrainCmd(),
+		newECSNodeRenewCmd(),
 	)
 
 	return cmd
@@ -158,6 +159,43 @@ func runECSNodeDrainCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	return client.ECSNodeDrain(options)
+}
+
+func newECSNodeRenewCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "renew CLUSTER",
+		Short: "Renew ECS nodes (container instances) with blue-grean deployment",
+		RunE:  runECSNodeRenewCmd,
+	}
+
+	flags := cmd.Flags()
+	flags.StringP("asg-name", "a", "", "A name of AutoScalingGroup to which the ECS container instances belong")
+
+	viper.BindPFlag("ecs.node.renew.asg-name", flags.Lookup("asg-name"))
+
+	return cmd
+}
+
+func runECSNodeRenewCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	if len(args) == 0 {
+		return errors.New("CLUSTER is required")
+	}
+
+	asgName := viper.GetString("ecs.node.renew.asg-name")
+	if len(asgName) == 0 {
+		return errors.New("asg-name is required")
+	}
+	options := myaws.ECSNodeRenewOptions{
+		Cluster: args[0],
+		AsgName: asgName,
+	}
+
+	return client.ECSNodeRenew(options)
 }
 
 func newECSServiceCmd() *cobra.Command {

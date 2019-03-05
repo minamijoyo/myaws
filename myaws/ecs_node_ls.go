@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go/service/ecs"
-	"github.com/pkg/errors"
 )
 
 // ECSNodeLsOptions customize the behavior of the Ls command.
@@ -15,38 +14,19 @@ type ECSNodeLsOptions struct {
 
 // ECSNodeLs describes ECS container instances.
 func (client *Client) ECSNodeLs(options ECSNodeLsOptions) error {
-	arns, err := client.ECS.ListContainerInstances(
-		&ecs.ListContainerInstancesInput{
-			Cluster: &options.Cluster,
-		},
-	)
+	instances, err := client.findECSNodes(options.Cluster)
 	if err != nil {
-		return errors.Wrapf(err, "ListContainerInstances failed")
+		return err
 	}
 
-	if len(arns.ContainerInstanceArns) == 0 {
-		return errors.New("container instances not found")
-	}
-
-	instances, err := client.ECS.DescribeContainerInstances(
-		&ecs.DescribeContainerInstancesInput{
-			Cluster:            &options.Cluster,
-			ContainerInstances: arns.ContainerInstanceArns,
-		},
-	)
-
-	if len(instances.ContainerInstances) == 0 {
-		return errors.New("ListContainerInstances succeed, but DescribeContainerInstances returns no instances")
-	}
-
-	for _, instance := range instances.ContainerInstances {
-		fmt.Fprintln(client.stdout, formatECSNode(client, options, instance))
+	for _, instance := range instances {
+		fmt.Fprintln(client.stdout, formatECSNode(client, instance))
 	}
 
 	return nil
 }
 
-func formatECSNode(client *Client, options ECSNodeLsOptions, instance *ecs.ContainerInstance) string {
+func formatECSNode(client *Client, instance *ecs.ContainerInstance) string {
 	arn := strings.Split(*instance.ContainerInstanceArn, "/")
 
 	// To fix misalignment, we use the width of state is 10 characters here,
