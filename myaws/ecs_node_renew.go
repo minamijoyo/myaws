@@ -36,8 +36,8 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 		return err
 	}
 
-	if len(oldNodes) == int(desiredCapacity) {
-		return errors.Errorf("assertion failed: len(oldNodes) == desiredCapacity, got %d != %d", len(oldNodes), desiredCapacity)
+	if len(oldNodes) != int(desiredCapacity) {
+		return errors.Errorf("assertion failed: currentCapacity(%d) != desiredCapacity(%d)", len(oldNodes), desiredCapacity)
 	}
 
 	// Update the desired capacity and wait until new instances are InService
