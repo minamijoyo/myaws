@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/request"
 	"github.com/aws/aws-sdk-go/service/ecs"
 	"github.com/pkg/errors"
+	funk "github.com/thoas/go-funk"
 )
 
 // WaitUntilECSContainerInstancesAreDrained is a helper function which waits until
@@ -162,4 +163,46 @@ func (client *Client) waitUntilECSContainerInstancesCountWithContext(ctx aws.Con
 	w.ApplyOptions(opts...)
 
 	return w.WaitWithContext(ctx)
+}
+
+// WaitUntilECSAllServicesStable is a helper function which wait until all ECS
+// servcies are running the desired number of containers.
+// The official (*ECS) WaitUntilServicesStable does not support more than 10
+// services.
+// We need to check 10 services at a time.
+func (client *Client) WaitUntilECSAllServicesStable(cluster string) error {
+	serviceArns := []*string{}
+
+	err := client.ECS.ListServicesPages(
+		&ecs.ListServicesInput{
+			Cluster: &cluster,
+		},
+		func(p *ecs.ListServicesOutput, lastPage bool) bool {
+			serviceArns = append(serviceArns, p.ServiceArns...)
+			return true
+		},
+	)
+	if err != nil {
+		return errors.Wrapf(err, "ListServices failed")
+	}
+
+	if len(serviceArns) == 0 {
+		return errors.New("services not found")
+	}
+
+	// We can specify up to 10 services to describe in a single operation.
+	// So we need to divide the list by 10.
+	chunks := (funk.Chunk(serviceArns, 10)).([][]*string)
+	for _, c := range chunks {
+		input := &ecs.DescribeServicesInput{
+			Cluster:  &cluster,
+			Services: c,
+		}
+		err := client.ECS.WaitUntilServicesStable(input)
+		if err != nil {
+			return errors.Wrapf(err, "WaitUntilServicesStable failed")
+		}
+	}
+
+	return nil
 }
