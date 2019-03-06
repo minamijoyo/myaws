@@ -116,8 +116,11 @@ Usage:
 Available Commands:
   autoscaling Manage autoscaling resources
   ec2         Manage EC2 resources
+  ec2ri       Manage EC2 Reserved Instance resources
   ecr         Manage ECR resources
+  ecs         Manage ECS resources
   elb         Manage ELB resources
+  help        Help about any command
   iam         Manage IAM resources
   rds         Manage RDS resources
   ssm         Manage SSM resources
@@ -126,36 +129,14 @@ Available Commands:
 
 Flags:
       --config string     config file (default $HOME/.myaws.yml)
+      --debug             Enable debug mode
+  -h, --help              help for myaws
       --humanize          Use Human friendly format for time (default true)
       --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
       --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
       --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
 
 Use "myaws [command] --help" for more information about a command.
-```
-
-```bash
-$ myaws ec2 --help
-Manage EC2 resources
-
-Usage:
-  myaws ec2 [flags]
-  myaws ec2 [command]
-
-Available Commands:
-  ls          List EC2 instances
-  ssh         SSH to EC2 instances
-  start       Start EC2 instances
-  stop        Stop EC2 instances
-
-Global Flags:
-      --config string     config file (default $HOME/.myaws.yml)
-      --humanize          Use Human friendly format for time (default true)
-      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
-      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
-      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
-
-Use "myaws ec2 [command] --help" for more information about a command.
 ```
 
 ```bash
@@ -177,208 +158,6 @@ Global Flags:
       --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
       --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
       --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
-```
-
-```bash
-$ myaws ec2 ssh --help
-SSH to EC2 instances
-
-Usage:
-  myaws ec2 ssh [USER@]INSTANCE_NAME [COMMAND...] [flags]
-
-Flags:
-  -i, --identity-file string   SSH private key file (default "~/.ssh/id_rsa")
-  -l, --login-name string      Login username
-      --private                Use private IP to connect
-
-Global Flags:
-      --config string     config file (default $HOME/.myaws.yml)
-      --debug             Enable debug mode
-      --humanize          Use Human friendly format for time (default true)
-      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
-      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
-      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
-```
-
-```bash
-$ myaws autoscaling --help
-Manage autoscaling resources
-
-Usage:
-  myaws autoscaling [flags]
-  myaws autoscaling [command]
-
-Available Commands:
-  attach      Attach instances/loadbalancers to autoscaling group
-  detach      Detach instances/loadbalancers from autoscaling group
-  ls          List autoscaling groups
-  update      Update autoscaling group
-
-Global Flags:
-      --config string     config file (default $HOME/.myaws.yml)
-      --humanize          Use Human friendly format for time (default true)
-      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
-      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
-      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
-
-Use "myaws autoscaling [command] --help" for more information about a command.
-```
-
-```bash
-$ myaws elb --help
-Manage ELB resources
-
-Usage:
-  myaws elb [flags]
-  myaws elb [command]
-
-Available Commands:
-  ls          List ELB instances
-  ps          Show ELB instances
-
-Global Flags:
-      --config string     config file (default $HOME/.myaws.yml)
-      --humanize          Use Human friendly format for time (default true)
-      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
-      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
-      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
-
-Use "myaws elb [command] --help" for more information about a command.
-```
-
-```bash
-$ myaws ecr --help
-Manage ECR resources
-
-Usage:
-  myaws ecr [flags]
-  myaws ecr [command]
-
-Available Commands:
-  get-login   Get docker login command for ECR
-
-Global Flags:
-      --config string     config file (default $HOME/.myaws.yml)
-      --humanize          Use Human friendly format for time (default true)
-      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
-      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
-      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
-
-Use "myaws ecr [command] --help" for more information about a command.
-```
-
-```bash
-$ myaws iam --help
-Manage IAM resources
-
-Usage:
-  myaws iam [flags]
-  myaws iam [command]
-
-Available Commands:
-  user        Manage IAM user resources
-
-Global Flags:
-      --config string     config file (default $HOME/.myaws.yml)
-      --debug             Enable debug mode
-      --humanize          Use Human friendly format for time (default true)
-      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
-      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
-      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
-
-Use "myaws iam [command] --help" for more information about a command.
-```
-
-```bash
-$ myaws iam user --help
-Manage IAM user resources
-
-Usage:
-  myaws iam user [flags]
-  myaws iam user [command]
-
-Available Commands:
-  ls             List IAM users
-  reset-password Reset login password for IAM user
-
-Global Flags:
-      --config string     config file (default $HOME/.myaws.yml)
-      --debug             Enable debug mode
-      --humanize          Use Human friendly format for time (default true)
-      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
-      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
-      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
-
-Use "myaws iam user [command] --help" for more information about a command.
-```
-
-```bash
-$ myaws rds --help
-Manage RDS resources
-
-Usage:
-  myaws rds [flags]
-  myaws rds [command]
-
-Available Commands:
-  ls          List RDS instances
-
-Global Flags:
-      --config string     config file (default $HOME/.myaws.yml)
-      --humanize          Use Human friendly format for time (default true)
-      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
-      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
-      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
-
-Use "myaws rds [command] --help" for more information about a command.
-```
-
-```bash
-$ myaws ssm --help
-Manage SSM resources
-
-Usage:
-  myaws ssm [flags]
-  myaws ssm [command]
-
-Available Commands:
-  parameter   Manage SSM parameter resources
-
-Global Flags:
-      --config string     config file (default $HOME/.myaws.yml)
-      --debug             Enable debug mode
-      --humanize          Use Human friendly format for time (default true)
-      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
-      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
-      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
-
-Use "myaws ssm [command] --help" for more information about a command.
-```
-
-```bash
-$ myaws ssm parameter --help
-Manage SSM parameter resources
-
-Usage:
-  myaws ssm parameter [flags]
-  myaws ssm parameter [command]
-
-Available Commands:
-  del         Delete SSM parameter
-  env         Print SSM parameters as a list of environment variables
-  get         Get SSM parameter
-  ls          List SSM parameters
-  put         Put SSM parameter
-
-Global Flags:
-      --config string     config file (default $HOME/.myaws.yml)
-      --debug             Enable debug mode
-      --humanize          Use Human friendly format for time (default true)
-      --profile string    AWS profile (default none and used AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY environment variables.)
-      --region string     AWS region (default none and used AWS_DEFAULT_REGION environment variable.
-      --timezone string   Time zone, such as UTC, Asia/Tokyo (default "Local")
-
-Use "myaws ssm parameter [command] --help" for more information about a command.
 ```
 
 # LICENCE
