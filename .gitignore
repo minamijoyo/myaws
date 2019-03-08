@@ -1,5 +1,4 @@
 # Build
 bin/*
-out/*
-pkg/*
+dist/*
 
