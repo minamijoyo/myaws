@@ -4,6 +4,12 @@ ifndef GOBIN
 GOBIN := $(shell echo "$${GOPATH%%:*}/bin")
 endif
 
+GOLINT := $(GOBIN)/golint
+GORELEASER := $(GOBIN)/goreleaser
+
+$(GOLINT): ; @go install github.com/golang/lint/golint
+$(GORELEASER): ; @go install github.com/goreleaser/goreleaser
+
 .DEFAULT_GOAL := build
 
 .PHONY: deps
@@ -15,15 +21,15 @@ build: deps
 	go build -o bin/$(NAME)
 
 .PHONY: package
-package:
+package: $(GORELEASER)
 	goreleaser --snapshot --skip-publish --rm-dist
 
 .PHONY: release
-release:
+release: $(GORELEASER)
 	goreleaser --rm-dist
 
 .PHONY: lint
-lint:
+lint: $(GOLINT)
 	@golint ./...
 
 .PHONY: vet
