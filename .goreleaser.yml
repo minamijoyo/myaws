@@ -31,6 +31,6 @@ brew:
     email: minamijoyo@gmail.com
   homepage: https://github.com/minamijoyo/myaws
   description: "A human friendly AWS CLI written in Go"
-  skip_upload: true
+  skip_upload: false
   install: |
     bin.install "myaws"
