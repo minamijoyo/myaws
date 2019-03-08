@@ -32,7 +32,5 @@ brew:
   homepage: https://github.com/minamijoyo/myaws
   description: "A human friendly AWS CLI written in Go"
   skip_upload: true
-  test: |
-    system "#{bin}/myaws --version"
   install: |
     bin.install "myaws"
