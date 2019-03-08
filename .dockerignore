@@ -1,4 +1,4 @@
 .envrc
 .git
-pkg/
-out/
+bin/*
+dist/*
