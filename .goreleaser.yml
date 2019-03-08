@@ -1,0 +1,39 @@
+---
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+    ldflags:
+      - "-s -w -X github.com/minamijoyo/myaws/cmd.Version={{.Version}} -X github.com/minamijoyo/myaws/cmd.Revision={{.ShortCommit}}"
+archive:
+  name_template: "{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+  files:
+    - none*
+release:
+  draft: true
+  prerelease: auto
+changelog:
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - Merge pull request
+      - Merge branch
+brew:
+  github:
+    owner: minamijoyo
+    name: homebrew-myaws
+  commit_author:
+    name: "Masayuki Morita"
+    email: minamijoyo@gmail.com
+  homepage: https://github.com/minamijoyo/myaws
+  description: "A human friendly AWS CLI written in Go"
+  skip_upload: true
+  test: |
+    system "#{bin}/myaws --version"
+  install: |
+    bin.install "myaws"
