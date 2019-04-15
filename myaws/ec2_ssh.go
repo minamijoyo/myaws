@@ -104,6 +104,7 @@ func buildSSHConfig(loginName string, identityFile string) (*ssh.ClientConfig, e
 		Auth: []ssh.AuthMethod{
 			ssh.PublicKeys(signer),
 		},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
 	return config, nil
