@@ -19,7 +19,7 @@ or
 If you have Go 1.11+ development environment:
 
 ```bash
-$ git clone github.com/minamijoyo/myaws
+$ git clone https://github.com/minamijoyo/myaws
 $ cd myaws
 $ export GO111MODULE=on
 $ go install
