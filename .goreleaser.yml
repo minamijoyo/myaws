@@ -34,3 +34,7 @@ brew:
   skip_upload: false
   install: |
     bin.install "myaws"
+    output = Utils.popen_read("#{bin}/myaws completion bash")
+    (bash_completion/"myaws").write output
+    output = Utils.popen_read("#{bin}/myaws completion zsh")
+    (zsh_completion/"_myaws").write output
