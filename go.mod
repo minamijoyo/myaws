@@ -3,7 +3,7 @@ module github.com/minamijoyo/myaws
 go 1.13
 
 require (
-	github.com/aws/aws-sdk-go v1.17.13
+	github.com/aws/aws-sdk-go v1.25.16
 	github.com/dustin/go-humanize v1.0.0
 	github.com/golang/lint v0.0.0-20190301231843-5614ed5bae6f
 	github.com/goreleaser/goreleaser v0.102.0
