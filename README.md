@@ -124,6 +124,7 @@ Available Commands:
   ecr         Manage ECR resources
   ecs         Manage ECS resources
   elb         Manage ELB resources
+  elbv2       Manage ELBV2 resources
   help        Help about any command
   iam         Manage IAM resources
   rds         Manage RDS resources

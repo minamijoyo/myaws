@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ecr"
 	"github.com/aws/aws-sdk-go/service/ecs"
 	"github.com/aws/aws-sdk-go/service/elb"
+	"github.com/aws/aws-sdk-go/service/elbv2"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/rds"
 	"github.com/aws/aws-sdk-go/service/ssm"
@@ -36,6 +37,7 @@ type Client struct {
 	ECS         *ecs.ECS
 	ECR         *ecr.ECR
 	ELB         *elb.ELB
+	ELBV2       *elbv2.ELBV2
 	IAM         *iam.IAM
 	RDS         *rds.RDS
 	SSM         *ssm.SSM
@@ -60,6 +62,7 @@ func NewClient(stdin io.Reader, stdout io.Writer, stderr io.Writer, profile stri
 		ECS:         ecs.New(session, config),
 		ECR:         ecr.New(session, config),
 		ELB:         elb.New(session, config),
+		ELBV2:       elbv2.New(session, config),
 		IAM:         iam.New(session, config),
 		RDS:         rds.New(session, config),
 		SSM:         ssm.New(session, config),
