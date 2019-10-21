@@ -213,6 +213,26 @@ func (client *Client) getECSTargetGroupArns(cluster string, serviceArn string) (
 	return targetGroupArns, nil
 }
 
+func (client *Client) getECSDesiredCount(cluster string, serviceArn string) (int64, error) {
+	input := &ecs.DescribeServicesInput{
+		Cluster:  &cluster,
+		Services: []*string{&serviceArn},
+	}
+	response, err := client.ECS.DescribeServices(input)
+	if err != nil {
+		return 0, errors.Wrapf(err, "DescribeServices failed")
+	}
+
+	if len(response.Services) != 1 {
+		return 0, errors.Errorf("ECS.DescribeServices expects to return 1 service, but found %d services", len(response.Services))
+	}
+
+	s := response.Services[0]
+	desiredCount := s.DesiredCount
+
+	return *desiredCount, nil
+}
+
 // WaitUntilECSAllServicesStable is a helper function which wait until all ECS
 // servcies are running the desired number of containers.
 // The official (*ECS) WaitUntilServicesStable does not support more than 10
@@ -250,6 +270,16 @@ func (client *Client) WaitUntilECSAllTargetsInService(cluster string) error {
 	}
 
 	for _, s := range serviceArns {
+		desiredCount, err := client.getECSDesiredCount(cluster, *s)
+		if err != nil {
+			return err
+		}
+		if desiredCount == 0 {
+			// ELBV2.WaitUntilTargetInService wait forever even if desiredCount is 0.
+			// so we skip it.
+			continue
+		}
+
 		targetGroupArns, err := client.getECSTargetGroupArns(cluster, *s)
 		if err != nil {
 			return err

@@ -94,7 +94,7 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 	// It depends on the deployment strategy of each service.
 	// We should make sure all services are stable
 	fmt.Fprintln(client.stdout, "Wait until all ECS services stable...")
-	client.WaitUntilECSAllServicesStable(options.Cluster)
+	err = client.WaitUntilECSAllServicesStable(options.Cluster)
 	if err != nil {
 		return err
 	}
@@ -106,7 +106,7 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 	// A stable state for all services does not mean that all targets are healthy.
 	// We need to explicitly confirm it.
 	fmt.Fprintln(client.stdout, "Wait until all targets healthy...")
-	client.WaitUntilECSAllTargetsInService(options.Cluster)
+	err = client.WaitUntilECSAllTargetsInService(options.Cluster)
 	if err != nil {
 		return err
 	}
