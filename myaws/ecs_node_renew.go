@@ -103,6 +103,18 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 		return err
 	}
 
+	// A stable state for all services does not mean that all targets are healthy.
+	// We need to explicitly confirm it.
+	fmt.Fprintln(client.stdout, "Wait until all targets healthy...")
+	client.WaitUntilECSAllTargetsInService(options.Cluster)
+	if err != nil {
+		return err
+	}
+
+	if err = client.printECSStatus(options.Cluster); err != nil {
+		return err
+	}
+
 	// restore the desired capacity and wait until old instances are discarded
 	fmt.Fprintf(client.stdout, "Update autoscaling group %s (DesiredCapacity: %d => %d)\n", options.AsgName, targetCapacity, desiredCapacity)
 

@@ -6,6 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/request"
 	"github.com/aws/aws-sdk-go/service/ecs"
+	"github.com/aws/aws-sdk-go/service/elbv2"
 	"github.com/pkg/errors"
 	funk "github.com/thoas/go-funk"
 )
@@ -165,12 +166,7 @@ func (client *Client) waitUntilECSContainerInstancesCountWithContext(ctx aws.Con
 	return w.WaitWithContext(ctx)
 }
 
-// WaitUntilECSAllServicesStable is a helper function which wait until all ECS
-// servcies are running the desired number of containers.
-// The official (*ECS) WaitUntilServicesStable does not support more than 10
-// services.
-// We need to check 10 services at a time.
-func (client *Client) WaitUntilECSAllServicesStable(cluster string) error {
+func (client *Client) getECSServiceArns(cluster string) ([]*string, error) {
 	serviceArns := []*string{}
 
 	err := client.ECS.ListServicesPages(
@@ -183,11 +179,49 @@ func (client *Client) WaitUntilECSAllServicesStable(cluster string) error {
 		},
 	)
 	if err != nil {
-		return errors.Wrapf(err, "ListServices failed")
+		return nil, errors.Wrapf(err, "ListServices failed")
 	}
 
 	if len(serviceArns) == 0 {
-		return errors.New("services not found")
+		return nil, errors.New("services not found")
+	}
+
+	return serviceArns, nil
+}
+
+func (client *Client) getECSTargetGroupArns(cluster string, serviceArn string) ([]string, error) {
+	input := &ecs.DescribeServicesInput{
+		Cluster:  &cluster,
+		Services: []*string{&serviceArn},
+	}
+	response, err := client.ECS.DescribeServices(input)
+	if err != nil {
+		return nil, errors.Wrapf(err, "DescribeServices failed")
+	}
+
+	if len(response.Services) != 1 {
+		return nil, errors.Errorf("ECS.DescribeServices expects to return 1 service, but found %d services", len(response.Services))
+	}
+
+	s := response.Services[0]
+
+	targetGroupArns := []string{}
+	for _, lb := range s.LoadBalancers {
+		targetGroupArns = append(targetGroupArns, *lb.TargetGroupArn)
+	}
+
+	return targetGroupArns, nil
+}
+
+// WaitUntilECSAllServicesStable is a helper function which wait until all ECS
+// servcies are running the desired number of containers.
+// The official (*ECS) WaitUntilServicesStable does not support more than 10
+// services.
+// We need to check 10 services at a time.
+func (client *Client) WaitUntilECSAllServicesStable(cluster string) error {
+	serviceArns, err := client.getECSServiceArns(cluster)
+	if err != nil {
+		return err
 	}
 
 	// We can specify up to 10 services to describe in a single operation.
@@ -201,6 +235,33 @@ func (client *Client) WaitUntilECSAllServicesStable(cluster string) error {
 		err := client.ECS.WaitUntilServicesStable(input)
 		if err != nil {
 			return errors.Wrapf(err, "WaitUntilServicesStable failed")
+		}
+	}
+
+	return nil
+}
+
+// WaitUntilECSAllTargetsInService is a helper function which wait until all
+// target related to ECS servcies are healthy.
+func (client *Client) WaitUntilECSAllTargetsInService(cluster string) error {
+	serviceArns, err := client.getECSServiceArns(cluster)
+	if err != nil {
+		return err
+	}
+
+	for _, s := range serviceArns {
+		targetGroupArns, err := client.getECSTargetGroupArns(cluster, *s)
+		if err != nil {
+			return err
+		}
+		for _, t := range targetGroupArns {
+			input := &elbv2.DescribeTargetHealthInput{
+				TargetGroupArn: &t,
+			}
+			err := client.ELBV2.WaitUntilTargetInService(input)
+			if err != nil {
+				return errors.Wrapf(err, "WaitUntilTargetInService failed")
+			}
 		}
 	}
 
