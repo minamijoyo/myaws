@@ -16,13 +16,10 @@ $ brew install minamijoyo/myaws/myaws
 
 or
 
-If you have Go 1.11+ development environment:
+If you have Go 1.13+ development environment:
 
 ```bash
-$ git clone https://github.com/minamijoyo/myaws
-$ cd myaws
-$ export GO111MODULE=on
-$ go install
+$ go get github.com/minamijoyo/myaws
 ```
 
 or
