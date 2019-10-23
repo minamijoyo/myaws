@@ -31,20 +31,6 @@ Download the latest compiled binaries and put it anywhere in your executable pat
 
 https://github.com/minamijoyo/myaws/releases
 
-## OSX (64bit)
-
-```bash
-$ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.3.8/myaws_v0.3.8_darwin_amd64.tar.gz \
-    | tar -xzC /usr/local/bin && chmod +x /usr/local/bin/myaws
-```
-
-## Linux (64bit)
-
-```bash
-$ curl -fsSL https://github.com/minamijoyo/myaws/releases/download/v0.3.8/myaws_v0.3.8_linux_amd64.tar.gz \
-    | tar -xzC /usr/local/bin && chmod +x /usr/local/bin/myaws
-```
-
 # Configuration
 ## Required
 MyAWS invokes AWS API call via aws-sdk-go.
