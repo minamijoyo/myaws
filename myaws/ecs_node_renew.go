@@ -85,6 +85,9 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 		ContainerInstances: oldNodeArns,
 		Wait:               true,
 	})
+	if err != nil {
+		return err
+	}
 
 	if err = client.printECSStatus(options.Cluster); err != nil {
 		return err
