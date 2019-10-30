@@ -71,7 +71,7 @@ func (client *Client) waitUntilECSContainerInstancesStatusWithContext(ctx aws.Co
 func (client *Client) waitUntilECSContainerInstancesNoRunningTaskWithContext(ctx aws.Context, input *ecs.DescribeContainerInstancesInput, opts ...request.WaiterOption) error {
 	w := request.Waiter{
 		Name:        "WaitUntilECSContainerInstancesNoRunningTask",
-		MaxAttempts: 20,
+		MaxAttempts: 40,
 		Delay:       request.ConstantWaiterDelay(15 * time.Second),
 		Acceptors: []request.WaiterAcceptor{
 			{
