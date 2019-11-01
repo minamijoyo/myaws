@@ -29,6 +29,9 @@ func (client *Client) findECSNodes(cluster string) ([]*ecs.ContainerInstance, er
 			ContainerInstances: arns.ContainerInstanceArns,
 		},
 	)
+	if err != nil {
+		return nil, errors.Wrapf(err, "DescribeContainerInstances failed")
+	}
 
 	if len(instances.ContainerInstances) == 0 {
 		return nil, errors.New("ListContainerInstances succeed, but DescribeContainerInstances returns no instances")
