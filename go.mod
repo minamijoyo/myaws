@@ -6,6 +6,7 @@ require (
 	github.com/aws/aws-sdk-go v1.25.16
 	github.com/dustin/go-humanize v1.0.0
 	github.com/golang/lint v0.0.0-20190301231843-5614ed5bae6f
+	github.com/gordonklaus/ineffassign v0.0.0-20190601041439-ed7b1b5ee0f8
 	github.com/goreleaser/goreleaser v0.102.0
 	github.com/pkg/errors v0.8.1
 	github.com/spf13/cobra v0.0.5
