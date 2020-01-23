@@ -5,7 +5,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-// AutoScalingSetInstanceProtectionOptions customize the behavior of the Attach command.
+// AutoScalingSetInstanceProtectionOptions customizes the behavior of the Attach command.
 type AutoScalingSetInstanceProtectionOptions struct {
 	AsgName              string
 	InstanceIds          []*string
