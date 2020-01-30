@@ -139,7 +139,7 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 
 	// Select instances to protect from scale in.
 	// By setting "scale-in protection" to instances created at scale-out,
-	// the intended instances (instances created before scale-in) is only terminated at scale-in process.
+	// the intended instances (instances created before scale-in) are only terminated at scale-in process.
 	protectInstanceIds, err := client.selectInstanceToProtectFromScaleIn(oldInstanceIds, allInstanceIds)
 	if err != nil {
 		return err
