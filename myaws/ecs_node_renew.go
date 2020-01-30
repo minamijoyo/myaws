@@ -218,7 +218,7 @@ func difference(a, b []*string) []*string {
 	}
 	var diff []*string
 	for _, x := range a {
-		if _, found := mb[*x]; !found {
+		if _, ok := mb[*x]; !ok {
 			diff = append(diff, x)
 		}
 	}
