@@ -128,6 +128,12 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 		return err
 	}
 
+	// Enable scale in protection for specific instances before scaling in.
+	// In the default termination policy of auto scaling, instances close to the next billing time will terminate when the launch configuration is the same.
+	// By running this function, your auto scaling group scales out, then scales in.
+	// During scale in, instances created during scale out may be subject to termination.
+	// To prevent this, set scale in protection for instances created at scale out.
+	// https://docs.aws.amazon.com/autoscaling/ec2/userguide/as-instance-termination.html
 	fmt.Fprintln(client.stdout, "Setting scale in protection: ", awsutil.Prettify(protectInstanceIds))
 	// set "scale in protection" to instances created at scale-out.
 	err = client.AutoScalingSetInstanceProtection(AutoScalingSetInstanceProtectionOptions{
