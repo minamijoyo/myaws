@@ -2,6 +2,7 @@ package myaws
 
 import (
 	"fmt"
+	"github.com/aws/aws-sdk-go/service/ecs"
 
 	"github.com/aws/aws-sdk-go/aws/awsutil"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
@@ -119,28 +120,10 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 		return err
 	}
 
-	// Get a list of instance IDs before auto scaling
-	var oldInstanceIds []*string
-	for _, oldNode := range oldNodes {
-		oldInstanceIds = append(oldInstanceIds, oldNode.Ec2InstanceId)
-	}
-
-	// Get a list of instances after auto scaling
-	allNodes, err := client.findECSNodes(options.Cluster)
-	if err != nil {
-		return err
-	}
-
-	// Get a list of instance IDs after auto scaling
-	var allInstanceIds []*string
-	for _, allNode := range allNodes {
-		allInstanceIds = append(allInstanceIds, allNode.Ec2InstanceId)
-	}
-
 	// Select instances to protect from scale in.
 	// By setting "scale-in protection" to instances created at scale-out,
 	// the intended instances (instances created before scale-in) are only terminated at scale-in process.
-	protectInstanceIds, err := client.selectInstanceToProtectFromScaleIn(oldInstanceIds, allInstanceIds)
+	protectInstanceIds, err := client.selectInstanceToProtectFromScaleIn(oldNodes, options.Cluster)
 	if err != nil {
 		return err
 	}
@@ -188,7 +171,25 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 // selectInstanceToProtectFromScaleIn selects instance to protect from Scale in.
 // instance select rule:
 //   instances after scale out - instances before scale out - instances which already set `InstanceProtection==true`
-func (client *Client) selectInstanceToProtectFromScaleIn(oldInstanceIds, allInstanceIds []*string) ([]*string, error) {
+func (client *Client) selectInstanceToProtectFromScaleIn(oldNodes []*ecs.ContainerInstance, cluster string) ([]*string, error) {
+	// Get a list of instance IDs before auto scaling
+	var oldInstanceIds []*string
+	for _, oldNode := range oldNodes {
+		oldInstanceIds = append(oldInstanceIds, oldNode.Ec2InstanceId)
+	}
+
+	// Get a list of instances after auto scaling
+	allNodes, err := client.findECSNodes(cluster)
+	if err != nil {
+		return nil, err
+	}
+
+	// Get a list of instance IDs after auto scaling
+	var allInstanceIds []*string
+	for _, allNode := range allNodes {
+		allInstanceIds = append(allInstanceIds, allNode.Ec2InstanceId)
+	}
+
 	// get newly created nodes (allInstanceIds - oldInstanceIds)
 	newInstanceIds := difference(allInstanceIds, oldInstanceIds)
 
