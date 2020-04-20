@@ -15,21 +15,29 @@ type SSMParameterEnvOptions struct {
 
 // SSMParameterEnv prints SSM parameters as a list of environment variables.
 func (client *Client) SSMParameterEnv(options SSMParameterEnvOptions) error {
-	metadata, err := client.FindSSMParameterMetadata(options.Name)
-	if err != nil {
-		return err
-	}
+	var parameters []*ssm.Parameter
+	if strings.HasPrefix(options.Name, "/") {
+		var err error
+		parameters, err = client.GetParametersByPath(&options.Name, true)
+		if err != nil {
+			return err
+		}
+	} else {
+		metadata, err := client.FindSSMParameterMetadata(options.Name)
+		if err != nil {
+			return err
+		}
 
-	names := []*string{}
-	for _, m := range metadata {
-		names = append(names, m.Name)
-	}
+		names := []*string{}
+		for _, m := range metadata {
+			names = append(names, m.Name)
+		}
 
-	parameters, err := client.GetSSMParameters(names, true)
-	if err != nil {
-		return err
+		parameters, err = client.GetSSMParameters(names, true)
+		if err != nil {
+			return err
+		}
 	}
-
 	output := []string{}
 	for _, parameter := range parameters {
 		output = append(output, formatSSMParameterAsEnv(parameter, options.Name, options.DockerFormat))
