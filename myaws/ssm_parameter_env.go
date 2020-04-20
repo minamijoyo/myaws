@@ -51,11 +51,12 @@ func formatSSMParameterAsEnv(parameter *ssm.Parameter, prefix string, dockerForm
 	// Drop prefix and get suffix as a key name.
 	suffix := strings.Replace(*parameter.Name, prefix, "", 1)
 	// if first character is period, then drop it.
-	if suffix[0] == '.' {
+	if suffix[0] == '.'|'/' {
 		suffix = suffix[1:]
 	}
-	// Flatten period to underscore for nested keys.
+	// Flatten period and slash to underscore for nested keys.
 	flatten := strings.Replace(suffix, ".", "_", -1)
+	flatten = strings.Replace(flatten, "/", "_", -1)
 	// The name of environment variable should be uppercase.
 	name := strings.ToUpper(flatten)
 	outputOptionName := ""
