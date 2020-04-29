@@ -16,6 +16,14 @@ type SSMParameterEnvOptions struct {
 // SSMParameterEnv prints SSM parameters as a list of environment variables.
 func (client *Client) SSMParameterEnv(options SSMParameterEnvOptions) error {
 	var parameters []*ssm.Parameter
+	// Since GetSSMParameters does not have a hierarchy, it is necessary to retrieve all keys at first, then filter the target keys.
+	// Use the DescribeParameters API when retrieving the list of keys.
+	// The rate limit of the DescribeParameters API is not publicly available.
+	// When your SSM Parameter store have large number of keys, it is possible to exceed the rate limit.
+	// https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_DescribeParameters.html
+	// The GetParametersByPath API has a hierarchy separated by '/'.
+	// This API has less impact to the rate limit.
+	// https://docs.aws.amazon.com/systems-manager/latest/APIReference/API_GetParametersByPath.html
 	if strings.HasPrefix(options.Name, "/") {
 		var err error
 		parameters, err = client.GetParametersByPath(&options.Name, true)
