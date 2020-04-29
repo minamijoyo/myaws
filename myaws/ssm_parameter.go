@@ -107,7 +107,7 @@ func (client *Client) GetParametersByPath(path *string, withDecryption bool) ([]
 			return true
 		})
 	if err != nil {
-		return nil, errors.Wrap(err, "GetParameters failed:")
+		return nil, errors.Wrap(err, "GetParametersByPath failed:")
 	}
 	return parameters, nil
 }
