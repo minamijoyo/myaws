@@ -59,7 +59,7 @@ func formatSSMParameterAsEnv(parameter *ssm.Parameter, prefix string, dockerForm
 	// Drop prefix and get suffix as a key name.
 	suffix := strings.Replace(*parameter.Name, prefix, "", 1)
 	// if first character is period, then drop it.
-	if suffix[0] == '.'|'/' {
+	if suffix[0] == '.' || suffix[0] == '/' {
 		suffix = suffix[1:]
 	}
 	// Flatten period and slash to underscore for nested keys.
