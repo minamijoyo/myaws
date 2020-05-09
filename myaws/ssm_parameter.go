@@ -92,7 +92,7 @@ func (client *Client) getSSMParametersPerChunk(names []*string, withDecryption b
 	return response.Parameters, nil
 }
 
-// GetParametersByPath returns an array of parameters parameters at once
+// GetParametersByPath returns a list of parameters that start with the specified path.
 func (client *Client) GetParametersByPath(path *string, withDecryption bool) ([]*ssm.Parameter, error) {
 	input := &ssm.GetParametersByPathInput{
 		Path:           path,
