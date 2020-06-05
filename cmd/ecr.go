@@ -3,6 +3,9 @@ package cmd
 import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
+	"github.com/minamijoyo/myaws/myaws"
 )
 
 func init() {
@@ -32,6 +35,11 @@ func newECRGetLoginCmd() *cobra.Command {
 		RunE:  runECRGetLoginCmd,
 	}
 
+	flags := cmd.Flags()
+	flags.StringP("registry-ids", "r", "", "Amazon ECR registries ID")
+
+	viper.BindPFlag("ecr.parameter.get-login.registry-ids", flags.Lookup("registry-ids"))
+
 	return cmd
 }
 
@@ -41,5 +49,9 @@ func runECRGetLoginCmd(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "newClient failed:")
 	}
 
-	return client.ECRGetLogin()
+	options := myaws.ECRGetLoginOptions{
+		RegistryIds: viper.GetString("ecr.parameter.get-login.registry-ids"),
+	}
+
+	return client.ECRGetLogin(options)
 }

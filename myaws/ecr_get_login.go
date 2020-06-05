@@ -5,13 +5,23 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ecr"
 	"github.com/pkg/errors"
 )
 
+// ECRGetLoginOptions customize the behavior of the ECRGetLogin command.
+type ECRGetLoginOptions struct {
+	RegistryIds string
+}
+
 // ECRGetLogin gets docker login command with authorization token for ECR.
-func (client *Client) ECRGetLogin() error {
-	params := &ecr.GetAuthorizationTokenInput{}
+func (client *Client) ECRGetLogin(options ECRGetLoginOptions) error {
+	params := &ecr.GetAuthorizationTokenInput{
+	    RegistryIds: []*string{
+	        aws.String(options.RegistryIds),
+	    },
+	}
 
 	response, err := client.ECR.GetAuthorizationToken(params)
 	if err != nil {
