@@ -39,7 +39,7 @@ func newECRGetLoginCmd() *cobra.Command {
 	flags := cmd.Flags()
 	flags.StringSliceP("registry-ids", "r", []string{}, "A list of AWS account IDs")
 
-	viper.BindPFlag("ecr.parameter.get-login.registry-ids", flags.Lookup("registry-ids"))
+	viper.BindPFlag("ecr.get-login.registry-ids", flags.Lookup("registry-ids"))
 
 	return cmd
 }
@@ -50,7 +50,7 @@ func runECRGetLoginCmd(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "newClient failed:")
 	}
 
-	registryIds := aws.StringSlice(viper.GetStringSlice("ecr.parameter.get-login.registry-ids"))
+	registryIds := aws.StringSlice(viper.GetStringSlice("ecr.get-login.registry-ids"))
 	options := myaws.ECRGetLoginOptions{
 		RegistryIds: registryIds,
 	}
