@@ -1,8 +1,12 @@
 package cmd
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
+	"github.com/minamijoyo/myaws/myaws"
 )
 
 func init() {
@@ -32,6 +36,11 @@ func newECRGetLoginCmd() *cobra.Command {
 		RunE:  runECRGetLoginCmd,
 	}
 
+	flags := cmd.Flags()
+	flags.StringSliceP("registry-ids", "r", []string{}, "A list of AWS account IDs")
+
+	viper.BindPFlag("ecr.parameter.get-login.registry-ids", flags.Lookup("registry-ids"))
+
 	return cmd
 }
 
@@ -41,5 +50,10 @@ func runECRGetLoginCmd(cmd *cobra.Command, args []string) error {
 		return errors.Wrap(err, "newClient failed:")
 	}
 
-	return client.ECRGetLogin()
+	registryIds := aws.StringSlice(viper.GetStringSlice("ecr.parameter.get-login.registry-ids"))
+	options := myaws.ECRGetLoginOptions{
+		RegistryIds: registryIds,
+	}
+
+	return client.ECRGetLogin(options)
 }

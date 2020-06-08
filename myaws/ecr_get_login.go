@@ -9,9 +9,18 @@ import (
 	"github.com/pkg/errors"
 )
 
+// ECRGetLoginOptions customize the behavior of the ECRGetLogin command.
+type ECRGetLoginOptions struct {
+	RegistryIds []*string
+}
+
 // ECRGetLogin gets docker login command with authorization token for ECR.
-func (client *Client) ECRGetLogin() error {
+func (client *Client) ECRGetLogin(options ECRGetLoginOptions) error {
 	params := &ecr.GetAuthorizationTokenInput{}
+
+	if len(options.RegistryIds) > 0 {
+		params.RegistryIds = options.RegistryIds
+	}
 
 	response, err := client.ECR.GetAuthorizationToken(params)
 	if err != nil {
