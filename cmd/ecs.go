@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"time"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/minamijoyo/myaws/myaws"
 	"github.com/pkg/errors"
@@ -209,6 +211,7 @@ func newECSServiceCmd() *cobra.Command {
 
 	cmd.AddCommand(
 		newECSServiceLsCmd(),
+		newECSServiceUpdateCmd(),
 	)
 
 	return cmd
@@ -238,4 +241,68 @@ func runECSServiceLsCmd(cmd *cobra.Command, args []string) error {
 		Cluster: args[0],
 	}
 	return client.ECSServiceLs(options)
+}
+
+func newECSServiceUpdateCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update CLUSTER SERVICE",
+		Short: "Update ECS services",
+		RunE:  runECSServiceUpdateCmd,
+	}
+
+	flags := cmd.Flags()
+	flags.StringP("service", "s", "", "Name of service to be updated")
+	flags.Int64P("desired-capacity", "c", -1, "Number of task to place and keep running")
+	flags.BoolP("wait", "w", false, "Wait until desired capacity tasks are InService")
+
+	// We may use time.Duration directly here via flags.Duration,
+	// but time.Duration is unfamiliar for non-Gopher
+	// so we use simple int64 as seconds for CLI interface.
+	flags.Int64P("timeout", "t", 600, "Number of secconds to wait before timeout")
+
+	flags.BoolP("force", "f", false, "Force new deployment")
+
+	viper.BindPFlag("ecs.service.update.service", flags.Lookup("service"))
+	viper.BindPFlag("ecs.service.update.desired-capacity", flags.Lookup("desired-capacity"))
+	viper.BindPFlag("ecs.service.update.wait", flags.Lookup("wait"))
+	viper.BindPFlag("ecs.service.update.timeout", flags.Lookup("timeout"))
+	viper.BindPFlag("ecs.service.update.force", flags.Lookup("force"))
+	return cmd
+}
+
+func runECSServiceUpdateCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	if len(args) == 0 {
+		return errors.New("CLUSTER is required")
+	}
+
+	service := viper.GetString("ecs.service.update.service")
+	if len(service) == 0 {
+		return errors.New("--service is required")
+	}
+
+	// For desiredCapacity, 0 is valid value.
+	// So we use -1 as a default value which indicates unset.
+	// In this case, ECSServiceUpdateOptions.DesiredCount should be nil to allow us force deploy
+	desiredCapacity := viper.GetInt64("ecs.service.update.desired-capacity")
+	var desiredCapacityP *int64
+	if desiredCapacity != -1 {
+		desiredCapacityP = &desiredCapacity
+	}
+
+	timeout := time.Duration(viper.GetInt64("ecs.service.update.timeout")) * time.Second
+
+	options := myaws.ECSServiceUpdateOptions{
+		Cluster:      args[0],
+		Service:      service,
+		DesiredCount: desiredCapacityP,
+		Wait:         viper.GetBool("ecs.service.update.wait"),
+		Timeout:      timeout,
+		Force:        viper.GetBool("ecs.service.update.force"),
+	}
+	return client.ECSServiceUpdate(options)
 }
