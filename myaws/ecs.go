@@ -88,7 +88,8 @@ func (client *Client) findECSServices(cluster string) ([]*ecs.Service, error) {
 func (client *Client) printECSStatus(cluster string) error {
 	fmt.Fprintln(client.stdout, "[Service]")
 	err := client.ECSServiceLs(ECSServiceLsOptions{
-		Cluster: cluster,
+		Cluster:     cluster,
+		PrintHeader: true,
 	})
 	if err != nil {
 		return err
@@ -96,7 +97,8 @@ func (client *Client) printECSStatus(cluster string) error {
 
 	fmt.Fprintln(client.stdout, "[Node]")
 	err = client.ECSNodeLs(ECSNodeLsOptions{
-		Cluster: cluster,
+		Cluster:     cluster,
+		PrintHeader: true,
 	})
 	if err != nil {
 		return err

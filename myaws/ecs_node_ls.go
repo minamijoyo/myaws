@@ -9,7 +9,8 @@ import (
 
 // ECSNodeLsOptions customize the behavior of the Ls command.
 type ECSNodeLsOptions struct {
-	Cluster string
+	Cluster     string
+	PrintHeader bool
 }
 
 // ECSNodeLs describes ECS container instances.
@@ -17,6 +18,18 @@ func (client *Client) ECSNodeLs(options ECSNodeLsOptions) error {
 	instances, err := client.findECSNodes(options.Cluster)
 	if err != nil {
 		return err
+	}
+
+	if options.PrintHeader {
+		header := fmt.Sprintf("%s\t%s\t%-10s\t%s\t%s\t%s",
+			"Namespace",
+			"Ec2InstanceId",
+			"Status",
+			"Running",
+			"Pending",
+			"RegisteredAt",
+		)
+		fmt.Fprintln(client.stdout, header)
 	}
 
 	for _, instance := range instances {

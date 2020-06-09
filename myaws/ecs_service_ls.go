@@ -9,7 +9,8 @@ import (
 
 // ECSServiceLsOptions customize the behavior of the Ls command.
 type ECSServiceLsOptions struct {
-	Cluster string
+	Cluster     string
+	PrintHeader bool
 }
 
 // ECSServiceLs describes ECS services.
@@ -17,6 +18,18 @@ func (client *Client) ECSServiceLs(options ECSServiceLsOptions) error {
 	services, err := client.findECSServices(options.Cluster)
 	if err != nil {
 		return err
+	}
+
+	if options.PrintHeader {
+		header := fmt.Sprintf("%s\t%s\t%s\t%s\t%s\t%s",
+			"Desired",
+			"Running",
+			"Pending",
+			"Deploy",
+			"Service",
+			"TaskDefinition",
+		)
+		fmt.Fprintln(client.stdout, header)
 	}
 
 	for _, service := range services {

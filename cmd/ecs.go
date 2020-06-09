@@ -84,6 +84,11 @@ func newECSNodeLsCmd() *cobra.Command {
 		RunE:  runECSNodeLsCmd,
 	}
 
+	flags := cmd.Flags()
+	flags.BoolP("print-header", "H", false, "Print Header")
+
+	viper.BindPFlag("ecs.node.ls.print-header", flags.Lookup("print-header"))
+
 	return cmd
 }
 
@@ -98,7 +103,8 @@ func runECSNodeLsCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	options := myaws.ECSNodeLsOptions{
-		Cluster: args[0],
+		Cluster:     args[0],
+		PrintHeader: viper.GetBool("ecs.node.ls.print-header"),
 	}
 	return client.ECSNodeLs(options)
 }
@@ -251,6 +257,11 @@ func newECSServiceLsCmd() *cobra.Command {
 		RunE:  runECSServiceLsCmd,
 	}
 
+	flags := cmd.Flags()
+	flags.BoolP("print-header", "H", false, "Print Header")
+
+	viper.BindPFlag("ecs.service.ls.print-header", flags.Lookup("print-header"))
+
 	return cmd
 }
 
@@ -265,7 +276,8 @@ func runECSServiceLsCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	options := myaws.ECSServiceLsOptions{
-		Cluster: args[0],
+		Cluster:     args[0],
+		PrintHeader: viper.GetBool("ecs.service.ls.print-header"),
 	}
 	return client.ECSServiceLs(options)
 }
