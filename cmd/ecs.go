@@ -24,11 +24,38 @@ func newECSCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
+		newECSStatusCmd(),
 		newECSNodeCmd(),
 		newECSServiceCmd(),
 	)
 
 	return cmd
+}
+
+func newECSStatusCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "status CLUSTER",
+		Short: "Print ECS status",
+		RunE:  runECSStatusCmd,
+	}
+
+	return cmd
+}
+
+func runECSStatusCmd(cmd *cobra.Command, args []string) error {
+	client, err := newClient()
+	if err != nil {
+		return errors.Wrap(err, "newClient failed:")
+	}
+
+	if len(args) == 0 {
+		return errors.New("CLUSTER is required")
+	}
+
+	options := myaws.ECSStatusOptions{
+		Cluster: args[0],
+	}
+	return client.ECSStatus(options)
 }
 
 func newECSNodeCmd() *cobra.Command {
