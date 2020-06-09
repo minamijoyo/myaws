@@ -13,17 +13,19 @@ import (
 type ECSServiceUpdateOptions struct {
 	Cluster      string
 	Service      string
-	DesiredCount int64
+	DesiredCount *int64
 	Wait         bool
 	Timeout      time.Duration
+	Force        bool
 }
 
 // ECSServiceUpdate update ECS services.
 func (client *Client) ECSServiceUpdate(options ECSServiceUpdateOptions) error {
 	input := &ecs.UpdateServiceInput{
-		Cluster:      &options.Cluster,
-		Service:      &options.Service,
-		DesiredCount: &options.DesiredCount,
+		Cluster:            &options.Cluster,
+		Service:            &options.Service,
+		DesiredCount:       options.DesiredCount,
+		ForceNewDeployment: &options.Force,
 	}
 
 	_, err := client.ECS.UpdateService(input)
