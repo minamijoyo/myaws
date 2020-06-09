@@ -21,7 +21,7 @@ func (client *Client) ECSServiceLs(options ECSServiceLsOptions) error {
 	}
 
 	if options.PrintHeader {
-		header := fmt.Sprintf("%s\t%s\t%s\t%s\t%s\t%s",
+		header := fmt.Sprintf("%s\t%s\t%s\t%s\t%-32s\t%s",
 			"Desired",
 			"Running",
 			"Pending",
@@ -42,7 +42,7 @@ func (client *Client) ECSServiceLs(options ECSServiceLsOptions) error {
 func formatECSService(client *Client, options ECSServiceLsOptions, service *ecs.Service) string {
 	taskDefinitions := strings.Split(*service.TaskDefinition, "/")
 
-	return fmt.Sprintf("%d\t%d\t%d\t%d\t%s\t%s",
+	return fmt.Sprintf("%d\t%d\t%d\t%d\t%-32s\t%s",
 		*service.DesiredCount,
 		*service.RunningCount,
 		*service.PendingCount,
