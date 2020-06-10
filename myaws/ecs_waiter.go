@@ -235,12 +235,12 @@ func (client *Client) getECSDesiredCount(cluster string, serviceArn string) (int
 	return *desiredCount, nil
 }
 
-// WaitUntilECSAllServicesStable is a helper function which wait until all ECS
-// servcies are running the desired number of containers.
+// WaitUntilECSAllServicesStableWithContext is a helper function which wait
+// until all ECS servcies are running the desired number of containers.
 // The official (*ECS) WaitUntilServicesStable does not support more than 10
 // services.
 // We need to check 10 services at a time.
-func (client *Client) WaitUntilECSAllServicesStable(cluster string) error {
+func (client *Client) WaitUntilECSAllServicesStableWithContext(ctx context.Context, cluster string) error {
 	serviceArns, err := client.getECSServiceArns(cluster)
 	if err != nil {
 		return err
@@ -250,11 +250,8 @@ func (client *Client) WaitUntilECSAllServicesStable(cluster string) error {
 	// So we need to divide the list by 10.
 	chunks := (funk.Chunk(serviceArns, 10)).([][]*string)
 	for _, c := range chunks {
-		input := &ecs.DescribeServicesInput{
-			Cluster:  &cluster,
-			Services: c,
-		}
-		err := client.ECS.WaitUntilServicesStable(input)
+		// We use custome wait function to allow us wait more than 10 minutes with context.
+		err := client.WaitUntilECSServicesStableWithContext(ctx, cluster, aws.StringValueSlice(c))
 		if err != nil {
 			return errors.Wrapf(err, "WaitUntilServicesStable failed")
 		}

@@ -1,7 +1,10 @@
 package myaws
 
 import (
+	"context"
 	"fmt"
+	"time"
+
 	"github.com/aws/aws-sdk-go/service/ecs"
 
 	"github.com/aws/aws-sdk-go/aws/awsutil"
@@ -13,6 +16,7 @@ import (
 type ECSNodeRenewOptions struct {
 	Cluster string
 	AsgName string
+	Timeout time.Duration
 }
 
 // ECSNodeRenew renew ECS container instances with blue-green deployment.
@@ -20,6 +24,31 @@ type ECSNodeRenewOptions struct {
 // if you update the AMI. creates new instances, drains the old instances,
 // and discards the old instances.
 func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
+	// We should use a context everywhere in all AWS API calls,
+	// but for the moment only some are supported.
+	// So this is a total timeout, and indivisual wait operations can timeout in
+	// shorter amount of time if it has fixed timeout in the waiter.
+	ctx, cancel := context.WithTimeout(context.Background(), options.Timeout)
+	defer cancel()
+
+	done := make(chan error, 1)
+	go func() {
+		err := client.ecsNodeRenewWithContext(ctx, options)
+		if err != nil {
+			done <- err
+		}
+		done <- nil
+	}()
+
+	select {
+	case e := <-done:
+		return e
+	case <-ctx.Done():
+		return ctx.Err()
+	}
+}
+
+func (client *Client) ecsNodeRenewWithContext(ctx context.Context, options ECSNodeRenewOptions) error {
 	fmt.Fprintf(client.stdout, "start: ecs node renew\noptions: %s\n", awsutil.Prettify(options))
 
 	if err := client.printECSStatus(options.Cluster); err != nil {
@@ -99,7 +128,7 @@ func (client *Client) ECSNodeRenew(options ECSNodeRenewOptions) error {
 	// It depends on the deployment strategy of each service.
 	// We should make sure all services are stable
 	fmt.Fprintln(client.stdout, "Wait until all ECS services stable...")
-	err = client.WaitUntilECSAllServicesStable(options.Cluster)
+	err = client.WaitUntilECSAllServicesStableWithContext(ctx, options.Cluster)
 	if err != nil {
 		return err
 	}
