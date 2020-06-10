@@ -1,9 +1,11 @@
 package myaws
 
 import (
+	"context"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/request"
 	"github.com/aws/aws-sdk-go/service/ecs"
 	"github.com/aws/aws-sdk-go/service/elbv2"
@@ -258,6 +260,33 @@ func (client *Client) WaitUntilECSAllServicesStable(cluster string) error {
 		}
 	}
 
+	return nil
+}
+
+// WaitUntilECSServicesStableWithContext waits until ECS services stable.
+// The official (*ECS) WaitUntilServicesStableWithContext has fixed MaxAttempts(40) and Delay(15),
+// we can't wait more than 10 minutes.
+// So we wrap it and allow timeout with a given context.
+// Note that this function never timeout itself.
+func (client *Client) WaitUntilECSServicesStableWithContext(ctx context.Context, cluster string, services []string) error {
+	for {
+		err := client.ECS.WaitUntilServicesStableWithContext(
+			ctx,
+			&ecs.DescribeServicesInput{
+				Cluster:  &cluster,
+				Services: aws.StringSlice(services),
+			},
+		)
+		if err != nil {
+			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == request.WaiterResourceNotReadyErrorCode {
+				// internal waiter timeout, retry.
+				continue
+			} else {
+				return errors.Wrapf(err, "WaitUntilServicesStable failed")
+			}
+		}
+		break
+	}
 	return nil
 }
 
