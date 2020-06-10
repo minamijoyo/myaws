@@ -37,15 +37,9 @@ func (client *Client) ECSServiceUpdate(options ECSServiceUpdateOptions) error {
 		fmt.Fprintln(client.stdout, "Wait until the service stable...")
 		ctx, cancel := context.WithTimeout(context.Background(), options.Timeout)
 		defer cancel()
-
-		err = client.ECS.WaitUntilServicesStableWithContext(
-			ctx,
-			&ecs.DescribeServicesInput{
-				Cluster:  &options.Cluster,
-				Services: []*string{&options.Service},
-			})
+		err = client.WaitUntilECSServicesStableWithContext(ctx, options.Cluster, []string{options.Service})
 		if err != nil {
-			return errors.Wrapf(err, "WaitUntilServicesStable failed")
+			return err
 		}
 	}
 

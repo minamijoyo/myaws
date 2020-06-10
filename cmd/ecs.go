@@ -206,7 +206,12 @@ func newECSNodeRenewCmd() *cobra.Command {
 	flags := cmd.Flags()
 	flags.StringP("asg-name", "a", "", "A name of AutoScalingGroup to which the ECS container instances belong")
 
+	// Note that this is a total timeout, and indivisual wait operations can
+	// timeout in shorter amount of time.
+	flags.Int64P("timeout", "t", 3600, "Number of secconds to wait before timeout")
+
 	viper.BindPFlag("ecs.node.renew.asg-name", flags.Lookup("asg-name"))
+	viper.BindPFlag("ecs.node.renew.timeout", flags.Lookup("timeout"))
 
 	return cmd
 }
@@ -225,9 +230,13 @@ func runECSNodeRenewCmd(cmd *cobra.Command, args []string) error {
 	if len(asgName) == 0 {
 		return errors.New("asg-name is required")
 	}
+
+	timeout := time.Duration(viper.GetInt64("ecs.node.renew.timeout")) * time.Second
+
 	options := myaws.ECSNodeRenewOptions{
 		Cluster: args[0],
 		AsgName: asgName,
+		Timeout: timeout,
 	}
 
 	return client.ECSNodeRenew(options)
