@@ -111,10 +111,11 @@ func (client *Client) ecsNodeRenewWithContext(ctx context.Context, options ECSNo
 		oldNodeArns = append(oldNodeArns, oldNode.ContainerInstanceArn)
 	}
 	fmt.Fprintf(client.stdout, "Drain old container instances and wait until no task running...\n%v\n", awsutil.Prettify(oldNodeArns))
-	err = client.ECSNodeDrain(ECSNodeDrainOptions{
+	err = client.ecsNodeDrainWithContext(ctx, ECSNodeDrainOptions{
 		Cluster:            options.Cluster,
 		ContainerInstances: oldNodeArns,
 		Wait:               true,
+		Timeout:            options.Timeout,
 	})
 	if err != nil {
 		return err

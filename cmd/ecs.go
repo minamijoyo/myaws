@@ -165,9 +165,11 @@ func newECSNodeDrainCmd() *cobra.Command {
 	flags := cmd.Flags()
 	flags.StringP("container-instances", "i", "", "A list of container instance IDs or full ARN entries separated by space")
 	flags.BoolP("wait", "w", false, "Wait until container instances are drained")
+	flags.Int64P("timeout", "t", 600, "Number of secconds to wait before timeout")
 
 	viper.BindPFlag("ecs.node.drain.container-instances", flags.Lookup("container-instances"))
 	viper.BindPFlag("ecs.node.drain.wait", flags.Lookup("wait"))
+	viper.BindPFlag("ecs.node.drain.timeout", flags.Lookup("timeout"))
 
 	return cmd
 }
@@ -187,10 +189,13 @@ func runECSNodeDrainCmd(cmd *cobra.Command, args []string) error {
 		return errors.New("container-instances is required")
 	}
 
+	timeout := time.Duration(viper.GetInt64("ecs.node.drain.timeout")) * time.Second
+
 	options := myaws.ECSNodeDrainOptions{
 		Cluster:            args[0],
 		ContainerInstances: containerInstances,
 		Wait:               viper.GetBool("ecs.node.drain.wait"),
+		Timeout:            timeout,
 	}
 
 	return client.ECSNodeDrain(options)

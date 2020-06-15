@@ -1,7 +1,9 @@
 package myaws
 
 import (
+	"context"
 	"fmt"
+	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ecs"
@@ -14,6 +16,7 @@ type ECSNodeDrainOptions struct {
 	Cluster            string
 	ContainerInstances []*string
 	Wait               bool
+	Timeout            time.Duration
 }
 
 // ECSNodeDrain Drain ECS container instances.
@@ -21,6 +24,10 @@ type ECSNodeDrainOptions struct {
 // method is general purpose, so we implement a wait option to specialized
 // method for draining.
 func (client *Client) ECSNodeDrain(options ECSNodeDrainOptions) error {
+	return client.ecsNodeDrainWithContext(context.Background(), options)
+}
+
+func (client *Client) ecsNodeDrainWithContext(ctx context.Context, options ECSNodeDrainOptions) error {
 	// We can specify up to 10 container instances to update state in a single operation.
 	// This constraint is not specified in the API reference, but it returns the following error:
 	//   InvalidParameterException: instanceIds can have at most 10 items.
@@ -41,7 +48,9 @@ func (client *Client) ECSNodeDrain(options ECSNodeDrainOptions) error {
 
 	if options.Wait {
 		fmt.Fprintln(client.stdout, "Wait until container instances are drained...")
-		return client.WaitUntilECSContainerInstancesAreDrained(options.Cluster, options.ContainerInstances)
+		ctx, cancel := context.WithTimeout(ctx, options.Timeout)
+		defer cancel()
+		return client.WaitUntilECSContainerInstancesAreDrainedWithContext(ctx, options.Cluster, options.ContainerInstances)
 	}
 
 	return nil
