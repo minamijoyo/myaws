@@ -13,37 +13,57 @@ import (
 	funk "github.com/thoas/go-funk"
 )
 
-// WaitUntilECSContainerInstancesAreDrained is a helper function which waits until
-// the ECS container instances are drained.
+// WaitUntilECSContainerInstancesAreDrainedWithContext is a helper function
+// which waits until the ECS container instances are drained.
 // Due to the current limitation of the implementation of `request.Waiter`,
 // we need to wait it in two steps.
 // 1. Wait until container instances are DRAINING state.
 // 2. Wait until no running tasks on the container instances.
-func (client *Client) WaitUntilECSContainerInstancesAreDrained(cluster string, containerInstances []*string) error {
-	ctx := aws.BackgroundContext()
-
+func (client *Client) WaitUntilECSContainerInstancesAreDrainedWithContext(ctx context.Context, cluster string, containerInstances []*string) error {
 	input := &ecs.DescribeContainerInstancesInput{
 		Cluster:            &cluster,
 		ContainerInstances: containerInstances,
 	}
 
 	// make sure container instances are DRAINING state
-	if err := client.waitUntilECSContainerInstancesStatusWithContext(ctx, input, "DRAINING"); err != nil {
+	if err := client.WaitUntilECSContainerInstancesStatusWithContext(ctx, input, "DRAINING"); err != nil {
 		return err
 	}
 
 	// wait until no running tasks on the container instances
-	if err := client.waitUntilECSContainerInstancesNoRunningTaskWithContext(ctx, input); err != nil {
+	if err := client.WaitUntilECSContainerInstancesNoRunningTaskWithContext(ctx, input); err != nil {
 		return err
 	}
 
 	return nil
 }
 
+// WaitUntilECSContainerInstancesStatusWithContext waits until ECS ContainerInstances in a given Status.
+// The waitUntilECSContainerInstancesStatusWithContext has fixed MaxAttempts(40) and Delay(15),
+// we can't wait more than 10 minutes.
+// We may be able to set a longer timeout, but there is no single appropriate value to meet any case.
+// So we wrap it and allow timeout with a given context.
+// Note that this function never timeout itself.
+func (client *Client) WaitUntilECSContainerInstancesStatusWithContext(ctx aws.Context, input *ecs.DescribeContainerInstancesInput, status string, opts ...request.WaiterOption) error {
+	for {
+		err := client.waitUntilECSContainerInstancesStatusWithContext(ctx, input, status, opts...)
+		if err != nil {
+			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == request.WaiterResourceNotReadyErrorCode {
+				// internal waiter timeout, retry.
+				continue
+			} else {
+				return errors.Wrapf(err, "waitUntilECSContainerInstancesStatusWithContext failed")
+			}
+		}
+		break
+	}
+	return nil
+}
+
 func (client *Client) waitUntilECSContainerInstancesStatusWithContext(ctx aws.Context, input *ecs.DescribeContainerInstancesInput, status string, opts ...request.WaiterOption) error {
 	w := request.Waiter{
 		Name:        "WaitUntilECSContainerInstancesStatus",
-		MaxAttempts: 20,
+		MaxAttempts: 40,
 		Delay:       request.ConstantWaiterDelay(15 * time.Second),
 		Acceptors: []request.WaiterAcceptor{
 			{
@@ -68,6 +88,28 @@ func (client *Client) waitUntilECSContainerInstancesStatusWithContext(ctx aws.Co
 	w.ApplyOptions(opts...)
 
 	return w.WaitWithContext(ctx)
+}
+
+// WaitUntilECSContainerInstancesNoRunningTaskWithContext waits until ECS ContainerInstances has no running tasks.
+// The waitUntilECSContainerInstancesNoRunningTaskWithContext has fixed MaxAttempts(40) and Delay(15),
+// we can't wait more than 10 minutes.
+// We may be able to set a longer timeout, but there is no single appropriate value to meet any case.
+// So we wrap it and allow timeout with a given context.
+// Note that this function never timeout itself.
+func (client *Client) WaitUntilECSContainerInstancesNoRunningTaskWithContext(ctx aws.Context, input *ecs.DescribeContainerInstancesInput, opts ...request.WaiterOption) error {
+	for {
+		err := client.waitUntilECSContainerInstancesNoRunningTaskWithContext(ctx, input, opts...)
+		if err != nil {
+			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == request.WaiterResourceNotReadyErrorCode {
+				// internal waiter timeout, retry.
+				continue
+			} else {
+				return errors.Wrapf(err, "waitUntilECSContainerInstancesNoRunningTaskWithContext failed")
+			}
+		}
+		break
+	}
+	return nil
 }
 
 func (client *Client) waitUntilECSContainerInstancesNoRunningTaskWithContext(ctx aws.Context, input *ecs.DescribeContainerInstancesInput, opts ...request.WaiterOption) error {
