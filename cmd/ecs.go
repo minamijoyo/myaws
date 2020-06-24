@@ -298,7 +298,7 @@ func runECSServiceLsCmd(cmd *cobra.Command, args []string) error {
 
 func newECSServiceUpdateCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "update CLUSTER SERVICE",
+		Use:   "update CLUSTER",
 		Short: "Update ECS services",
 		RunE:  runECSServiceUpdateCmd,
 	}
