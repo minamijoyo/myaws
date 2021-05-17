@@ -12,7 +12,7 @@ require (
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.3.2
 	github.com/thoas/go-funk v0.0.0-20181020164546-fbae87fb5b5c
-	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
+	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a
 	golang.org/x/lint v0.0.0-20190301231843-5614ed5bae6f // indirect
 	golang.org/x/tools v0.0.0-20190307163923-6a08e3108db3 // indirect
 )
