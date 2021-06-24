@@ -18,10 +18,10 @@ release:
 changelog:
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
       - Merge pull request
       - Merge branch
+      - Update README
+      - Update CHANGELOG
 brew:
   github:
     owner: minamijoyo
