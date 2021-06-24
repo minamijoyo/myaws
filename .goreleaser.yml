@@ -8,7 +8,7 @@ builds:
     goarch:
       - amd64
     ldflags:
-      - "-s -w -X github.com/minamijoyo/myaws/cmd.Version={{.Version}} -X github.com/minamijoyo/myaws/cmd.Revision={{.ShortCommit}}"
+      - "-s -w"
 archive:
   name_template: "{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}"
   files:
