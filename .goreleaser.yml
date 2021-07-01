@@ -1,14 +1,14 @@
----
+# .goreleaser.yml
+# Build customization
 builds:
-  - env:
-      - CGO_ENABLED=0
+  - binary: myaws
     goos:
       - darwin
       - linux
     goarch:
       - amd64
-    ldflags:
-      - "-s -w"
+    env:
+      - CGO_ENABLED=0
 archive:
   name_template: "{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}"
   files:
@@ -22,19 +22,22 @@ changelog:
       - Merge branch
       - Update README
       - Update CHANGELOG
-brew:
-  github:
-    owner: minamijoyo
-    name: homebrew-myaws
-  commit_author:
-    name: "Masayuki Morita"
-    email: minamijoyo@gmail.com
-  homepage: https://github.com/minamijoyo/myaws
-  description: "A human friendly AWS CLI written in Go"
-  skip_upload: false
-  install: |
-    bin.install "myaws"
-    output = Utils.popen_read("#{bin}/myaws completion bash")
-    (bash_completion/"myaws").write output
-    output = Utils.popen_read("#{bin}/myaws completion zsh")
-    (zsh_completion/"_myaws").write output
+brews:
+  - tap:
+      owner: minamijoyo
+      name: homebrew-myaws
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    commit_author:
+      name: "Masayuki Morita"
+      email: minamijoyo@gmail.com
+    homepage: https://github.com/minamijoyo/myaws
+    description: "A human friendly AWS CLI written in Go"
+    skip_upload: auto
+    test: |
+      system "#{bin}/myaws version"
+    install: |
+      bin.install "myaws"
+      output = Utils.popen_read("#{bin}/myaws completion bash")
+      (bash_completion/"myaws").write output
+      output = Utils.popen_read("#{bin}/myaws completion zsh")
+      (zsh_completion/"_myaws").write output
