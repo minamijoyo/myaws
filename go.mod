@@ -7,7 +7,6 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/golang/lint v0.0.0-20190301231843-5614ed5bae6f
 	github.com/gordonklaus/ineffassign v0.0.0-20190601041439-ed7b1b5ee0f8
-	github.com/goreleaser/goreleaser v0.102.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.3.2
