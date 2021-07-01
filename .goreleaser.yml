@@ -9,10 +9,10 @@ builds:
       - amd64
     env:
       - CGO_ENABLED=0
-archive:
-  name_template: "{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}"
-  files:
-    - none*
+archives:
+  - name_template: "{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - none*
 release:
   prerelease: auto
 changelog:
