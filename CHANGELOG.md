@@ -1,4 +1,4 @@
-## 0.4.0 (Unreleased)
+## 0.4.0 (2021/07/19)
 
 This releases contains small breaking changes to improve CI/CD workflow. AWS related functionalities didn't change.
 
