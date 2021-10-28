@@ -1,3 +1,8 @@
+## master (Unreleased)
+
+* Restrict permissions for GitHub Actions ([#51](https://github.com/minamijoyo/myaws/pull/51))
+* Set timeout for GitHub Actions ([#52](https://github.com/minamijoyo/myaws/pull/52))
+
 ## 0.4.0 (2021/07/19)
 
 This releases contains small breaking changes to improve CI/CD workflow. AWS related functionalities didn't change.
