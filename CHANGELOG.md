@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.4.1 (2021/10/28)
+
 * Restrict permissions for GitHub Actions ([#51](https://github.com/minamijoyo/myaws/pull/51))
 * Set timeout for GitHub Actions ([#52](https://github.com/minamijoyo/myaws/pull/52))
 
