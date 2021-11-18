@@ -1,5 +1,13 @@
 ## master (Unreleased)
 
+## 0.4.2 (2021/11/18)
+
+ENHANCEMENTS:
+
+* Add release target to arm64 architecture ([#54](https://github.com/minamijoyo/myaws/pull/54))
+* Update Go to v1.17.3 and Alpine to 3.14 ([#55](https://github.com/minamijoyo/myaws/pull/55))
+* Remove docker build on pull request ([#56](https://github.com/minamijoyo/myaws/pull/56))
+
 ## 0.4.1 (2021/10/28)
 
 * Restrict permissions for GitHub Actions ([#51](https://github.com/minamijoyo/myaws/pull/51))
