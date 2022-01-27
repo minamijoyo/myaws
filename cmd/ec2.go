@@ -20,7 +20,7 @@ func newEC2Cmd() *cobra.Command {
 		Use:   "ec2",
 		Short: "Manage EC2 resources",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			cmd.Help() // nolint: errcheck
 		},
 	}
 
@@ -49,10 +49,10 @@ func newEC2LsCmd() *cobra.Command {
 	)
 	flags.StringP("fields", "F", "InstanceId InstanceType PublicIpAddress PrivateIpAddress AvailabilityZone StateName LaunchTime Tag:Name", "Output fields list separated by space")
 
-	viper.BindPFlag("ec2.ls.all", flags.Lookup("all"))
-	viper.BindPFlag("ec2.ls.quiet", flags.Lookup("quiet"))
-	viper.BindPFlag("ec2.ls.filter-tag", flags.Lookup("filter-tag"))
-	viper.BindPFlag("ec2.ls.fields", flags.Lookup("fields"))
+	viper.BindPFlag("ec2.ls.all", flags.Lookup("all"))               // nolint: errcheck
+	viper.BindPFlag("ec2.ls.quiet", flags.Lookup("quiet"))           // nolint: errcheck
+	viper.BindPFlag("ec2.ls.filter-tag", flags.Lookup("filter-tag")) // nolint: errcheck
+	viper.BindPFlag("ec2.ls.fields", flags.Lookup("fields"))         // nolint: errcheck
 
 	return cmd
 }
@@ -83,7 +83,7 @@ func newEC2StartCmd() *cobra.Command {
 	flags := cmd.Flags()
 	flags.BoolP("wait", "w", false, "Wait until instance running")
 
-	viper.BindPFlag("ec2.start.wait", flags.Lookup("wait"))
+	viper.BindPFlag("ec2.start.wait", flags.Lookup("wait")) // nolint: errcheck
 
 	return cmd
 }
@@ -117,7 +117,7 @@ func newEC2StopCmd() *cobra.Command {
 	flags := cmd.Flags()
 	flags.BoolP("wait", "w", false, "Wait until instance stopped")
 
-	viper.BindPFlag("ec2.stop.wait", flags.Lookup("wait"))
+	viper.BindPFlag("ec2.stop.wait", flags.Lookup("wait")) // nolint: errcheck
 
 	return cmd
 }
@@ -153,9 +153,9 @@ func newEC2SSHCmd() *cobra.Command {
 	flags.StringP("identity-file", "i", "~/.ssh/id_rsa", "SSH private key file")
 	flags.BoolP("private", "", false, "Use private IP to connect")
 
-	viper.BindPFlag("ec2.ssh.login-name", flags.Lookup("login-name"))
-	viper.BindPFlag("ec2.ssh.identity-file", flags.Lookup("identity-file"))
-	viper.BindPFlag("ec2.ssh.private", flags.Lookup("private"))
+	viper.BindPFlag("ec2.ssh.login-name", flags.Lookup("login-name"))       // nolint: errcheck
+	viper.BindPFlag("ec2.ssh.identity-file", flags.Lookup("identity-file")) // nolint: errcheck
+	viper.BindPFlag("ec2.ssh.private", flags.Lookup("private"))             // nolint: errcheck
 
 	return cmd
 }

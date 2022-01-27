@@ -50,7 +50,7 @@ func formatEC2Instance(client *Client, options EC2LsOptions, instance *ec2.Insta
 
 	for _, field := range outputFields {
 		value := ""
-		if strings.Index(field, "Tag:") != -1 {
+		if strings.Index(field, "Tag:") != -1 { // nolint: gosimple
 			key := strings.Split(field, ":")[1]
 			value = formatEC2Tag(instance, key)
 		} else {

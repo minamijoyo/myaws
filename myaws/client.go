@@ -46,7 +46,7 @@ type Client struct {
 
 // NewClient initializes Client instance
 func NewClient(stdin io.Reader, stdout io.Writer, stderr io.Writer, profile string, region string, timezone string, humanize bool, debug bool) (*Client, error) {
-	session := session.New()
+	session := session.New() // nolint: staticcheck
 	config := newConfig(profile, region, debug)
 	client := &Client{
 		config:      config,

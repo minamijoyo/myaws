@@ -24,7 +24,7 @@ func (client *Client) FindEC2Instances(filterTag string, all bool) ([]*ec2.Insta
 
 	var instances []*ec2.Instance
 	for _, reservation := range response.Reservations {
-		for _, instance := range reservation.Instances {
+		for _, instance := range reservation.Instances { // nolint: gosimple
 			instances = append(instances, instance)
 		}
 	}

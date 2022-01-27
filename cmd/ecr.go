@@ -18,7 +18,7 @@ func newECRCmd() *cobra.Command {
 		Use:   "ecr",
 		Short: "Manage ECR resources",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			cmd.Help() // nolint: errcheck
 		},
 	}
 
@@ -39,7 +39,7 @@ func newECRGetLoginCmd() *cobra.Command {
 	flags := cmd.Flags()
 	flags.StringSliceP("registry-ids", "r", []string{}, "A list of AWS account IDs")
 
-	viper.BindPFlag("ecr.get-login.registry-ids", flags.Lookup("registry-ids"))
+	viper.BindPFlag("ecr.get-login.registry-ids", flags.Lookup("registry-ids")) // nolint: errcheck
 
 	return cmd
 }

@@ -16,7 +16,7 @@ func newELBCmd() *cobra.Command {
 		Use:   "elb",
 		Short: "Manage ELB resources",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			cmd.Help() // nolint: errcheck
 		},
 	}
 

@@ -15,7 +15,7 @@ func newCompletionCmd() *cobra.Command {
 		Use:   "completion",
 		Short: "Generates shell completion scripts",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			cmd.Help() // nolint: errcheck
 		},
 	}
 
@@ -32,7 +32,7 @@ func newCompletionBashCmd() *cobra.Command {
 		Use:   "bash",
 		Short: "Generates bash completion scripts",
 		Run: func(cmd *cobra.Command, args []string) {
-			RootCmd.GenBashCompletion(os.Stdout)
+			RootCmd.GenBashCompletion(os.Stdout) // nolint: errcheck
 		},
 	}
 
@@ -44,7 +44,7 @@ func newCompletionZshCmd() *cobra.Command {
 		Use:   "zsh",
 		Short: "Generates zsh completion scripts",
 		Run: func(cmd *cobra.Command, args []string) {
-			RootCmd.GenZshCompletion(os.Stdout)
+			RootCmd.GenZshCompletion(os.Stdout) // nolint: errcheck
 		},
 	}
 

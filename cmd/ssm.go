@@ -18,7 +18,7 @@ func newSSMCmd() *cobra.Command {
 		Use:   "ssm",
 		Short: "Manage SSM resources",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			cmd.Help() // nolint: errcheck
 		},
 	}
 
@@ -34,7 +34,7 @@ func newSSMParameterCmd() *cobra.Command {
 		Use:   "parameter",
 		Short: "Manage SSM parameter resources",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			cmd.Help() // nolint: errcheck
 		},
 	}
 
@@ -59,7 +59,7 @@ func newSSMParameterPutCmd() *cobra.Command {
 	flags := cmd.Flags()
 	flags.StringP("key-id", "k", "", "KMS key ID or alias")
 
-	viper.BindPFlag("ssm.parameter.put.key-id", flags.Lookup("key-id"))
+	viper.BindPFlag("ssm.parameter.put.key-id", flags.Lookup("key-id")) // nolint: errcheck
 
 	return cmd
 }
@@ -93,7 +93,7 @@ func newSSMParameterGetCmd() *cobra.Command {
 	flags := cmd.Flags()
 	flags.BoolP("with-decryption", "d", true, "with KMS decryption")
 
-	viper.BindPFlag("ssm.parameter.get.with-decryption", flags.Lookup("with-decryption"))
+	viper.BindPFlag("ssm.parameter.get.with-decryption", flags.Lookup("with-decryption")) // nolint: errcheck
 	return cmd
 }
 
@@ -128,7 +128,7 @@ func newSSMParameterLsCmd() *cobra.Command {
 		"Filter parameters by Name, such as foo.dev. The value of tag is assumed to be a prefix match",
 	)
 
-	viper.BindPFlag("ssm.parameter.ls.name", flags.Lookup("name"))
+	viper.BindPFlag("ssm.parameter.ls.name", flags.Lookup("name")) // nolint: errcheck
 	return cmd
 }
 
@@ -155,7 +155,7 @@ func newSSMParameterEnvCmd() *cobra.Command {
 	flags := cmd.Flags()
 	flags.BoolP("docker-format", "e", false, "Output in docker environment variables format such as -e KEY=VALUE")
 
-	viper.BindPFlag("ssm.parameter.env.docker-format", flags.Lookup("docker-format"))
+	viper.BindPFlag("ssm.parameter.env.docker-format", flags.Lookup("docker-format")) // nolint: errcheck
 	return cmd
 }
 

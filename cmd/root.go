@@ -29,11 +29,11 @@ func init() {
 	RootCmd.PersistentFlags().BoolP("humanize", "", true, "Use Human friendly format for time")
 	RootCmd.PersistentFlags().BoolP("debug", "", false, "Enable debug mode")
 
-	viper.BindPFlag("profile", RootCmd.PersistentFlags().Lookup("profile"))
-	viper.BindPFlag("region", RootCmd.PersistentFlags().Lookup("region"))
-	viper.BindPFlag("timezone", RootCmd.PersistentFlags().Lookup("timezone"))
-	viper.BindPFlag("humanize", RootCmd.PersistentFlags().Lookup("humanize"))
-	viper.BindPFlag("debug", RootCmd.PersistentFlags().Lookup("debug"))
+	viper.BindPFlag("profile", RootCmd.PersistentFlags().Lookup("profile"))   // nolint: errcheck
+	viper.BindPFlag("region", RootCmd.PersistentFlags().Lookup("region"))     // nolint: errcheck
+	viper.BindPFlag("timezone", RootCmd.PersistentFlags().Lookup("timezone")) // nolint: errcheck
+	viper.BindPFlag("humanize", RootCmd.PersistentFlags().Lookup("humanize")) // nolint: errcheck
+	viper.BindPFlag("debug", RootCmd.PersistentFlags().Lookup("debug"))       // nolint: errcheck
 
 }
 
@@ -46,7 +46,7 @@ func initConfig() {
 	viper.AddConfigPath("$HOME")
 	viper.AutomaticEnv()
 
-	viper.ReadInConfig()
+	viper.ReadInConfig() // nolint: errcheck
 }
 
 func newClient() (*myaws.Client, error) {
