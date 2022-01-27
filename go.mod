@@ -5,8 +5,6 @@ go 1.17
 require (
 	github.com/aws/aws-sdk-go v1.38.39
 	github.com/dustin/go-humanize v1.0.0
-	github.com/golang/lint v0.0.0-20190301231843-5614ed5bae6f
-	github.com/gordonklaus/ineffassign v0.0.0-20190601041439-ed7b1b5ee0f8
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.3.2
@@ -26,10 +24,8 @@ require (
 	github.com/spf13/cast v1.3.0 // indirect
 	github.com/spf13/jwalterweatherman v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.3 // indirect
-	golang.org/x/lint v0.0.0-20190301231843-5614ed5bae6f // indirect
 	golang.org/x/sys v0.0.0-20201119102817-f84b799fce68 // indirect
 	golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1 // indirect
 	golang.org/x/text v0.3.3 // indirect
-	golang.org/x/tools v0.0.0-20190307163923-6a08e3108db3 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 )
