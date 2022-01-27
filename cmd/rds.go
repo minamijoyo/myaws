@@ -17,7 +17,7 @@ func newRDSCmd() *cobra.Command {
 		Use:   "rds",
 		Short: "Manage RDS resources",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			cmd.Help() // nolint: errcheck
 		},
 	}
 
@@ -39,8 +39,8 @@ func newRDSLsCmd() *cobra.Command {
 	flags.BoolP("quiet", "q", false, "Only display DBInstanceIdentifier")
 	flags.StringP("fields", "F", "DBInstanceClass Engine AllocatedStorage StorageTypeIops InstanceCreateTime DBInstanceIdentifier ReadReplicaSource", "Output fields list separated by space")
 
-	viper.BindPFlag("rds.ls.quiet", flags.Lookup("quiet"))
-	viper.BindPFlag("rds.ls.fields", flags.Lookup("fields"))
+	viper.BindPFlag("rds.ls.quiet", flags.Lookup("quiet"))   // nolint: errcheck
+	viper.BindPFlag("rds.ls.fields", flags.Lookup("fields")) // nolint: errcheck
 
 	return cmd
 }

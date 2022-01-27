@@ -354,7 +354,7 @@ func (client *Client) WaitUntilECSAllTargetsInService(cluster string) error {
 		}
 		for _, t := range targetGroupArns {
 			input := &elbv2.DescribeTargetHealthInput{
-				TargetGroupArn: &t,
+				TargetGroupArn: &t, // nolint: gosec
 			}
 			err := client.ELBV2.WaitUntilTargetInService(input)
 			if err != nil {

@@ -14,7 +14,7 @@ func newSTSCmd() *cobra.Command {
 		Use:   "sts",
 		Short: "Manage STS resources",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			cmd.Help() // nolint: errcheck
 		},
 	}
 

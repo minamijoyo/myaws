@@ -19,7 +19,7 @@ func (client *Client) ECRGetLogin(options ECRGetLoginOptions) error {
 	params := &ecr.GetAuthorizationTokenInput{}
 
 	if len(options.RegistryIds) > 0 {
-		params.RegistryIds = options.RegistryIds
+		params.RegistryIds = options.RegistryIds // nolint: staticcheck
 	}
 
 	response, err := client.ECR.GetAuthorizationToken(params)

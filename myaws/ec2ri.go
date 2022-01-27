@@ -20,7 +20,7 @@ func (client *Client) FindEC2ReservedInstances(all bool) ([]*ec2.ReservedInstanc
 	}
 
 	var reservedInstances []*ec2.ReservedInstances
-	for _, ri := range response.ReservedInstances {
+	for _, ri := range response.ReservedInstances { // nolint: gosimple
 		reservedInstances = append(reservedInstances, ri)
 	}
 

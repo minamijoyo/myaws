@@ -16,7 +16,7 @@ func newEC2RICmd() *cobra.Command {
 		Use:   "ec2ri",
 		Short: "Manage EC2 Reserved Instance resources",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			cmd.Help() // nolint: errcheck
 		},
 	}
 
@@ -39,9 +39,9 @@ func newEC2RILsCmd() *cobra.Command {
 	flags.BoolP("quiet", "q", false, "Only display ReservedInstanceIDs")
 	flags.StringP("fields", "F", "ReservedInstancesId State Scope AvailabilityZone InstanceType InstanceCount Duration Start End", "Output fields list separated by space")
 
-	viper.BindPFlag("ec2ri.ls.all", flags.Lookup("all"))
-	viper.BindPFlag("ec2ri.ls.quiet", flags.Lookup("quiet"))
-	viper.BindPFlag("ec2ri.ls.fields", flags.Lookup("fields"))
+	viper.BindPFlag("ec2ri.ls.all", flags.Lookup("all"))       // nolint: errcheck
+	viper.BindPFlag("ec2ri.ls.quiet", flags.Lookup("quiet"))   // nolint: errcheck
+	viper.BindPFlag("ec2ri.ls.fields", flags.Lookup("fields")) // nolint: errcheck
 
 	return cmd
 }

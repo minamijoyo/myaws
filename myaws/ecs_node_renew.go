@@ -240,7 +240,7 @@ func (client *Client) selectInstanceToProtectFromScaleIn(oldNodes []*ecs.Contain
 
 	var targetInstanceIds []*string
 	for _, instance := range response.AutoScalingInstances {
-		if *instance.ProtectedFromScaleIn == false {
+		if *instance.ProtectedFromScaleIn == false { // nolint: gosimple
 			targetInstanceIds = append(targetInstanceIds, instance.InstanceId)
 		}
 	}

@@ -10,7 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/ssh"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/crypto/ssh/terminal" // nolint: staticcheck
 )
 
 // EC2SSHOptions customize the behavior of the SSH command.
@@ -104,7 +104,7 @@ func buildSSHConfig(loginName string, identityFile string) (*ssh.ClientConfig, e
 		Auth: []ssh.AuthMethod{
 			ssh.PublicKeys(signer),
 		},
-		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(), // nolint: gosec
 	}
 
 	return config, nil
@@ -115,19 +115,19 @@ func buildSSHSessionPipe(session *ssh.Session) error {
 	if err != nil {
 		return errors.Wrap(err, "unable to setup stdin for session:")
 	}
-	go io.Copy(stdin, os.Stdin)
+	go io.Copy(stdin, os.Stdin) // nolint: errcheck
 
 	stdout, err := session.StdoutPipe()
 	if err != nil {
 		return errors.Wrap(err, "unable to setup stdout for session:")
 	}
-	go io.Copy(os.Stdout, stdout)
+	go io.Copy(os.Stdout, stdout) // nolint: errcheck
 
 	stderr, err := session.StderrPipe()
 	if err != nil {
 		return errors.Wrap(err, "unable to setup stderr for session:")
 	}
-	go io.Copy(os.Stderr, stderr)
+	go io.Copy(os.Stderr, stderr) // nolint: errcheck
 
 	return nil
 }
@@ -157,7 +157,7 @@ func (client *Client) startSSHSessionWithTerminal(hostname string, port string, 
 	if err != nil {
 		return errors.Wrap(err, "unable to put terminal in Raw Mode:")
 	}
-	defer terminal.Restore(fd, oldState)
+	defer terminal.Restore(fd, oldState) // nolint: errcheck
 
 	width, height, _ := terminal.GetSize(fd)
 
@@ -172,7 +172,7 @@ func (client *Client) startSSHSessionWithTerminal(hostname string, port string, 
 	if err := session.Shell(); err != nil {
 		return errors.Wrap(err, "failed to start shell:")
 	}
-	session.Wait()
+	session.Wait() // nolint: errcheck
 
 	return nil
 }

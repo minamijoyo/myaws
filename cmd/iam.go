@@ -16,7 +16,7 @@ func newIAMCmd() *cobra.Command {
 		Use:   "iam",
 		Short: "Manage IAM resources",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			cmd.Help() // nolint: errcheck
 		},
 	}
 
@@ -32,7 +32,7 @@ func newIAMUserCmd() *cobra.Command {
 		Use:   "user",
 		Short: "Manage IAM user resources",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			cmd.Help() // nolint: errcheck
 		},
 	}
 

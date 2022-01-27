@@ -19,7 +19,7 @@ func newECSCmd() *cobra.Command {
 		Use:   "ecs",
 		Short: "Manage ECS resources",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			cmd.Help() // nolint: errcheck
 		},
 	}
 
@@ -63,7 +63,7 @@ func newECSNodeCmd() *cobra.Command {
 		Use:   "node",
 		Short: "Manage ECS node resources (container instances)",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			cmd.Help() // nolint: errcheck
 		},
 	}
 
@@ -87,7 +87,7 @@ func newECSNodeLsCmd() *cobra.Command {
 	flags := cmd.Flags()
 	flags.BoolP("print-header", "H", false, "Print Header")
 
-	viper.BindPFlag("ecs.node.ls.print-header", flags.Lookup("print-header"))
+	viper.BindPFlag("ecs.node.ls.print-header", flags.Lookup("print-header")) // nolint: errcheck
 
 	return cmd
 }
@@ -120,8 +120,8 @@ func newECSNodeUpdateCmd() *cobra.Command {
 	flags.StringP("container-instances", "i", "", "A list of container instance IDs or full ARN entries separated by space")
 	flags.StringP("status", "s", "", "container instance state (ACTIVE | DRAINING)")
 
-	viper.BindPFlag("ecs.node.update.container-instances", flags.Lookup("container-instances"))
-	viper.BindPFlag("ecs.node.update.status", flags.Lookup("status"))
+	viper.BindPFlag("ecs.node.update.container-instances", flags.Lookup("container-instances")) // nolint: errcheck
+	viper.BindPFlag("ecs.node.update.status", flags.Lookup("status"))                           // nolint: errcheck
 
 	return cmd
 }
@@ -167,9 +167,9 @@ func newECSNodeDrainCmd() *cobra.Command {
 	flags.BoolP("wait", "w", false, "Wait until container instances are drained")
 	flags.Int64P("timeout", "t", 600, "Number of secconds to wait before timeout")
 
-	viper.BindPFlag("ecs.node.drain.container-instances", flags.Lookup("container-instances"))
-	viper.BindPFlag("ecs.node.drain.wait", flags.Lookup("wait"))
-	viper.BindPFlag("ecs.node.drain.timeout", flags.Lookup("timeout"))
+	viper.BindPFlag("ecs.node.drain.container-instances", flags.Lookup("container-instances")) // nolint: errcheck
+	viper.BindPFlag("ecs.node.drain.wait", flags.Lookup("wait"))                               // nolint: errcheck
+	viper.BindPFlag("ecs.node.drain.timeout", flags.Lookup("timeout"))                         // nolint: errcheck
 
 	return cmd
 }
@@ -215,8 +215,8 @@ func newECSNodeRenewCmd() *cobra.Command {
 	// timeout in shorter amount of time.
 	flags.Int64P("timeout", "t", 3600, "Number of secconds to wait before timeout")
 
-	viper.BindPFlag("ecs.node.renew.asg-name", flags.Lookup("asg-name"))
-	viper.BindPFlag("ecs.node.renew.timeout", flags.Lookup("timeout"))
+	viper.BindPFlag("ecs.node.renew.asg-name", flags.Lookup("asg-name")) // nolint: errcheck
+	viper.BindPFlag("ecs.node.renew.timeout", flags.Lookup("timeout"))   // nolint: errcheck
 
 	return cmd
 }
@@ -252,7 +252,7 @@ func newECSServiceCmd() *cobra.Command {
 		Use:   "service",
 		Short: "Manage ECS service resources",
 		Run: func(cmd *cobra.Command, args []string) {
-			cmd.Help()
+			cmd.Help() // nolint: errcheck
 		},
 	}
 
@@ -274,7 +274,7 @@ func newECSServiceLsCmd() *cobra.Command {
 	flags := cmd.Flags()
 	flags.BoolP("print-header", "H", false, "Print Header")
 
-	viper.BindPFlag("ecs.service.ls.print-header", flags.Lookup("print-header"))
+	viper.BindPFlag("ecs.service.ls.print-header", flags.Lookup("print-header")) // nolint: errcheck
 
 	return cmd
 }
@@ -315,11 +315,11 @@ func newECSServiceUpdateCmd() *cobra.Command {
 
 	flags.BoolP("force", "f", false, "Force new deployment")
 
-	viper.BindPFlag("ecs.service.update.service", flags.Lookup("service"))
-	viper.BindPFlag("ecs.service.update.desired-capacity", flags.Lookup("desired-capacity"))
-	viper.BindPFlag("ecs.service.update.wait", flags.Lookup("wait"))
-	viper.BindPFlag("ecs.service.update.timeout", flags.Lookup("timeout"))
-	viper.BindPFlag("ecs.service.update.force", flags.Lookup("force"))
+	viper.BindPFlag("ecs.service.update.service", flags.Lookup("service"))                   // nolint: errcheck
+	viper.BindPFlag("ecs.service.update.desired-capacity", flags.Lookup("desired-capacity")) // nolint: errcheck
+	viper.BindPFlag("ecs.service.update.wait", flags.Lookup("wait"))                         // nolint: errcheck
+	viper.BindPFlag("ecs.service.update.timeout", flags.Lookup("timeout"))                   // nolint: errcheck
+	viper.BindPFlag("ecs.service.update.force", flags.Lookup("force"))                       // nolint: errcheck
 	return cmd
 }
 
