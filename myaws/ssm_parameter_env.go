@@ -11,6 +11,7 @@ import (
 type SSMParameterEnvOptions struct {
 	Name         string
 	DockerFormat bool
+	QuoteValue   bool
 }
 
 // SSMParameterEnv prints SSM parameters as a list of environment variables.
@@ -55,14 +56,14 @@ func (client *Client) SSMParameterEnv(options SSMParameterEnvOptions) error {
 	}
 	output := []string{}
 	for _, parameter := range parameters {
-		output = append(output, formatSSMParameterAsEnv(parameter, options.Name, options.DockerFormat))
+		output = append(output, formatSSMParameterAsEnv(parameter, options.Name, options.DockerFormat, options.QuoteValue))
 	}
 
 	fmt.Fprint(client.stdout, strings.Join(output[:], " "))
 	return nil
 }
 
-func formatSSMParameterAsEnv(parameter *ssm.Parameter, prefix string, dockerFormat bool) string {
+func formatSSMParameterAsEnv(parameter *ssm.Parameter, prefix string, dockerFormat bool, quoteValue bool) string {
 	// Drop prefix and get suffix as a key name.
 	suffix := strings.Replace(*parameter.Name, prefix, "", 1)
 	// if first character is period, then drop it.
@@ -80,5 +81,10 @@ func formatSSMParameterAsEnv(parameter *ssm.Parameter, prefix string, dockerForm
 		// Output in docker environment variables format such as -e KEY=VALUE
 		outputOptionName = "-e "
 	}
-	return fmt.Sprintf("%s%s=", outputOptionName, name) + *parameter.Value
+
+	value := *parameter.Value
+	if quoteValue {
+		value = "'" + *parameter.Value + "'"
+	}
+	return fmt.Sprintf("%s%s=%s", outputOptionName, name, value)
 }
