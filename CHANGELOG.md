@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.4.3 (2022/04/12)
+
 NEW FEATURES:
 
 * [ssm parameter env] add quote parameter ([#59](https://github.com/minamijoyo/myaws/pull/59))
