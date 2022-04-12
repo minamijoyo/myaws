@@ -1,5 +1,15 @@
 ## master (Unreleased)
 
+NEW FEATURES:
+
+* [ssm parameter env] add quote parameter ([#59](https://github.com/minamijoyo/myaws/pull/59))
+
+ENHANCEMENTS:
+
+* Use golangci-lint instead of golint ([#57](https://github.com/minamijoyo/myaws/pull/57))
+* Update golangci-lint-action to v3 ([#58](https://github.com/minamijoyo/myaws/pull/60))
+* [github actions] fix checkout step ([#61](https://github.com/minamijoyo/myaws/pull/61))
+
 ## 0.4.2 (2021/11/18)
 
 ENHANCEMENTS:
