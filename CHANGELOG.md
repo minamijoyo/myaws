@@ -4,8 +4,6 @@
 
 ENHANCEMENTS:
 
-* Update golangci-lint-action to v3 ([#60](https://github.com/minamijoyo/myaws/pull/60))
-* [github actions] fix checkout step ([#61](https://github.com/minamijoyo/myaws/pull/61))
 * bump golang.org/x/crypto to v0.0.0-20220507011949-2cf3adece122 ([#63](https://github.com/minamijoyo/myaws/pull/63))
 
 ## 0.4.3 (2022/04/12)
@@ -17,7 +15,7 @@ NEW FEATURES:
 ENHANCEMENTS:
 
 * Use golangci-lint instead of golint ([#57](https://github.com/minamijoyo/myaws/pull/57))
-* Update golangci-lint-action to v3 ([#58](https://github.com/minamijoyo/myaws/pull/60))
+* Update golangci-lint-action to v3 ([#60](https://github.com/minamijoyo/myaws/pull/60))
 * [github actions] fix checkout step ([#61](https://github.com/minamijoyo/myaws/pull/61))
 
 ## 0.4.2 (2021/11/18)
