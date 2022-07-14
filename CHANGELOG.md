@@ -1,5 +1,11 @@
 ## master (Unreleased)
 
+## 0.4.5 (2022/07/14)
+
+ENHANCEMENTS:
+
+* Use GitHub App token for updating brew formula on release ([#64](https://github.com/minamijoyo/myaws/pull/64))
+
 ## 0.4.4 (2022/05/10)
 
 ENHANCEMENTS:
