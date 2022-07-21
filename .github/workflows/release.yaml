@@ -26,6 +26,7 @@ jobs:
       with:
         app_id: ${{ secrets.APP_ID }}
         private_key: ${{ secrets.APP_PRIVATE_KEY }}
+        repository: minamijoyo/homebrew-myaws
     - name: Run GoReleaser
       uses: goreleaser/goreleaser-action@v2
       with:
