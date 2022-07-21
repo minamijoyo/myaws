@@ -1,5 +1,9 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* Restrict repository of token for release ([#65](https://github.com/minamijoyo/myaws/pull/65))
+
 ## 0.4.5 (2022/07/14)
 
 ENHANCEMENTS:
