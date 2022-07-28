@@ -1,5 +1,9 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* Add support for linux/arm64 Docker image ([#66](https://github.com/minamijoyo/myaws/pull/66))
+
 ## 0.4.6 (2022/07/21)
 
 ENHANCEMENTS:
