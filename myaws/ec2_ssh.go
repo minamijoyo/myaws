@@ -3,7 +3,6 @@ package myaws
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -89,7 +88,7 @@ func (client *Client) resolveEC2PublicIPAddress(instance *ec2.Instance) (string,
 
 func buildSSHConfig(loginName string, identityFile string) (*ssh.ClientConfig, error) {
 	normalizedIdentityFile := strings.Replace(identityFile, "~", os.Getenv("HOME"), 1)
-	key, err := ioutil.ReadFile(normalizedIdentityFile)
+	key, err := os.ReadFile(normalizedIdentityFile)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to read private key:")
 	}
