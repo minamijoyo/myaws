@@ -1,5 +1,9 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* Update Go to 1.19 ([#67](https://github.com/minamijoyo/myaws/pull/67))
+
 ## 0.4.7 (2022/07/28)
 
 ENHANCEMENTS:
