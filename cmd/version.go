@@ -7,7 +7,7 @@ import (
 )
 
 // version is a version number.
-var version = "0.4.7"
+var version = "0.4.8"
 
 func init() {
 	RootCmd.AddCommand(newVersionCmd())
