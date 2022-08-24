@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/aws/aws-sdk-go/service/ecs"
-
 	"github.com/aws/aws-sdk-go/aws/awsutil"
 	"github.com/aws/aws-sdk-go/service/autoscaling"
+	"github.com/aws/aws-sdk-go/service/ecs"
 	"github.com/pkg/errors"
 )
 
@@ -206,7 +205,7 @@ func (client *Client) ecsNodeRenewWithContext(ctx context.Context, options ECSNo
 
 // selectInstanceToProtectFromScaleIn selects instance to protect from Scale in.
 // instance select rule:
-//   instances after scale out - instances before scale out - instances which already set `InstanceProtection==true`
+// instances after scale out - instances before scale out - instances which already set `InstanceProtection==true`
 func (client *Client) selectInstanceToProtectFromScaleIn(oldNodes []*ecs.ContainerInstance, cluster string) ([]*string, error) {
 	// Get a list of instance IDs before auto scaling
 	var oldInstanceIds []*string

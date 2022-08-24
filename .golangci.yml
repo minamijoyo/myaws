@@ -10,3 +10,9 @@ linters:
     - ineffassign
     - revive
     - staticcheck
+
+issues:
+  exclude-rules:
+    - linters:
+        - revive
+      text: "error-strings:"
