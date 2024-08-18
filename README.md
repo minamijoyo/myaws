@@ -16,7 +16,7 @@ $ brew install minamijoyo/myaws/myaws
 
 or
 
-If you have Go 1.19+ development environment:
+If you have Go 1.22+ development environment:
 
 ```bash
 $ go install github.com/minamijoyo/myaws@latest

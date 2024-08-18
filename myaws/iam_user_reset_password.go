@@ -3,7 +3,6 @@ package myaws
 import (
 	"fmt"
 	"math/rand"
-	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
@@ -14,10 +13,6 @@ import (
 // IAMUserResetPasswordOptions customize the behavior of the IAMUserResetPassword command.
 type IAMUserResetPasswordOptions struct {
 	UserName string
-}
-
-func init() {
-	rand.Seed(time.Now().UnixNano())
 }
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
