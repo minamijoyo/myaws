@@ -1,5 +1,15 @@
 ## master (Unreleased)
 
+ENHANCEMENTS:
+
+* Update actions/checkout to v4 ([#70](https://github.com/minamijoyo/myaws/pull/70))
+* Update setup-go to v5 ([#71](https://github.com/minamijoyo/myaws/pull/71))
+* Update golangci lint to v1.59.1 ([#72](https://github.com/minamijoyo/myaws/pull/72))
+* Update Go to v1.22 ([#73](https://github.com/minamijoyo/myaws/pull/73))
+* Update docker/build-push-action to v4 ([#74](https://github.com/minamijoyo/myaws/pull/74))
+* Update goreleaser to v2 ([#75](https://github.com/minamijoyo/myaws/pull/75))
+* Switch to the official action for creating GitHub App token ([#76](https://github.com/minamijoyo/myaws/pull/76))
+
 ## 0.4.8 (2022/08/24)
 
 ENHANCEMENTS:
