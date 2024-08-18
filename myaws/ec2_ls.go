@@ -61,33 +61,33 @@ func formatEC2Instance(client *Client, options EC2LsOptions, instance *ec2.Insta
 	return strings.Join(output[:], "\t")
 }
 
-func formatEC2InstanceID(client *Client, options EC2LsOptions, instance *ec2.Instance) string {
+func formatEC2InstanceID(_ *Client, _ EC2LsOptions, instance *ec2.Instance) string {
 	return *instance.InstanceId
 }
 
-func formatEC2InstanceType(client *Client, options EC2LsOptions, instance *ec2.Instance) string {
+func formatEC2InstanceType(_ *Client, _ EC2LsOptions, instance *ec2.Instance) string {
 	return fmt.Sprintf("%-11s", *instance.InstanceType)
 }
 
-func formatEC2PublicIPAddress(client *Client, options EC2LsOptions, instance *ec2.Instance) string {
+func formatEC2PublicIPAddress(_ *Client, _ EC2LsOptions, instance *ec2.Instance) string {
 	if instance.PublicIpAddress == nil {
 		return "___.___.___.___"
 	}
 	return *instance.PublicIpAddress
 }
 
-func formatEC2PrivateIPAddress(client *Client, options EC2LsOptions, instance *ec2.Instance) string {
+func formatEC2PrivateIPAddress(_ *Client, _ EC2LsOptions, instance *ec2.Instance) string {
 	if instance.PrivateIpAddress == nil {
 		return "___.___.___.___"
 	}
 	return *instance.PrivateIpAddress
 }
 
-func formatEC2StateName(client *Client, options EC2LsOptions, instance *ec2.Instance) string {
+func formatEC2StateName(_ *Client, _ EC2LsOptions, instance *ec2.Instance) string {
 	return *instance.State.Name
 }
 
-func formatEC2LaunchTime(client *Client, options EC2LsOptions, instance *ec2.Instance) string {
+func formatEC2LaunchTime(client *Client, _ EC2LsOptions, instance *ec2.Instance) string {
 	return client.FormatTime(instance.LaunchTime)
 }
 
@@ -102,6 +102,6 @@ func formatEC2Tag(instance *ec2.Instance, key string) string {
 	return value
 }
 
-func formatEC2AvailabilityZone(client *Client, options EC2LsOptions, instance *ec2.Instance) string {
+func formatEC2AvailabilityZone(_ *Client, _ EC2LsOptions, instance *ec2.Instance) string {
 	return *instance.Placement.AvailabilityZone
 }

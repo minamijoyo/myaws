@@ -13,7 +13,7 @@ func newSTSCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "sts",
 		Short: "Manage STS resources",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			cmd.Help() // nolint: errcheck
 		},
 	}
@@ -35,7 +35,7 @@ func newSTSIDCmd() *cobra.Command {
 	return cmd
 }
 
-func runSTSIDCmd(cmd *cobra.Command, args []string) error {
+func runSTSIDCmd(_ *cobra.Command, _ []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")

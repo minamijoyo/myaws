@@ -19,7 +19,7 @@ func newEC2Cmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ec2",
 		Short: "Manage EC2 resources",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			cmd.Help() // nolint: errcheck
 		},
 	}
@@ -57,7 +57,7 @@ func newEC2LsCmd() *cobra.Command {
 	return cmd
 }
 
-func runEC2LsCmd(cmd *cobra.Command, args []string) error {
+func runEC2LsCmd(_ *cobra.Command, _ []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -88,7 +88,7 @@ func newEC2StartCmd() *cobra.Command {
 	return cmd
 }
 
-func runEC2StartCmd(cmd *cobra.Command, args []string) error {
+func runEC2StartCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -122,7 +122,7 @@ func newEC2StopCmd() *cobra.Command {
 	return cmd
 }
 
-func runEC2StopCmd(cmd *cobra.Command, args []string) error {
+func runEC2StopCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -160,7 +160,7 @@ func newEC2SSHCmd() *cobra.Command {
 	return cmd
 }
 
-func runEC2SSHCmd(cmd *cobra.Command, args []string) error {
+func runEC2SSHCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")

@@ -15,7 +15,7 @@ func newELBCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "elb",
 		Short: "Manage ELB resources",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			cmd.Help() // nolint: errcheck
 		},
 	}
@@ -38,7 +38,7 @@ func newELBLsCmd() *cobra.Command {
 	return cmd
 }
 
-func runELBLsCmd(cmd *cobra.Command, args []string) error {
+func runELBLsCmd(_ *cobra.Command, _ []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -57,7 +57,7 @@ func newELBPsCmd() *cobra.Command {
 	return cmd
 }
 
-func runELBPsCmd(cmd *cobra.Command, args []string) error {
+func runELBPsCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")

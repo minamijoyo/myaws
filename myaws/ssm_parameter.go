@@ -35,7 +35,7 @@ func (client *Client) FindSSMParameterMetadata(name string) ([]*ssm.ParameterMet
 	defer cancel()
 	err := client.SSM.DescribeParametersPagesWithContext(ctx,
 		input,
-		func(page *ssm.DescribeParametersOutput, lastPage bool) bool {
+		func(page *ssm.DescribeParametersOutput, _ bool) bool {
 			metadata = append(metadata, page.Parameters...)
 			return true
 		})
@@ -102,7 +102,7 @@ func (client *Client) GetParametersByPath(path *string, withDecryption bool) ([]
 
 	var parameters []*ssm.Parameter
 	err := client.SSM.GetParametersByPathPages(input,
-		func(page *ssm.GetParametersByPathOutput, lastPage bool) bool {
+		func(page *ssm.GetParametersByPathOutput, _ bool) bool {
 			parameters = append(parameters, page.Parameters...)
 			return true
 		})

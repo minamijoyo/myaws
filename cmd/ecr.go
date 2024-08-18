@@ -17,7 +17,7 @@ func newECRCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ecr",
 		Short: "Manage ECR resources",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			cmd.Help() // nolint: errcheck
 		},
 	}
@@ -44,7 +44,7 @@ func newECRGetLoginCmd() *cobra.Command {
 	return cmd
 }
 
-func runECRGetLoginCmd(cmd *cobra.Command, args []string) error {
+func runECRGetLoginCmd(_ *cobra.Command, _ []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")

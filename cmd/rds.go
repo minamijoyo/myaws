@@ -16,7 +16,7 @@ func newRDSCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "rds",
 		Short: "Manage RDS resources",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			cmd.Help() // nolint: errcheck
 		},
 	}
@@ -45,7 +45,7 @@ func newRDSLsCmd() *cobra.Command {
 	return cmd
 }
 
-func runRDSLsCmd(cmd *cobra.Command, args []string) error {
+func runRDSLsCmd(_ *cobra.Command, _ []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")

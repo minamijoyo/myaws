@@ -39,7 +39,7 @@ func (client *Client) ECSServiceLs(options ECSServiceLsOptions) error {
 	return nil
 }
 
-func formatECSService(client *Client, options ECSServiceLsOptions, service *ecs.Service) string {
+func formatECSService(_ *Client, _ ECSServiceLsOptions, service *ecs.Service) string {
 	taskDefinitions := strings.Split(*service.TaskDefinition, "/")
 
 	return fmt.Sprintf("%d\t%d\t%d\t%d\t%-32s\t%s",

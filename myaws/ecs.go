@@ -48,7 +48,7 @@ func (client *Client) findECSServices(cluster string) ([]*ecs.Service, error) {
 		&ecs.ListServicesInput{
 			Cluster: &cluster,
 		},
-		func(p *ecs.ListServicesOutput, lastPage bool) bool {
+		func(p *ecs.ListServicesOutput, _ bool) bool {
 			serviceArns = append(serviceArns, p.ServiceArns...)
 			return true
 		},

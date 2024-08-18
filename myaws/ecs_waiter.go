@@ -51,9 +51,8 @@ func (client *Client) WaitUntilECSContainerInstancesStatusWithContext(ctx aws.Co
 			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == request.WaiterResourceNotReadyErrorCode {
 				// internal waiter timeout, retry.
 				continue
-			} else {
-				return errors.Wrapf(err, "waitUntilECSContainerInstancesStatusWithContext failed")
 			}
+			return errors.Wrapf(err, "waitUntilECSContainerInstancesStatusWithContext failed")
 		}
 		break
 	}
@@ -103,9 +102,8 @@ func (client *Client) WaitUntilECSContainerInstancesNoRunningTaskWithContext(ctx
 			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == request.WaiterResourceNotReadyErrorCode {
 				// internal waiter timeout, retry.
 				continue
-			} else {
-				return errors.Wrapf(err, "waitUntilECSContainerInstancesNoRunningTaskWithContext failed")
 			}
+			return errors.Wrapf(err, "waitUntilECSContainerInstancesNoRunningTaskWithContext failed")
 		}
 		break
 	}
@@ -217,7 +215,7 @@ func (client *Client) getECSServiceArns(cluster string) ([]*string, error) {
 		&ecs.ListServicesInput{
 			Cluster: &cluster,
 		},
-		func(p *ecs.ListServicesOutput, lastPage bool) bool {
+		func(p *ecs.ListServicesOutput, _ bool) bool {
 			serviceArns = append(serviceArns, p.ServiceArns...)
 			return true
 		},
@@ -320,9 +318,8 @@ func (client *Client) WaitUntilECSServicesStableWithContext(ctx context.Context,
 			if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == request.WaiterResourceNotReadyErrorCode {
 				// internal waiter timeout, retry.
 				continue
-			} else {
-				return errors.Wrapf(err, "WaitUntilServicesStable failed")
 			}
+			return errors.Wrapf(err, "WaitUntilServicesStable failed")
 		}
 		break
 	}

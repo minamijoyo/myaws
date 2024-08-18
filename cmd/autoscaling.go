@@ -18,7 +18,7 @@ func newAutoscalingCmd() *cobra.Command {
 		Use:     "autoscaling",
 		Aliases: []string{"as"},
 		Short:   "Manage autoscaling resources",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			cmd.Help() // nolint: errcheck
 		},
 	}
@@ -48,7 +48,7 @@ func newAutoscalingLsCmd() *cobra.Command {
 	return cmd
 }
 
-func runAutoscalingLsCmd(cmd *cobra.Command, args []string) error {
+func runAutoscalingLsCmd(_ *cobra.Command, _ []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -80,7 +80,7 @@ func newAutoscalingAttachCmd() *cobra.Command {
 	return cmd
 }
 
-func runAutoscalingAttachCmd(cmd *cobra.Command, args []string) error {
+func runAutoscalingAttachCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -121,7 +121,7 @@ func newAutoscalingDetachCmd() *cobra.Command {
 	return cmd
 }
 
-func runAutoscalingDetachCmd(cmd *cobra.Command, args []string) error {
+func runAutoscalingDetachCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -160,7 +160,7 @@ func newAutoscalingUpdateCmd() *cobra.Command {
 	return cmd
 }
 
-func runAutoscalingUpdateCmd(cmd *cobra.Command, args []string) error {
+func runAutoscalingUpdateCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
