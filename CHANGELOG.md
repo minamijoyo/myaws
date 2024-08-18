@@ -1,5 +1,7 @@
 ## master (Unreleased)
 
+## 0.4.9 (2024/08/18)
+
 ENHANCEMENTS:
 
 * Update actions/checkout to v4 ([#70](https://github.com/minamijoyo/myaws/pull/70))
