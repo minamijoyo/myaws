@@ -1,6 +1,6 @@
 module github.com/minamijoyo/myaws
 
-go 1.19
+go 1.22
 
 require (
 	github.com/aws/aws-sdk-go v1.38.39
