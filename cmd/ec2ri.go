@@ -15,7 +15,7 @@ func newEC2RICmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ec2ri",
 		Short: "Manage EC2 Reserved Instance resources",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			cmd.Help() // nolint: errcheck
 		},
 	}
@@ -46,7 +46,7 @@ func newEC2RILsCmd() *cobra.Command {
 	return cmd
 }
 
-func runEC2RILsCmd(cmd *cobra.Command, args []string) error {
+func runEC2RILsCmd(_ *cobra.Command, _ []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")

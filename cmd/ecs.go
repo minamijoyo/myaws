@@ -18,7 +18,7 @@ func newECSCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ecs",
 		Short: "Manage ECS resources",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			cmd.Help() // nolint: errcheck
 		},
 	}
@@ -42,7 +42,7 @@ func newECSStatusCmd() *cobra.Command {
 	return cmd
 }
 
-func runECSStatusCmd(cmd *cobra.Command, args []string) error {
+func runECSStatusCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -62,7 +62,7 @@ func newECSNodeCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "node",
 		Short: "Manage ECS node resources (container instances)",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			cmd.Help() // nolint: errcheck
 		},
 	}
@@ -92,7 +92,7 @@ func newECSNodeLsCmd() *cobra.Command {
 	return cmd
 }
 
-func runECSNodeLsCmd(cmd *cobra.Command, args []string) error {
+func runECSNodeLsCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -126,7 +126,7 @@ func newECSNodeUpdateCmd() *cobra.Command {
 	return cmd
 }
 
-func runECSNodeUpdateCmd(cmd *cobra.Command, args []string) error {
+func runECSNodeUpdateCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -174,7 +174,7 @@ func newECSNodeDrainCmd() *cobra.Command {
 	return cmd
 }
 
-func runECSNodeDrainCmd(cmd *cobra.Command, args []string) error {
+func runECSNodeDrainCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -221,7 +221,7 @@ func newECSNodeRenewCmd() *cobra.Command {
 	return cmd
 }
 
-func runECSNodeRenewCmd(cmd *cobra.Command, args []string) error {
+func runECSNodeRenewCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -251,7 +251,7 @@ func newECSServiceCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "service",
 		Short: "Manage ECS service resources",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			cmd.Help() // nolint: errcheck
 		},
 	}
@@ -279,7 +279,7 @@ func newECSServiceLsCmd() *cobra.Command {
 	return cmd
 }
 
-func runECSServiceLsCmd(cmd *cobra.Command, args []string) error {
+func runECSServiceLsCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -323,7 +323,7 @@ func newECSServiceUpdateCmd() *cobra.Command {
 	return cmd
 }
 
-func runECSServiceUpdateCmd(cmd *cobra.Command, args []string) error {
+func runECSServiceUpdateCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")

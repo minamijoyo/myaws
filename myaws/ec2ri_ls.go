@@ -58,41 +58,41 @@ func formatEC2RIInstance(client *Client, options EC2RILsOptions, instance *ec2.R
 	return strings.Join(output[:], "\t")
 }
 
-func formatEC2ReservedInstanceID(client *Client, options EC2RILsOptions, instance *ec2.ReservedInstances) string {
+func formatEC2ReservedInstanceID(_ *Client, _ EC2RILsOptions, instance *ec2.ReservedInstances) string {
 	return *instance.ReservedInstancesId
 }
 
-func formatEC2RIAvailabilityZone(client *Client, options EC2RILsOptions, instance *ec2.ReservedInstances) string {
+func formatEC2RIAvailabilityZone(_ *Client, _ EC2RILsOptions, instance *ec2.ReservedInstances) string {
 	if instance.AvailabilityZone != nil {
 		return *instance.AvailabilityZone
 	}
 	return "N/A"
 }
 
-func formatEC2RIInstanceType(client *Client, options EC2RILsOptions, instance *ec2.ReservedInstances) string {
+func formatEC2RIInstanceType(_ *Client, _ EC2RILsOptions, instance *ec2.ReservedInstances) string {
 	return *instance.InstanceType
 }
 
-func formatEC2RIInstanceCount(client *Client, options EC2RILsOptions, instance *ec2.ReservedInstances) string {
+func formatEC2RIInstanceCount(_ *Client, _ EC2RILsOptions, instance *ec2.ReservedInstances) string {
 	return fmt.Sprintf("%3d", *instance.InstanceCount)
 }
 
-func formatEC2RIState(client *Client, options EC2RILsOptions, instance *ec2.ReservedInstances) string {
+func formatEC2RIState(_ *Client, _ EC2RILsOptions, instance *ec2.ReservedInstances) string {
 	return *instance.State
 }
 
-func formatEC2RIScope(client *Client, options EC2RILsOptions, instance *ec2.ReservedInstances) string {
+func formatEC2RIScope(_ *Client, _ EC2RILsOptions, instance *ec2.ReservedInstances) string {
 	return *instance.Scope
 }
 
-func formatEC2RIStart(client *Client, options EC2RILsOptions, instance *ec2.ReservedInstances) string {
+func formatEC2RIStart(_ *Client, _ EC2RILsOptions, instance *ec2.ReservedInstances) string {
 	return instance.Start.Format("2006-01-02")
 }
 
-func formatEC2RIEnd(client *Client, options EC2RILsOptions, instance *ec2.ReservedInstances) string {
+func formatEC2RIEnd(_ *Client, _ EC2RILsOptions, instance *ec2.ReservedInstances) string {
 	return instance.End.Format("2006-01-02")
 }
 
-func formatEC2RIDuration(client *Client, options EC2RILsOptions, instance *ec2.ReservedInstances) string {
+func formatEC2RIDuration(_ *Client, _ EC2RILsOptions, instance *ec2.ReservedInstances) string {
 	return fmt.Sprintf("%2dyear", *instance.Duration/(3600*24*365))
 }

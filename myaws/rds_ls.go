@@ -59,30 +59,30 @@ func formatDBInstance(client *Client, options RDSLsOptions, db *rds.DBInstance) 
 	return strings.Join(output[:], "\t")
 }
 
-func formatRDSDBInstanceIdentifier(client *Client, options RDSLsOptions, db *rds.DBInstance) string {
+func formatRDSDBInstanceIdentifier(_ *Client, _ RDSLsOptions, db *rds.DBInstance) string {
 	return *db.DBInstanceIdentifier
 }
 
-func formatRDSDBInstanceClass(client *Client, options RDSLsOptions, db *rds.DBInstance) string {
+func formatRDSDBInstanceClass(_ *Client, _ RDSLsOptions, db *rds.DBInstance) string {
 	if *db.MultiAZ {
 		return fmt.Sprintf("%s:multi", *db.DBInstanceClass)
 	}
 	return fmt.Sprintf("%s:single", *db.DBInstanceClass)
 }
 
-func formatRDSEngine(client *Client, options RDSLsOptions, db *rds.DBInstance) string {
+func formatRDSEngine(_ *Client, _ RDSLsOptions, db *rds.DBInstance) string {
 	return fmt.Sprintf("%-15s", fmt.Sprintf("%s:%s", *db.Engine, *db.EngineVersion))
 }
 
-func formatRDSAllocatedStorage(client *Client, options RDSLsOptions, db *rds.DBInstance) string {
+func formatRDSAllocatedStorage(_ *Client, _ RDSLsOptions, db *rds.DBInstance) string {
 	return fmt.Sprintf("%4dGB", *db.AllocatedStorage)
 }
 
-func formatRDSStorageType(client *Client, options RDSLsOptions, db *rds.DBInstance) string {
+func formatRDSStorageType(_ *Client, _ RDSLsOptions, db *rds.DBInstance) string {
 	return *db.StorageType
 }
 
-func formatRDSStorageTypeIops(client *Client, options RDSLsOptions, db *rds.DBInstance) string {
+func formatRDSStorageTypeIops(_ *Client, _ RDSLsOptions, db *rds.DBInstance) string {
 	iops := "-"
 	if db.Iops != nil {
 		iops = fmt.Sprint(*db.Iops)
@@ -91,13 +91,13 @@ func formatRDSStorageTypeIops(client *Client, options RDSLsOptions, db *rds.DBIn
 	return fmt.Sprintf("%-8s", fmt.Sprintf("%s:%s", *db.StorageType, iops))
 }
 
-func formatRDSReadReplicaSource(client *Client, options RDSLsOptions, db *rds.DBInstance) string {
+func formatRDSReadReplicaSource(_ *Client, _ RDSLsOptions, db *rds.DBInstance) string {
 	if db.ReadReplicaSourceDBInstanceIdentifier == nil {
 		return "source:---"
 	}
 	return fmt.Sprintf("source:%s", *db.ReadReplicaSourceDBInstanceIdentifier)
 }
 
-func formatRDSInstanceCreateTime(client *Client, options RDSLsOptions, db *rds.DBInstance) string {
+func formatRDSInstanceCreateTime(client *Client, _ RDSLsOptions, db *rds.DBInstance) string {
 	return client.FormatTime(db.InstanceCreateTime)
 }

@@ -15,7 +15,7 @@ func newIAMCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "iam",
 		Short: "Manage IAM resources",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			cmd.Help() // nolint: errcheck
 		},
 	}
@@ -31,7 +31,7 @@ func newIAMUserCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "user",
 		Short: "Manage IAM user resources",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			cmd.Help() // nolint: errcheck
 		},
 	}
@@ -54,7 +54,7 @@ func newIAMUserLsCmd() *cobra.Command {
 	return cmd
 }
 
-func runIAMUserLsCmd(cmd *cobra.Command, args []string) error {
+func runIAMUserLsCmd(_ *cobra.Command, _ []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -73,7 +73,7 @@ func newIAMUserResetPasswordCmd() *cobra.Command {
 	return cmd
 }
 
-func runIAMUserResetPasswordCmd(cmd *cobra.Command, args []string) error {
+func runIAMUserResetPasswordCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")

@@ -17,7 +17,7 @@ func newSSMCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "ssm",
 		Short: "Manage SSM resources",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			cmd.Help() // nolint: errcheck
 		},
 	}
@@ -33,7 +33,7 @@ func newSSMParameterCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "parameter",
 		Short: "Manage SSM parameter resources",
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(cmd *cobra.Command, _ []string) {
 			cmd.Help() // nolint: errcheck
 		},
 	}
@@ -64,7 +64,7 @@ func newSSMParameterPutCmd() *cobra.Command {
 	return cmd
 }
 
-func runSSMParameterPutCmd(cmd *cobra.Command, args []string) error {
+func runSSMParameterPutCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -97,7 +97,7 @@ func newSSMParameterGetCmd() *cobra.Command {
 	return cmd
 }
 
-func runSSMParameterGetCmd(cmd *cobra.Command, args []string) error {
+func runSSMParameterGetCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -132,7 +132,7 @@ func newSSMParameterLsCmd() *cobra.Command {
 	return cmd
 }
 
-func runSSMParameterLsCmd(cmd *cobra.Command, args []string) error {
+func runSSMParameterLsCmd(_ *cobra.Command, _ []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -161,7 +161,7 @@ func newSSMParameterEnvCmd() *cobra.Command {
 	return cmd
 }
 
-func runSSMParameterEnvCmd(cmd *cobra.Command, args []string) error {
+func runSSMParameterEnvCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
@@ -190,7 +190,7 @@ func newSSMParameterDelCmd() *cobra.Command {
 	return cmd
 }
 
-func runSSMParameterDelCmd(cmd *cobra.Command, args []string) error {
+func runSSMParameterDelCmd(_ *cobra.Command, args []string) error {
 	client, err := newClient()
 	if err != nil {
 		return errors.Wrap(err, "newClient failed:")
